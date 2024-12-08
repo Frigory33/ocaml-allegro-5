@@ -7,6 +7,9 @@
 #include <caml/mlvalues.h>
 
 
+#define Ptr_val(v) ((void *)Nativeint_val(v))
+#define Val_ptr(p) (caml_copy_nativeint((intnat)p))
+
 #define ml_function_noarg(func) \
     CAMLprim value ml_ ## func(value unit) \
     { \

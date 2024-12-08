@@ -2,5 +2,5 @@
  (name al5)
  (foreign_stubs
   (language c)
-  (names al5 display graphics time))
+  (names al5 display events graphics time))
  (c_library_flags -lallegro))

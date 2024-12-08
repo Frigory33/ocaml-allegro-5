@@ -47,33 +47,33 @@ type color
 
 
 (* System module *)
-external init : unit -> unit = "ml_al_init"
-external uninstall_system : unit -> unit = "ml_al_uninstall_system"
+val init : unit -> unit
+val uninstall_system : unit -> unit
 
 
 (* Display module *)
-external create_display : int -> int -> display = "ml_al_create_display"
-external destroy_display : display -> unit = "ml_al_destroy_display"
+val create_display : int -> int -> display
+val destroy_display : display -> unit
 
-external flip_display : unit -> unit = "ml_al_flip_display"
+val flip_display : unit -> unit
 
-external set_new_window_title : string -> unit = "ml_al_set_new_window_title"
+val set_new_window_title : string -> unit
 
-external get_display_event_source : display -> event_source = "ml_al_get_display_event_source"
+val get_display_event_source : display -> event_source
 
 
 (* Events module *)
-external create_event_queue : unit -> event_queue = "ml_al_create_event_queue"
-external destroy_event_queue : event_queue -> unit = "ml_al_destroy_event_queue"
-external register_event_source : event_queue -> event_source -> unit = "ml_al_register_event_source"
+val create_event_queue : unit -> event_queue
+val destroy_event_queue : event_queue -> unit
+val register_event_source : event_queue -> event_source -> unit
 
-external wait_for_event : event_queue -> event = "ml_al_wait_for_event"
+val wait_for_event : event_queue -> event
 
 
 (* Graphics module *)
-external map_rgb : int -> int -> int -> color = "ml_al_map_rgb"
-external clear_to_color : color -> unit = "ml_al_clear_to_color"
+val map_rgb : int -> int -> int -> color
+val clear_to_color : color -> unit
 
 
 (* Time module *)
-external rest : float -> unit = "ml_al_rest"
+val rest : float -> unit
