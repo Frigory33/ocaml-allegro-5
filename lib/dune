@@ -1,5 +1,6 @@
 (library
  (name al5)
+ (public_name allegro5)
  (foreign_stubs
   (language c)
   (names al5 display events graphics time)
