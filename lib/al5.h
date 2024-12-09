@@ -18,6 +18,13 @@
         CAMLreturn(Val_unit); \
     }
 
+#define ml_function_noarg_ret(func, cast) \
+    CAMLprim value ml_ ## func(value unit) \
+    { \
+        CAMLparam1(unit); \
+        CAMLreturn(cast(func())); \
+    }
+
 #define ml_function_1arg(func, cast) \
   CAMLprim value ml_ ## func(value v) \
   { \

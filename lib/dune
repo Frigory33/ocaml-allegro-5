@@ -3,7 +3,7 @@
  (public_name allegro5)
  (foreign_stubs
   (language c)
-  (names al5 display events graphics time)
+  (names display events graphics keyboard system time)
   (include_dirs %{env:HOME=.}/.local/include)
   (flags -std=c11 -Wall -O2))
  (c_library_flags -L %{env:HOME=.}/.local/lib -lallegro))
