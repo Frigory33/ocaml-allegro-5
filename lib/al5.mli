@@ -1,13 +1,19 @@
+(** {1 Types} *)
+
+(** {2 Abstract types} *)
+
+type color
+type event_queue
+type event_source
 type display
 type joystick
 type timer
 
+(** {2 Enumerations} *)
+
 type keycode
 type mouse_button
 type orientation
-
-type event_queue
-type event_source
 
 type event =
 | EVENT_JOYSTICK_AXIS of joystick * int * int * float
@@ -43,15 +49,9 @@ type event =
 | EVENT_DROP of int * int * (string * bool * int * bool) option
 | EVENT_UNKNOWN of int
 
-type color
 
+(** {1 Displays} *)
 
-(* System module *)
-val init : unit -> unit
-val uninstall_system : unit -> unit
-
-
-(* Display module *)
 val create_display : int -> int -> display
 val destroy_display : display -> unit
 
@@ -62,7 +62,8 @@ val set_new_window_title : string -> unit
 val get_display_event_source : display -> event_source
 
 
-(* Events module *)
+(** {1 Events} *)
+
 val create_event_queue : unit -> event_queue
 val destroy_event_queue : event_queue -> unit
 val register_event_source : event_queue -> event_source -> unit
@@ -70,10 +71,18 @@ val register_event_source : event_queue -> event_source -> unit
 val wait_for_event : event_queue -> event
 
 
-(* Graphics module *)
+(** {1 Graphics routines} *)
+
 val map_rgb : int -> int -> int -> color
 val clear_to_color : color -> unit
 
 
-(* Time module *)
+(** {1 System routines} *)
+
+val init : unit -> unit
+val uninstall_system : unit -> unit
+
+
+(** {1 Time} *)
+
 val rest : float -> unit
