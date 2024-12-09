@@ -4,6 +4,7 @@ let () =
 
   Al5.set_new_window_title "OCaml Allegro 5 test";
   let disp = Al5.create_display 640 480 in
+
   let queue = Al5.create_event_queue () in
   Al5.register_event_source queue (Al5.get_display_event_source disp);
 
@@ -17,6 +18,7 @@ let () =
     | _ -> ()
   done;
 
+  Al5.destroy_event_queue queue;
   Al5.destroy_display disp;
 
   ()

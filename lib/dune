@@ -2,5 +2,7 @@
  (name al5)
  (foreign_stubs
   (language c)
-  (names al5 display events graphics time))
- (c_library_flags -lallegro))
+  (names al5 display events graphics time)
+  (include_dirs %{env:HOME=.}/.local/include)
+  (flags -std=c11 -Wall -O2))
+ (c_library_flags -L %{env:HOME=.}/.local/lib -lallegro))

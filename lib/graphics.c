@@ -3,7 +3,7 @@
 
 static struct custom_operations allegro_color_ops = {
   "org.allegro5.color",
-  finalize_with_free,
+  custom_finalize_default,
   custom_compare_default,
   custom_hash_default,
   custom_serialize_default,

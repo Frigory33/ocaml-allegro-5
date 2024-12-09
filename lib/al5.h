@@ -25,6 +25,3 @@
       func(cast(v)); \
       CAMLreturn(Val_unit); \
   }
-
-
-void finalize_with_free(value v);
