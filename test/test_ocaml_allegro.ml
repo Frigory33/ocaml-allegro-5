@@ -17,12 +17,12 @@ let () =
     Al5.flip_display ();
 
     match Al5.wait_for_event queue with
-    | Al5.EVENT_KEY_CHAR (keycode, _, _, _, _) ->
+    | Al5.Event.KEY_CHAR (keycode, _, _, _, _) ->
         (match keycode with
-        | Al5.KEY_ESCAPE -> quit := true;
+        | Al5.Key.ESCAPE -> quit := true;
         | _ -> ()
         )
-    | Al5.EVENT_DISPLAY_CLOSE _ -> quit := true;
+    | Al5.Event.DISPLAY_CLOSE _ -> quit := true;
     | _ -> ()
   done;
 
