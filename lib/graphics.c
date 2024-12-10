@@ -14,20 +14,20 @@ static struct custom_operations allegro_color_ops = {
 
 #define AlColor_val(v) (*((ALLEGRO_COLOR *)Data_custom_val(v)))
 
-static value alloc_color(ALLEGRO_COLOR color)
+static value alloc_color(ALLEGRO_COLOR c_color)
 {
     CAMLparam0();
     CAMLlocal1(v);
-    v = caml_alloc_custom(&allegro_color_ops, sizeof(color), 1, 256);
-    AlColor_val(v) = color;
+    v = caml_alloc_custom(&allegro_color_ops, sizeof(c_color), 1, 256);
+    AlColor_val(v) = c_color;
     CAMLreturn(v);
 }
 
 CAMLprim value ml_al_map_rgb(value r, value g, value b)
 {
     CAMLparam3(r, g, b);
-    ALLEGRO_COLOR color = al_map_rgb(Int_val(r), Int_val(g), Int_val(b));
-    CAMLreturn(alloc_color(color));
+    ALLEGRO_COLOR c_color = al_map_rgb(Int_val(r), Int_val(g), Int_val(b));
+    CAMLreturn(alloc_color(c_color));
 }
 
 
