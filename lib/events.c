@@ -334,16 +334,71 @@ static value convert_keycode(int c_keycode)
     return Val_int(keycode);
 }
 
+enum {
+    ML_KEYMOD_SHIFT = 1 << 0,
+    ML_KEYMOD_CTRL = 1 << 1,
+    ML_KEYMOD_ALT = 1 << 2,
+    ML_KEYMOD_LWIN = 1 << 3,
+    ML_KEYMOD_RWIN = 1 << 4,
+    ML_KEYMOD_MENU = 1 << 5,
+    ML_KEYMOD_ALTGR = 1 << 6,
+    ML_KEYMOD_COMMAND = 1 << 7,
+    ML_KEYMOD_SCROLLLOCK = 1 << 8,
+    ML_KEYMOD_NUMLOCK = 1 << 9,
+    ML_KEYMOD_CAPSLOCK = 1 << 10,
+    ML_KEYMOD_INALTSEQ = 1 << 11,
+    ML_KEYMOD_ACCENT1 = 1 << 12,
+    ML_KEYMOD_ACCENT2 = 1 << 13,
+    ML_KEYMOD_ACCENT3 = 1 << 14,
+    ML_KEYMOD_ACCENT4 = 1 << 15,
+};
+
+static value convert_keymod(int c_keymod)
+{
+    int const modifiers[][2] = {
+        { ALLEGRO_KEYMOD_SHIFT, ML_KEYMOD_SHIFT },
+        { ALLEGRO_KEYMOD_CTRL, ML_KEYMOD_CTRL },
+        { ALLEGRO_KEYMOD_ALT, ML_KEYMOD_ALT },
+        { ALLEGRO_KEYMOD_LWIN, ML_KEYMOD_LWIN },
+        { ALLEGRO_KEYMOD_RWIN, ML_KEYMOD_RWIN },
+        { ALLEGRO_KEYMOD_MENU, ML_KEYMOD_MENU },
+        { ALLEGRO_KEYMOD_ALTGR, ML_KEYMOD_ALTGR },
+        { ALLEGRO_KEYMOD_COMMAND, ML_KEYMOD_COMMAND },
+        { ALLEGRO_KEYMOD_SCROLLLOCK, ML_KEYMOD_SCROLLLOCK },
+        { ALLEGRO_KEYMOD_NUMLOCK, ML_KEYMOD_NUMLOCK },
+        { ALLEGRO_KEYMOD_CAPSLOCK, ML_KEYMOD_CAPSLOCK },
+        { ALLEGRO_KEYMOD_INALTSEQ, ML_KEYMOD_INALTSEQ },
+        { ALLEGRO_KEYMOD_ACCENT1, ML_KEYMOD_ACCENT1 },
+        { ALLEGRO_KEYMOD_ACCENT2, ML_KEYMOD_ACCENT2 },
+        { ALLEGRO_KEYMOD_ACCENT3, ML_KEYMOD_ACCENT3 },
+        { ALLEGRO_KEYMOD_ACCENT4, ML_KEYMOD_ACCENT4 },
+    };
+    int keymod = 0;
+    for (int i = 0; i < sizeof(modifiers) / sizeof(*modifiers); ++i) {
+        if ((c_keymod & modifiers[i][0]) == modifiers[i][0]) {
+            keymod |= modifiers[i][1];
+        }
+    }
+    return Val_int(keymod);
+}
+
+
 static value convert_event(ALLEGRO_EVENT c_evt)
 {
     CAMLparam0();
     CAMLlocal1(evt);
     switch (c_evt.type) {
+        case ALLEGRO_EVENT_KEY_DOWN:
+        case ALLEGRO_EVENT_KEY_UP:
+            evt = caml_alloc(2, c_evt.type == ALLEGRO_EVENT_KEY_UP ? ML_EVENT_KEY_UP : ML_EVENT_KEY_DOWN);
+            Store_field(evt, 0, convert_keycode(c_evt.keyboard.keycode));
+            Store_field(evt, 1, Val_ptr(c_evt.keyboard.display));
+            break;
         case ALLEGRO_EVENT_KEY_CHAR:
             evt = caml_alloc(5, ML_EVENT_KEY_CHAR);
             Store_field(evt, 0, convert_keycode(c_evt.keyboard.keycode));
             Store_field(evt, 1, Val_int(c_evt.keyboard.unichar));
-            Store_field(evt, 2, Val_int(c_evt.keyboard.modifiers));
+            Store_field(evt, 2, convert_keymod(c_evt.keyboard.modifiers));
             Store_field(evt, 3, Val_bool(c_evt.keyboard.repeat));
             Store_field(evt, 4, Val_ptr(c_evt.keyboard.display));
             break;
