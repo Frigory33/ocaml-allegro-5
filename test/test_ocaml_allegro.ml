@@ -17,9 +17,12 @@ let () =
     Al5.flip_display ();
 
     match Al5.wait_for_event queue with
-    | Al5.Event.KEY_CHAR (keycode, _, _, _, _) ->
+    | Al5.Event.KEY_CHAR (keycode, _, modifiers, _, _) ->
+        let modifiers = modifiers land (Al5.Keymod.ctrl lor Al5.Keymod.shift lor Al5.Keymod.alt) in
         (match keycode with
-        | Al5.Key.ESCAPE -> quit := true;
+        | Al5.Key.ESCAPE ->
+            if modifiers = 0 then
+              quit := true;
         | _ -> ()
         )
     | Al5.Event.DISPLAY_CLOSE _ -> quit := true;

@@ -18,3 +18,7 @@ dune uninstall
 ```
 
 You will find the docs at `_build/default/_doc/_html/index.html`.
+
+## Contribute
+
+Merge requests and bug reports are very welcome! Please join the project!
