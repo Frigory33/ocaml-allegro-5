@@ -265,7 +265,9 @@ external create_event_queue : unit -> event_queue = "ml_al_create_event_queue"
 external destroy_event_queue : event_queue -> unit = "ml_al_destroy_event_queue"
 external register_event_source : event_queue -> event_source -> unit = "ml_al_register_event_source"
 
+external get_next_event : event_queue -> Event.t option = "ml_al_get_next_event"
 external wait_for_event : event_queue -> Event.t = "ml_al_wait_for_event"
+external wait_for_event_timed : event_queue -> float -> Event.t option = "ml_al_wait_for_event"
 
 
 (** {1 Graphics routines} *)
@@ -288,5 +290,7 @@ external uninstall_system : unit -> unit = "ml_al_uninstall_system"
 
 
 (** {1 Time} *)
+
+external get_time : unit -> float = "ml_al_get_time"
 
 external rest : float -> unit = "ml_al_rest"

@@ -89,10 +89,30 @@ static value convert_event(ALLEGRO_EVENT c_evt)
     CAMLreturn(evt);
 }
 
+CAMLprim value ml_al_get_next_event(value queue)
+{
+    CAMLparam1(queue);
+    ALLEGRO_EVENT c_evt;
+    if (!al_get_next_event(Ptr_val(queue), &c_evt)) {
+        CAMLreturn(Val_none);
+    }
+    CAMLreturn(caml_alloc_some(convert_event(c_evt)));
+}
+
 CAMLprim value ml_al_wait_for_event(value queue)
 {
     CAMLparam1(queue);
     ALLEGRO_EVENT c_evt;
     al_wait_for_event(Ptr_val(queue), &c_evt);
     CAMLreturn(convert_event(c_evt));
+}
+
+CAMLprim value ml_al_wait_for_event_timed(value queue, value secs)
+{
+    CAMLparam2(queue, secs);
+    ALLEGRO_EVENT c_evt;
+    if (!al_wait_for_event_timed(Ptr_val(queue), &c_evt, Double_val(secs))) {
+        CAMLreturn(Val_none);
+    }
+    CAMLreturn(caml_alloc_some(convert_event(c_evt)));
 }

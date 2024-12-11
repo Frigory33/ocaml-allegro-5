@@ -12,21 +12,36 @@ let () =
   Al5.register_event_source queue (Al5.get_keyboard_event_source ());
 
   let quit = ref false in
-  while not !quit do
+  let last_event_time = ref (Al5.get_time ()) in
+  while not !quit && Al5.get_time () -. !last_event_time < 5. do
     Al5.clear_to_color (Al5.map_rgb 128 128 128);
     Al5.flip_display ();
 
-    match Al5.wait_for_event queue with
-    | Al5.Event.KEY_CHAR (keycode, _, modifiers, _, _) ->
-        let modifiers = modifiers land (Al5.Keymod.ctrl lor Al5.Keymod.shift lor Al5.Keymod.alt) in
-        (match keycode with
-        | Al5.Key.ESCAPE ->
-            if modifiers = 0 then
-              quit := true;
-        | _ -> ()
-        )
-    | Al5.Event.DISPLAY_CLOSE _ -> quit := true;
-    | _ -> ()
+
+    let rec read_events () =
+      Option.iter (fun evt ->
+          last_event_time := Al5.get_time ();
+          begin
+            match evt with
+
+            | Al5.Event.KEY_CHAR (keycode, _, modifiers, _, _) ->
+                let modifiers = modifiers land (Al5.Keymod.ctrl lor Al5.Keymod.shift lor Al5.Keymod.alt) in
+                begin
+                  match keycode with
+                  | Al5.Key.ESCAPE ->
+                      if modifiers = 0 then
+                        quit := true;
+                  | _ -> ()
+                end
+
+            | Al5.Event.DISPLAY_CLOSE _ -> quit := true;
+
+            | _ -> ()
+          end;
+          read_events ();
+        ) (Al5.get_next_event queue);
+    in
+    read_events ();
   done;
 
   Al5.destroy_event_queue queue;

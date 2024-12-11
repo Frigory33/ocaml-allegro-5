@@ -265,7 +265,9 @@ val create_event_queue : unit -> event_queue
 val destroy_event_queue : event_queue -> unit
 val register_event_source : event_queue -> event_source -> unit
 
+val get_next_event : event_queue -> Event.t option
 val wait_for_event : event_queue -> Event.t
+val wait_for_event_timed : event_queue -> float -> Event.t option
 
 
 (** {1 Graphics routines} *)
@@ -288,5 +290,7 @@ val uninstall_system : unit -> unit
 
 
 (** {1 Time} *)
+
+val get_time : unit -> float
 
 val rest : float -> unit
