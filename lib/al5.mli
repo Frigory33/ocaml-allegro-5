@@ -311,6 +311,16 @@ val get_mouse_event_source : unit -> event_source
 
 val init : unit -> unit
 val uninstall_system : unit -> unit
+val is_system_installed : unit -> bool
+val get_allegro_version : unit -> int
+
+val set_app_name : string -> unit
+val set_org_name : string -> unit
+val get_app_name : unit -> string
+val get_org_name : unit -> string
+
+val al_get_cpu_count : unit -> int
+val al_get_ram_size : unit -> int
 
 
 (** {1 Time} *)

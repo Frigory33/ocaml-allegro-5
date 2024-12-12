@@ -310,6 +310,16 @@ external get_mouse_event_source : unit -> event_source = "ml_al_get_mouse_event_
 
 external init : unit -> unit = "ml_al_init"
 external uninstall_system : unit -> unit = "ml_al_uninstall_system"
+external is_system_installed : unit -> bool = "ml_al_is_system_installed"
+external get_allegro_version : unit -> int = "ml_al_get_allegro_version"
+
+external set_app_name : string -> unit = "ml_al_set_app_name"
+external set_org_name : string -> unit = "ml_al_set_org_name"
+external get_app_name : unit -> string = "ml_al_get_app_name"
+external get_org_name : unit -> string = "ml_al_get_org_name"
+
+external al_get_cpu_count : unit -> int = "ml_al_get_cpu_count"
+external al_get_ram_size : unit -> int = "ml_al_get_ram_size"
 
 
 (** {1 Time} *)
