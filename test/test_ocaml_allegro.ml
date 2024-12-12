@@ -12,13 +12,14 @@ let () =
   Al5.register_event_source queue (Al5.get_keyboard_event_source ());
 
   let quit = ref false in
+  let quitting_delay = 5. in
   let last_event_time = ref (Al5.get_time ()) in
-  while not !quit && Al5.get_time () -. !last_event_time < 5. do
+  while not !quit && Al5.get_time () -. !last_event_time < quitting_delay do
+
     Al5.clear_to_color (Al5.map_rgb 128 128 128);
     Al5.flip_display ();
 
-
-    let rec read_events () =
+    let rec process_event evt_or_none =
       Option.iter (fun evt ->
           last_event_time := Al5.get_time ();
           begin
@@ -38,10 +39,11 @@ let () =
 
             | _ -> ()
           end;
-          read_events ();
-        ) (Al5.get_next_event queue);
+          process_event (Al5.get_next_event queue);
+        ) evt_or_none;
     in
-    read_events ();
+    process_event (Al5.wait_for_event_timed queue true quitting_delay);
+
   done;
 
   Al5.destroy_event_queue queue;

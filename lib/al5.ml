@@ -261,13 +261,25 @@ external get_display_event_source : display -> event_source = "ml_al_get_display
 
 (** {1 Events} *)
 
+(** {2 Event queue creation and registering} *)
+
 external create_event_queue : unit -> event_queue = "ml_al_create_event_queue"
 external destroy_event_queue : event_queue -> unit = "ml_al_destroy_event_queue"
 external register_event_source : event_queue -> event_source -> unit = "ml_al_register_event_source"
+external unregister_event_source : event_queue -> event_source -> unit = "ml_al_unregister_event_source"
+external is_event_source_registered : event_queue -> event_source -> bool = "ml_al_is_event_source_registered"
 
+(** {2 Event queue contents} *)
+
+external pause_event_queue : event_queue -> bool -> unit = "ml_al_pause_event_queue"
+external is_event_queue_paused : event_queue -> bool = "ml_al_is_event_queue_paused"
+external is_event_queue_empty : event_queue -> bool = "ml_al_is_event_queue_empty"
 external get_next_event : event_queue -> Event.t option = "ml_al_get_next_event"
+external peek_next_event : event_queue -> Event.t option = "ml_al_peek_next_event"
+external drop_next_event : event_queue -> bool = "ml_al_drop_next_event"
+external flush_event_queue : event_queue -> unit = "ml_al_flush_event_queue"
 external wait_for_event : event_queue -> Event.t = "ml_al_wait_for_event"
-external wait_for_event_timed : event_queue -> float -> Event.t option = "ml_al_wait_for_event"
+external wait_for_event_timed : event_queue -> bool -> float -> Event.t option = "ml_al_wait_for_event_timed"
 
 
 (** {1 Graphics routines} *)

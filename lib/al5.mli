@@ -261,13 +261,25 @@ val get_display_event_source : display -> event_source
 
 (** {1 Events} *)
 
+(** {2 Event queue creation and registering} *)
+
 val create_event_queue : unit -> event_queue
 val destroy_event_queue : event_queue -> unit
 val register_event_source : event_queue -> event_source -> unit
+val unregister_event_source : event_queue -> event_source -> unit
+val is_event_source_registered : event_queue -> event_source -> bool
 
+(** {2 Event queue contents} *)
+
+val pause_event_queue : event_queue -> bool -> unit
+val is_event_queue_paused : event_queue -> bool
+val is_event_queue_empty : event_queue -> bool
 val get_next_event : event_queue -> Event.t option
+val peek_next_event : event_queue -> Event.t option
+val drop_next_event : event_queue -> bool
+val flush_event_queue : event_queue -> unit
 val wait_for_event : event_queue -> Event.t
-val wait_for_event_timed : event_queue -> float -> Event.t option
+val wait_for_event_timed : event_queue -> bool -> float -> Event.t option
 
 
 (** {1 Graphics routines} *)

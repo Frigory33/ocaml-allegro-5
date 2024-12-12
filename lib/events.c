@@ -20,6 +20,20 @@ CAMLprim value ml_al_register_event_source(value queue, value source)
     CAMLreturn(Val_unit);
 }
 
+CAMLprim value ml_al_unregister_event_source(value queue, value source)
+{
+    CAMLparam2(queue, source);
+    al_unregister_event_source(Ptr_val(queue), Ptr_val(source));
+    CAMLreturn(Val_unit);
+}
+
+CAMLprim value ml_al_is_event_source_registered(value queue, value source)
+{
+    CAMLparam2(queue, source);
+    bool registered = al_is_event_source_registered(Ptr_val(queue), Ptr_val(source));
+    CAMLreturn(Val_bool(registered));
+}
+
 
 enum {
     ML_EVENT_JOYSTICK_AXIS,
@@ -89,6 +103,27 @@ static value convert_event(ALLEGRO_EVENT c_evt)
     CAMLreturn(evt);
 }
 
+CAMLprim value ml_al_pause_event_queue(value queue, value pause)
+{
+    CAMLparam2(queue, pause);
+    al_pause_event_queue(Ptr_val(queue), Bool_val(pause));
+    CAMLreturn(Val_unit);
+}
+
+CAMLprim value ml_al_is_event_queue_paused(value queue)
+{
+    CAMLparam1(queue);
+    bool paused = al_is_event_queue_paused(Ptr_val(queue));
+    CAMLreturn(Val_bool(paused));
+}
+
+CAMLprim value ml_al_is_event_queue_empty(value queue)
+{
+    CAMLparam1(queue);
+    bool empty = al_is_event_queue_empty(Ptr_val(queue));
+    CAMLreturn(Val_bool(empty));
+}
+
 CAMLprim value ml_al_get_next_event(value queue)
 {
     CAMLparam1(queue);
@@ -99,6 +134,25 @@ CAMLprim value ml_al_get_next_event(value queue)
     CAMLreturn(caml_alloc_some(convert_event(c_evt)));
 }
 
+CAMLprim value ml_al_peek_next_event(value queue)
+{
+    CAMLparam1(queue);
+    ALLEGRO_EVENT c_evt;
+    if (!al_peek_next_event(Ptr_val(queue), &c_evt)) {
+        CAMLreturn(Val_none);
+    }
+    CAMLreturn(caml_alloc_some(convert_event(c_evt)));
+}
+
+CAMLprim value ml_al_drop_next_event(value queue)
+{
+    CAMLparam1(queue);
+    bool dropped = al_drop_next_event(Ptr_val(queue));
+    CAMLreturn(Val_bool(dropped));
+}
+
+ml_function_1arg(al_flush_event_queue, Ptr_val);
+
 CAMLprim value ml_al_wait_for_event(value queue)
 {
     CAMLparam1(queue);
@@ -107,9 +161,13 @@ CAMLprim value ml_al_wait_for_event(value queue)
     CAMLreturn(convert_event(c_evt));
 }
 
-CAMLprim value ml_al_wait_for_event_timed(value queue, value secs)
+CAMLprim value ml_al_wait_for_event_timed(value queue, value get, value secs)
 {
-    CAMLparam2(queue, secs);
+    CAMLparam3(queue, get, secs);
+    if (!Bool_val(get)) {
+        al_wait_for_event_timed(Ptr_val(queue), NULL, Double_val(secs));
+        CAMLreturn(Val_none);
+    }
     ALLEGRO_EVENT c_evt;
     if (!al_wait_for_event_timed(Ptr_val(queue), &c_evt, Double_val(secs))) {
         CAMLreturn(Val_none);

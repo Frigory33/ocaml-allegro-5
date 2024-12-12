@@ -7,6 +7,8 @@ You shall install it with:
 opam install allegro5
 ```
 
+Allegro 5 development libraries (including addons) must be installed on your system for OCaml Allegro 5 to work. For instance, on Arch Linux, they are provided by the `allegro` package.
+
 ## Dune commands
 
 ```sh
@@ -16,8 +18,6 @@ dune test
 dune install
 dune uninstall
 ```
-
-You will find the docs at `_build/default/_doc/_html/index.html`.
 
 ## Contribute
 
