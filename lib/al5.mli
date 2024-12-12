@@ -211,6 +211,7 @@ module Event : sig
     display: display;
   }
 
+  (** Note: currently, not all events are implemented. *)
   type t =
   | JOYSTICK_AXIS of joystick * int * int * float
   | JOYSTICK_BUTTON_DOWN of joystick * int
@@ -291,8 +292,19 @@ val clear_to_color : color -> unit
 (** {1 Keyboard routines} *)
 
 val install_keyboard : unit -> unit
+val is_keyboard_installed : unit -> bool
+val uninstall_keyboard : unit -> unit
 
 val get_keyboard_event_source : unit -> event_source
+
+
+(** {1 Mouse routines} *)
+
+val install_mouse : unit -> unit
+val is_mouse_installed : unit -> bool
+val uninstall_mouse : unit -> unit
+
+val get_mouse_event_source : unit -> event_source
 
 
 (** {1 System routines} *)

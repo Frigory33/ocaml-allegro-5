@@ -291,8 +291,19 @@ external clear_to_color : color -> unit = "ml_al_clear_to_color"
 (** {1 Keyboard routines} *)
 
 external install_keyboard : unit -> unit = "ml_al_install_keyboard"
+external is_keyboard_installed : unit -> bool = "ml_al_is_keyboard_installed"
+external uninstall_keyboard : unit -> unit = "ml_al_uninstall_keyboard"
 
 external get_keyboard_event_source : unit -> event_source = "ml_al_get_keyboard_event_source"
+
+
+(** {1 Mouse routines} *)
+
+external install_mouse : unit -> unit = "ml_al_install_mouse"
+external is_mouse_installed : unit -> bool = "ml_al_is_mouse_installed"
+external uninstall_mouse : unit -> unit = "ml_al_uninstall_mouse"
+
+external get_mouse_event_source : unit -> event_source = "ml_al_get_mouse_event_source"
 
 
 (** {1 System routines} *)

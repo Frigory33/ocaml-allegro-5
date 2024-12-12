@@ -10,8 +10,9 @@ CAMLprim value ml_al_install_keyboard(value unit)
     CAMLreturn(Val_unit);
 }
 
+ml_function_noarg_ret(al_is_keyboard_installed, Val_bool)
 
-ml_function_noarg_ret(al_get_keyboard_event_source, Val_ptr)
+ml_function_noarg(al_uninstall_keyboard)
 
 
 value convert_keycode(int c_keycode)
@@ -182,3 +183,6 @@ value convert_keymod(int c_keymod)
     }
     return Val_int(keymod);
 }
+
+
+ml_function_noarg_ret(al_get_keyboard_event_source, Val_ptr)
