@@ -1,3 +1,7 @@
+#ifndef OCAML_ALLEGRO_AL5_H
+#define OCAML_ALLEGRO_AL5_H
+
+
 #include <allegro5/allegro.h>
 
 #include <caml/alloc.h>
@@ -9,6 +13,7 @@
 
 #define Ptr_val(v) ((void *)Nativeint_val(v))
 #define Val_ptr(p) (caml_copy_nativeint((intnat)p))
+
 
 #define ml_function_noarg(func) \
     CAMLprim value ml_ ## func(value unit) \
@@ -32,3 +37,6 @@
       func(cast(v)); \
       CAMLreturn(Val_unit); \
   }
+
+
+#endif

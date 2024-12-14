@@ -1,3 +1,7 @@
+#ifndef OCAML_ALLEGRO_KEYBOARD_H
+#define OCAML_ALLEGRO_KEYBOARD_H
+
+
 #include "al5.h"
 
 
@@ -159,3 +163,6 @@ enum {
 
 value convert_keycode(int c_keycode);
 value convert_keymod(int c_keymod);
+
+
+#endif

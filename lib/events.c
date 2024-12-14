@@ -76,7 +76,7 @@ enum {
 static value convert_event(ALLEGRO_EVENT c_evt)
 {
     CAMLparam0();
-    CAMLlocal1(evt);
+    CAMLlocal2(evt, info);
     switch (c_evt.type) {
         case ALLEGRO_EVENT_KEY_DOWN:
         case ALLEGRO_EVENT_KEY_UP:
@@ -91,6 +91,20 @@ static value convert_event(ALLEGRO_EVENT c_evt)
             Store_field(evt, 2, convert_keymod(c_evt.keyboard.modifiers));
             Store_field(evt, 3, Val_bool(c_evt.keyboard.repeat));
             Store_field(evt, 4, Val_ptr(c_evt.keyboard.display));
+            break;
+        case ALLEGRO_EVENT_MOUSE_BUTTON_UP:
+        case ALLEGRO_EVENT_MOUSE_BUTTON_DOWN:
+            evt = caml_alloc(1,
+                c_evt.type == ALLEGRO_EVENT_MOUSE_BUTTON_UP ? ML_EVENT_MOUSE_BUTTON_UP : ML_EVENT_MOUSE_BUTTON_DOWN);
+            info = caml_alloc_tuple(7);
+            Store_field(info, 0, Val_int(c_evt.mouse.x));
+            Store_field(info, 1, Val_int(c_evt.mouse.y));
+            Store_field(info, 2, Val_int(c_evt.mouse.z));
+            Store_field(info, 3, Val_int(c_evt.mouse.w));
+            Store_field(info, 4, Val_int(c_evt.mouse.button));
+            Store_field(info, 5, caml_copy_double(c_evt.mouse.pressure));
+            Store_field(info, 6, Val_ptr(c_evt.mouse.display));
+            Store_field(evt, 0, info);
             break;
         case ALLEGRO_EVENT_DISPLAY_CLOSE:
             evt = caml_alloc(1, ML_EVENT_DISPLAY_CLOSE);

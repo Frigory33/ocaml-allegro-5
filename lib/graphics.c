@@ -1,4 +1,4 @@
-#include "al5.h"
+#include "graphics.h"
 
 
 static struct custom_operations allegro_color_ops = {
@@ -11,8 +11,6 @@ static struct custom_operations allegro_color_ops = {
   custom_compare_ext_default,
   custom_fixed_length_default
 };
-
-#define AlColor_val(v) (*((ALLEGRO_COLOR *)Data_custom_val(v)))
 
 static value alloc_color(ALLEGRO_COLOR c_color)
 {
@@ -27,6 +25,20 @@ CAMLprim value ml_al_map_rgb(value r, value g, value b)
 {
     CAMLparam3(r, g, b);
     ALLEGRO_COLOR c_color = al_map_rgb(Int_val(r), Int_val(g), Int_val(b));
+    CAMLreturn(alloc_color(c_color));
+}
+
+CAMLprim value ml_al_map_rgba(value r, value g, value b, value a)
+{
+    CAMLparam4(r, g, b, a);
+    ALLEGRO_COLOR c_color = al_map_rgba(Int_val(r), Int_val(g), Int_val(b), Int_val(a));
+    CAMLreturn(alloc_color(c_color));
+}
+
+CAMLprim value ml_al_premul_rgba(value r, value g, value b, value a)
+{
+    CAMLparam4(r, g, b, a);
+    ALLEGRO_COLOR c_color = al_premul_rgba(Int_val(r), Int_val(g), Int_val(b), Int_val(a));
     CAMLreturn(alloc_color(c_color));
 }
 

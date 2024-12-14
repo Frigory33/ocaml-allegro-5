@@ -165,6 +165,12 @@ module Keymod = struct
   let accent4 = 1 lsl 15
 end
 
+module MouseButton = struct
+  let left = 1
+  let right = 2
+  let middle = 3
+end
+
 module DisplayOrientation = struct
   type t =
   | UNKNOWN
@@ -285,6 +291,8 @@ external wait_for_event_timed : event_queue -> bool -> float -> Event.t option =
 (** {1 Graphics routines} *)
 
 external map_rgb : int -> int -> int -> color = "ml_al_map_rgb"
+external map_rgba : int -> int -> int -> int -> color = "ml_al_map_rgba"
+external premul_rgba : int -> int -> int -> int -> color = "ml_al_premul_rgba"
 external clear_to_color : color -> unit = "ml_al_clear_to_color"
 
 
@@ -327,3 +335,13 @@ external al_get_ram_size : unit -> int = "ml_al_get_ram_size"
 external get_time : unit -> float = "ml_al_get_time"
 
 external rest : float -> unit = "ml_al_rest"
+
+
+(** {1 Primitives addon} *)
+
+external get_allegro_primitives_version : unit -> int = "ml_al_get_allegro_primitives_version"
+external init_primitives_addon : unit -> unit = "ml_al_init_primitives_addon"
+external is_primitives_addon_initialized : unit -> bool = "ml_al_is_primitives_addon_initialized"
+external shutdown_primitives_addon : unit -> unit = "ml_al_shutdown_primitives_addon"
+
+external draw_filled_circle : float * float -> float -> color -> unit = "ml_al_draw_filled_circle"

@@ -165,6 +165,12 @@ module Keymod : sig
   val accent4 : int
 end
 
+module MouseButton : sig
+  val left : int
+  val right : int
+  val middle : int
+end
+
 module DisplayOrientation : sig
   type t =
   | UNKNOWN
@@ -286,6 +292,8 @@ val wait_for_event_timed : event_queue -> bool -> float -> Event.t option
 (** {1 Graphics routines} *)
 
 val map_rgb : int -> int -> int -> color
+val map_rgba : int -> int -> int -> int -> color
+val premul_rgba : int -> int -> int -> int -> color
 val clear_to_color : color -> unit
 
 
@@ -328,3 +336,13 @@ val al_get_ram_size : unit -> int
 val get_time : unit -> float
 
 val rest : float -> unit
+
+
+(** {1 Primitives addon} *)
+
+val get_allegro_primitives_version : unit -> int
+val init_primitives_addon : unit -> unit
+val is_primitives_addon_initialized : unit -> bool
+val shutdown_primitives_addon : unit -> unit
+
+val draw_filled_circle : float * float -> float -> color -> unit
