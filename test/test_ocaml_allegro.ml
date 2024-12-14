@@ -1,20 +1,42 @@
-type mouse_disc = {
-  x: float;
-  y: float;
-  time: float;
-}
+module MouseDisc = struct
+  type t = {
+    x: float;
+    y: float;
+    time: float;
+  }
+
+  let delay = 5.
+
+  let is_visible disc =
+    Al5.get_time () -. disc.time <= delay
+
+  let draw disc =
+    let time_diff = Al5.get_time () -. disc.time in
+    let disc_alpha = int_of_float ((1. -. time_diff /. delay) *. 255.) in
+    Al5.draw_filled_circle (disc.x, disc.y) 20. (Al5.premul_rgba 255 0 0 disc_alpha);
+    ()
+end
+
+module MouseLine = struct
+  type t = {
+    x1: float;
+    y1: float;
+    x2: float;
+    y2: float;
+    time: float;
+  }
+
+  let delay = 0.5
+
+  let is_visible line =
+    Al5.get_time () -. line.time <= delay
+
+  let draw line =
+    Al5.draw_line (line.x1, line.y1) (line.x2, line.y2) (Al5.map_rgb 0 0 0) 1.;
+    ()
+end
 
 let quitting_delay = 10.
-and mouse_disc_delay = 5.
-
-let mouse_disc_is_drawn disc =
-  Al5.get_time () -. disc.time <= mouse_disc_delay
-
-let draw_mouse_disc disc =
-  let time_diff = Al5.get_time () -. disc.time in
-  let disc_alpha = int_of_float ((1. -. time_diff /. mouse_disc_delay) *. 255.) in
-  Al5.draw_filled_circle (disc.x, disc.y) 20. (Al5.premul_rgba 255 0 0 disc_alpha);
-  ()
 
 
 let () =
@@ -34,12 +56,15 @@ let () =
 
   let quit = ref false in
   let last_event_time = ref (Al5.get_time ()) in
-  let mouse_disc = ref [] in
+  let mouse_discs = ref [] in
+  let mouse_lines = ref [] in
   while not !quit && Al5.get_time () -. !last_event_time < quitting_delay do
 
     Al5.clear_to_color (Al5.map_rgb 128 128 128);
-    mouse_disc := List.filter mouse_disc_is_drawn !mouse_disc;
-    List.iter draw_mouse_disc !mouse_disc;
+    mouse_discs := List.filter MouseDisc.is_visible !mouse_discs;
+    mouse_lines := List.filter MouseLine.is_visible !mouse_lines;
+    List.iter MouseDisc.draw !mouse_discs;
+    List.iter MouseLine.draw !mouse_lines;
     Al5.flip_display ();
 
     let rec process_event evt_or_none =
@@ -58,9 +83,22 @@ let () =
                   | _ -> ()
                 end
 
+            | Al5.Event.MOUSE_AXES move ->
+                mouse_lines := {
+                    x1 = float_of_int (move.x - move.dx);
+                    y1 = float_of_int (move.y - move.dy);
+                    x2 = float_of_int move.x;
+                    y2 = float_of_int move.y;
+                    time = !last_event_time;
+                  } :: !mouse_lines;
+
             | Al5.Event.MOUSE_BUTTON_DOWN button ->
                 if button.button = Al5.MouseButton.left then
-                  mouse_disc := { x = float_of_int button.x; y = float_of_int button.y; time = !last_event_time } :: !mouse_disc;
+                  mouse_discs := {
+                      x = float_of_int button.x;
+                      y = float_of_int button.y;
+                      time = !last_event_time
+                    } :: !mouse_discs;
 
             | Al5.Event.DISPLAY_CLOSE _ -> quit := true;
 

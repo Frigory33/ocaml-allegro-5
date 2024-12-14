@@ -92,6 +92,23 @@ static value convert_event(ALLEGRO_EVENT c_evt)
             Store_field(evt, 3, Val_bool(c_evt.keyboard.repeat));
             Store_field(evt, 4, Val_ptr(c_evt.keyboard.display));
             break;
+        case ALLEGRO_EVENT_MOUSE_AXES:
+        case ALLEGRO_EVENT_MOUSE_WARPED:
+            evt = caml_alloc(1,
+                c_evt.type == ALLEGRO_EVENT_MOUSE_AXES ? ML_EVENT_MOUSE_AXES : ML_EVENT_MOUSE_WARPED);
+            info = caml_alloc_tuple(10);
+            Store_field(info, 0, Val_int(c_evt.mouse.x));
+            Store_field(info, 1, Val_int(c_evt.mouse.y));
+            Store_field(info, 2, Val_int(c_evt.mouse.z));
+            Store_field(info, 3, Val_int(c_evt.mouse.w));
+            Store_field(info, 4, Val_int(c_evt.mouse.dx));
+            Store_field(info, 5, Val_int(c_evt.mouse.dy));
+            Store_field(info, 6, Val_int(c_evt.mouse.dz));
+            Store_field(info, 7, Val_int(c_evt.mouse.dw));
+            Store_field(info, 8, caml_copy_double(c_evt.mouse.pressure));
+            Store_field(info, 9, Val_ptr(c_evt.mouse.display));
+            Store_field(evt, 0, info);
+            break;
         case ALLEGRO_EVENT_MOUSE_BUTTON_UP:
         case ALLEGRO_EVENT_MOUSE_BUTTON_DOWN:
             evt = caml_alloc(1,

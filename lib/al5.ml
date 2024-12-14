@@ -185,37 +185,43 @@ end
 (** {2 Events} *)
 
 module Event = struct
-  type touch = {
-    display: display;
-    id: int;
-    x: float;
-    y: float;
-    dx: float;
-    dy: float;
-  }
+  module Touch = struct
+    type t = {
+      display: display;
+      id: int;
+      x: float;
+      y: float;
+      dx: float;
+      dy: float;
+    }
+  end
 
-  type mouse_button = {
-    x: int;
-    y: int;
-    z: int;
-    w: int;
-    button: int;
-    pressure: float;
-    display: display;
-  }
+  module MouseButton = struct
+    type t = {
+      x: int;
+      y: int;
+      z: int;
+      w: int;
+      button: int;
+      pressure: float;
+      display: display;
+    }
+  end
 
-  type mouse_move = {
-    x: int;
-    y: int;
-    z: int;
-    w: int;
-    dx: int;
-    dy: int;
-    dz: int;
-    dw: int;
-    pressure: float;
-    display: display;
-  }
+  module MouseMove = struct
+    type t = {
+      x: int;
+      y: int;
+      z: int;
+      w: int;
+      dx: int;
+      dy: int;
+      dz: int;
+      dw: int;
+      pressure: float;
+      display: display;
+    }
+  end
 
   type t =
   | JOYSTICK_AXIS of joystick * int * int * float
@@ -225,16 +231,16 @@ module Event = struct
   | KEY_DOWN of Key.t * display
   | KEY_UP of Key.t * display
   | KEY_CHAR of Key.t * int * int * bool * display
-  | MOUSE_AXES of mouse_move
-  | MOUSE_BUTTON_DOWN of mouse_button
-  | MOUSE_BUTTON_UP of mouse_button
-  | MOUSE_WARPED of mouse_move
+  | MOUSE_AXES of MouseMove.t
+  | MOUSE_BUTTON_DOWN of MouseButton.t
+  | MOUSE_BUTTON_UP of MouseButton.t
+  | MOUSE_WARPED of MouseMove.t
   | MOUSE_ENTER_DISPLAY of int * int * int * int * display
   | MOUSE_LEAVE_DISPLAY of int * int * int * int * display
-  | TOUCH_BEGIN of touch
-  | TOUCH_END of touch
-  | TOUCH_MOVE of touch
-  | TOUCH_CANCEL of touch
+  | TOUCH_BEGIN of Touch.t
+  | TOUCH_END of Touch.t
+  | TOUCH_MOVE of Touch.t
+  | TOUCH_CANCEL of Touch.t
   | TIMER of timer * int64
   | DISPLAY_EXPOSE of display * int * int * int * int
   | DISPLAY_RESIZE of display * int * int * int * int
@@ -290,9 +296,14 @@ external wait_for_event_timed : event_queue -> bool -> float -> Event.t option =
 
 (** {1 Graphics routines} *)
 
+(** {2 Colors} *)
+
 external map_rgb : int -> int -> int -> color = "ml_al_map_rgb"
 external map_rgba : int -> int -> int -> int -> color = "ml_al_map_rgba"
 external premul_rgba : int -> int -> int -> int -> color = "ml_al_premul_rgba"
+
+(** {2 Drawing operations} *)
+
 external clear_to_color : color -> unit = "ml_al_clear_to_color"
 
 
@@ -339,9 +350,15 @@ external rest : float -> unit = "ml_al_rest"
 
 (** {1 Primitives addon} *)
 
+(** {2 General} *)
+
 external get_allegro_primitives_version : unit -> int = "ml_al_get_allegro_primitives_version"
 external init_primitives_addon : unit -> unit = "ml_al_init_primitives_addon"
 external is_primitives_addon_initialized : unit -> bool = "ml_al_is_primitives_addon_initialized"
 external shutdown_primitives_addon : unit -> unit = "ml_al_shutdown_primitives_addon"
 
+(** {2 High level drawing routines} *)
+
+external draw_line : float * float -> float * float -> color -> float -> unit = "ml_al_draw_line"
+external draw_circle : float * float -> float -> color -> float -> unit = "ml_al_draw_circle"
 external draw_filled_circle : float * float -> float -> color -> unit = "ml_al_draw_filled_circle"

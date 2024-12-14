@@ -185,37 +185,43 @@ end
 (** {2 Events} *)
 
 module Event : sig
-  type touch = {
-    display: display;
-    id: int;
-    x: float;
-    y: float;
-    dx: float;
-    dy: float;
-  }
+  module Touch : sig
+    type t = {
+      display: display;
+      id: int;
+      x: float;
+      y: float;
+      dx: float;
+      dy: float;
+    }
+  end
 
-  type mouse_button = {
-    x: int;
-    y: int;
-    z: int;
-    w: int;
-    button: int;
-    pressure: float;
-    display: display;
-  }
+  module MouseButton : sig
+    type t = {
+      x: int;
+      y: int;
+      z: int;
+      w: int;
+      button: int;
+      pressure: float;
+      display: display;
+    }
+  end
 
-  type mouse_move = {
-    x: int;
-    y: int;
-    z: int;
-    w: int;
-    dx: int;
-    dy: int;
-    dz: int;
-    dw: int;
-    pressure: float;
-    display: display;
-  }
+  module MouseMove : sig
+    type t = {
+      x: int;
+      y: int;
+      z: int;
+      w: int;
+      dx: int;
+      dy: int;
+      dz: int;
+      dw: int;
+      pressure: float;
+      display: display;
+    }
+  end
 
   (** Note: currently, not all events are implemented. *)
   type t =
@@ -226,16 +232,16 @@ module Event : sig
   | KEY_DOWN of Key.t * display
   | KEY_UP of Key.t * display
   | KEY_CHAR of Key.t * int * int * bool * display
-  | MOUSE_AXES of mouse_move
-  | MOUSE_BUTTON_DOWN of mouse_button
-  | MOUSE_BUTTON_UP of mouse_button
-  | MOUSE_WARPED of mouse_move
+  | MOUSE_AXES of MouseMove.t
+  | MOUSE_BUTTON_DOWN of MouseButton.t
+  | MOUSE_BUTTON_UP of MouseButton.t
+  | MOUSE_WARPED of MouseMove.t
   | MOUSE_ENTER_DISPLAY of int * int * int * int * display
   | MOUSE_LEAVE_DISPLAY of int * int * int * int * display
-  | TOUCH_BEGIN of touch
-  | TOUCH_END of touch
-  | TOUCH_MOVE of touch
-  | TOUCH_CANCEL of touch
+  | TOUCH_BEGIN of Touch.t
+  | TOUCH_END of Touch.t
+  | TOUCH_MOVE of Touch.t
+  | TOUCH_CANCEL of Touch.t
   | TIMER of timer * int64
   | DISPLAY_EXPOSE of display * int * int * int * int
   | DISPLAY_RESIZE of display * int * int * int * int
@@ -291,9 +297,14 @@ val wait_for_event_timed : event_queue -> bool -> float -> Event.t option
 
 (** {1 Graphics routines} *)
 
+(** {2 Colors} *)
+
 val map_rgb : int -> int -> int -> color
 val map_rgba : int -> int -> int -> int -> color
 val premul_rgba : int -> int -> int -> int -> color
+
+(** {2 Drawing operations} *)
+
 val clear_to_color : color -> unit
 
 
@@ -340,9 +351,15 @@ val rest : float -> unit
 
 (** {1 Primitives addon} *)
 
+(** {2 General} *)
+
 val get_allegro_primitives_version : unit -> int
 val init_primitives_addon : unit -> unit
 val is_primitives_addon_initialized : unit -> bool
 val shutdown_primitives_addon : unit -> unit
 
+(** {2 High level drawing routines} *)
+
+val draw_line : float * float -> float * float -> color -> float -> unit
+val draw_circle : float * float -> float -> color -> float -> unit
 val draw_filled_circle : float * float -> float -> color -> unit
