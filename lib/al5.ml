@@ -2,6 +2,7 @@
 
 (** {2 Abstract types} *)
 
+type bitmap
 type color
 type event_queue
 type event_source
@@ -262,6 +263,9 @@ module Event = struct
   | UNKNOWN of int
 end
 
+let flip_horizontal = 1 lsl 0
+let flip_vertical = 1 lsl 1
+
 
 (** {1 Displays} *)
 
@@ -313,9 +317,20 @@ external unmap_rgba : color -> int * int * int * int = "ml_al_unmap_rgba"
 external unmap_rgb_f : color -> float * float * float = "ml_al_unmap_rgb_f"
 external unmap_rgba_f : color -> float * float * float * float = "ml_al_unmap_rgba_f"
 
+(** {2 Bitmap properties} *)
+
+external get_bitmap_width : bitmap -> int = "ml_al_get_bitmap_width"
+external get_bitmap_height : bitmap -> int = "ml_al_get_bitmap_height"
+
 (** {2 Drawing operations} *)
 
 external clear_to_color : color -> unit = "ml_al_clear_to_color"
+external draw_bitmap : bitmap -> ?tint: color -> pos -> int -> unit = "ml_al_draw_bitmap"
+external draw_bitmap_region : bitmap -> ?tint: color -> pos -> pos -> pos -> int -> unit = "ml_al_draw_bitmap_region_bytecode" "ml_al_draw_bitmap_region"
+
+(** {2 Image I/O} *)
+
+external load_bitmap : string -> bitmap = "ml_al_load_bitmap"
 
 
 (** {1 Keyboard routines} *)
@@ -355,7 +370,6 @@ external al_get_ram_size : unit -> int = "ml_al_get_ram_size"
 (** {1 Time} *)
 
 external get_time : unit -> float = "ml_al_get_time"
-
 external rest : float -> unit = "ml_al_rest"
 
 
@@ -385,3 +399,11 @@ external draw_circle : pos -> float -> color -> float -> unit = "ml_al_draw_circ
 external draw_filled_circle : pos -> float -> color -> unit = "ml_al_draw_filled_circle"
 external draw_arc : pos -> float -> float -> float -> color -> float -> unit = "ml_al_draw_arc_bytecode" "ml_al_draw_arc"
 external draw_elliptical_arc : pos -> pos -> float -> float -> color -> float -> unit = "ml_al_draw_elliptical_arc_bytecode" "ml_al_draw_elliptical_arc"
+
+
+(** {1 Image I/O addon} *)
+
+external get_allegro_image_version : unit -> int = "ml_al_get_allegro_image_version"
+external init_image_addon : unit -> unit = "ml_al_init_image_addon"
+external is_image_addon_initialized : unit -> bool = "ml_al_is_image_addon_initialized"
+external shutdown_image_addon : unit -> unit = "ml_al_shutdown_image_addon"

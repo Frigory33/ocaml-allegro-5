@@ -118,4 +118,82 @@ CAMLprim value ml_al_unmap_rgba_f(value color)
 }
 
 
+enum {
+    ML_ALLEGRO_FLIP_HORIZONTAL = 1 << 0,
+    ML_ALLEGRO_FLIP_VERTICAL = 1 << 1,
+};
+
+static int convert_draw_bitmap_flags(value flags)
+{
+    CAMLparam1(flags);
+    int flip_horiz = (Int_val(flags) & ML_ALLEGRO_FLIP_HORIZONTAL) == ML_ALLEGRO_FLIP_HORIZONTAL ? ALLEGRO_FLIP_HORIZONTAL : 0;
+    int flip_vertic = (Int_val(flags) & ML_ALLEGRO_FLIP_VERTICAL) == ML_ALLEGRO_FLIP_VERTICAL ? ALLEGRO_FLIP_VERTICAL : 0;
+    CAMLreturnT(int, flip_horiz | flip_vertic);
+}
+
+CAMLprim value ml_al_draw_bitmap(value bmp, value tint, value dpos, value flags)
+{
+    CAMLparam4(bmp, tint, dpos, flags);
+    if (Is_none(tint)) {
+        al_draw_bitmap(Ptr_val(bmp), PosX_val(dpos), PosY_val(dpos), convert_draw_bitmap_flags(flags));
+    } else {
+        al_draw_tinted_bitmap(Ptr_val(bmp), AlColor_val(Some_val(tint)),
+            PosX_val(dpos), PosY_val(dpos), convert_draw_bitmap_flags(flags));
+    }
+    CAMLreturn(Val_unit);
+}
+
+CAMLprim value ml_al_draw_bitmap_region(value bmp, value tint, value spos, value ssize, value dpos, value flags)
+{
+    CAMLparam5(bmp, tint, spos, ssize, dpos);
+    CAMLxparam1(flags);
+    if (Is_none(tint)) {
+        al_draw_bitmap_region(Ptr_val(bmp),
+            PosX_val(spos), PosY_val(spos),
+            PosX_val(ssize), PosY_val(ssize),
+            PosX_val(dpos), PosY_val(dpos), convert_draw_bitmap_flags(flags));
+    } else {
+        al_draw_tinted_bitmap_region(Ptr_val(bmp), AlColor_val(Some_val(tint)),
+            PosX_val(spos), PosY_val(spos),
+            PosX_val(ssize), PosY_val(ssize),
+            PosX_val(dpos), PosY_val(dpos), convert_draw_bitmap_flags(flags));
+    }
+    CAMLreturn(Val_unit);
+}
+
+CAMLprim value ml_al_draw_bitmap_region_bytecode(value * argv, int argc)
+{
+    return ml_al_draw_bitmap_region(argv[0], argv[1],
+        argv[2], argv[3], argv[4], argv[5]);
+}
+
+
+CAMLprim value ml_al_get_bitmap_width(value bmp)
+{
+    CAMLparam1(bmp);
+    CAMLreturn(Val_int(al_get_bitmap_width(Ptr_val(bmp))));
+}
+
+CAMLprim value ml_al_get_bitmap_height(value bmp)
+{
+    CAMLparam1(bmp);
+    CAMLreturn(Val_int(al_get_bitmap_height(Ptr_val(bmp))));
+}
+
+
+CAMLprim value ml_al_load_bitmap(value filename)
+{
+    CAMLparam1(filename);
+    ALLEGRO_BITMAP *c_bmp = al_load_bitmap(String_val(filename));
+    if (c_bmp == NULL) {
+        char const *c_func = "al_load_bitmap",
+            *c_filename = String_val(filename);
+        char c_msg[strlen(c_func) + 1 + strlen(c_filename) + 1];
+        sprintf(c_msg, "%s %s", c_func, c_filename);
+        caml_failwith_value(caml_copy_string(c_msg));
+    }
+    CAMLreturn(Val_ptr(c_bmp));
+}
+
+
 ml_function_1arg(al_clear_to_color, AlColor_val)

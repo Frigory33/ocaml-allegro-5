@@ -2,6 +2,7 @@
 
 (** {2 Abstract types} *)
 
+type bitmap
 type color
 type event_queue
 type event_source
@@ -263,126 +264,147 @@ module Event : sig
   | UNKNOWN of int
 end
 
+val flip_horizontal : int
+val flip_vertical : int
+
 
 (** {1 Displays} *)
 
-val create_display : int -> int -> display
-val destroy_display : display -> unit
+external create_display : int -> int -> display = "ml_al_create_display"
+external destroy_display : display -> unit = "ml_al_destroy_display"
 
-val flip_display : unit -> unit
+external flip_display : unit -> unit = "ml_al_flip_display"
 
-val set_new_window_title : string -> unit
+external set_new_window_title : string -> unit = "ml_al_set_new_window_title"
 
-val get_display_event_source : display -> event_source
+external get_display_event_source : display -> event_source = "ml_al_get_display_event_source"
 
 
 (** {1 Events} *)
 
 (** {2 General} *)
 
-val create_event_queue : unit -> event_queue
-val destroy_event_queue : event_queue -> unit
-val register_event_source : event_queue -> event_source -> unit
-val unregister_event_source : event_queue -> event_source -> unit
-val is_event_source_registered : event_queue -> event_source -> bool
+external create_event_queue : unit -> event_queue = "ml_al_create_event_queue"
+external destroy_event_queue : event_queue -> unit = "ml_al_destroy_event_queue"
+external register_event_source : event_queue -> event_source -> unit = "ml_al_register_event_source"
+external unregister_event_source : event_queue -> event_source -> unit = "ml_al_unregister_event_source"
+external is_event_source_registered : event_queue -> event_source -> bool = "ml_al_is_event_source_registered"
 
 (** {2 Event queue contents} *)
 
-val pause_event_queue : event_queue -> bool -> unit
-val is_event_queue_paused : event_queue -> bool
-val is_event_queue_empty : event_queue -> bool
-val get_next_event : event_queue -> Event.t option
-val peek_next_event : event_queue -> Event.t option
-val drop_next_event : event_queue -> bool
-val flush_event_queue : event_queue -> unit
-val wait_for_event : event_queue -> Event.t
-val wait_for_event_timed : event_queue -> bool -> float -> Event.t option
+external pause_event_queue : event_queue -> bool -> unit = "ml_al_pause_event_queue"
+external is_event_queue_paused : event_queue -> bool = "ml_al_is_event_queue_paused"
+external is_event_queue_empty : event_queue -> bool = "ml_al_is_event_queue_empty"
+external get_next_event : event_queue -> Event.t option = "ml_al_get_next_event"
+external peek_next_event : event_queue -> Event.t option = "ml_al_peek_next_event"
+external drop_next_event : event_queue -> bool = "ml_al_drop_next_event"
+external flush_event_queue : event_queue -> unit = "ml_al_flush_event_queue"
+external wait_for_event : event_queue -> Event.t = "ml_al_wait_for_event"
+external wait_for_event_timed : event_queue -> bool -> float -> Event.t option = "ml_al_wait_for_event_timed"
 
 
 (** {1 Graphics routines} *)
 
 (** {2 Colors} *)
 
-val map_rgb : int -> int -> int -> color
-val map_rgba : int -> int -> int -> int -> color
-val premul_rgba : int -> int -> int -> int -> color
-val map_rgb_f : float -> float -> float -> color
-val map_rgba_f : float -> float -> float -> float -> color
-val premul_rgba_f : float -> float -> float -> float -> color
-val unmap_rgb : color -> int * int * int
-val unmap_rgba : color -> int * int * int * int
-val unmap_rgb_f : color -> float * float * float
-val unmap_rgba_f : color -> float * float * float * float
+external map_rgb : int -> int -> int -> color = "ml_al_map_rgb"
+external map_rgba : int -> int -> int -> int -> color = "ml_al_map_rgba"
+external premul_rgba : int -> int -> int -> int -> color = "ml_al_premul_rgba"
+external map_rgb_f : float -> float -> float -> color = "ml_al_map_rgb_f"
+external map_rgba_f : float -> float -> float -> float -> color = "ml_al_map_rgba_f"
+external premul_rgba_f : float -> float -> float -> float -> color = "ml_al_premul_rgba_f"
+external unmap_rgb : color -> int * int * int = "ml_al_unmap_rgb"
+external unmap_rgba : color -> int * int * int * int = "ml_al_unmap_rgba"
+external unmap_rgb_f : color -> float * float * float = "ml_al_unmap_rgb_f"
+external unmap_rgba_f : color -> float * float * float * float = "ml_al_unmap_rgba_f"
+
+(** {2 Bitmap properties} *)
+
+external get_bitmap_width : bitmap -> int = "ml_al_get_bitmap_width"
+external get_bitmap_height : bitmap -> int = "ml_al_get_bitmap_height"
 
 (** {2 Drawing operations} *)
 
-val clear_to_color : color -> unit
+external clear_to_color : color -> unit = "ml_al_clear_to_color"
+external draw_bitmap : bitmap -> ?tint: color -> pos -> int -> unit = "ml_al_draw_bitmap"
+external draw_bitmap_region : bitmap -> ?tint: color -> pos -> pos -> pos -> int -> unit = "ml_al_draw_bitmap_region_bytecode" "ml_al_draw_bitmap_region"
+
+(** {2 Image I/O} *)
+
+external load_bitmap : string -> bitmap = "ml_al_load_bitmap"
 
 
 (** {1 Keyboard routines} *)
 
-val install_keyboard : unit -> unit
-val is_keyboard_installed : unit -> bool
-val uninstall_keyboard : unit -> unit
+external install_keyboard : unit -> unit = "ml_al_install_keyboard"
+external is_keyboard_installed : unit -> bool = "ml_al_is_keyboard_installed"
+external uninstall_keyboard : unit -> unit = "ml_al_uninstall_keyboard"
 
-val get_keyboard_event_source : unit -> event_source
+external get_keyboard_event_source : unit -> event_source = "ml_al_get_keyboard_event_source"
 
 
 (** {1 Mouse routines} *)
 
-val install_mouse : unit -> unit
-val is_mouse_installed : unit -> bool
-val uninstall_mouse : unit -> unit
+external install_mouse : unit -> unit = "ml_al_install_mouse"
+external is_mouse_installed : unit -> bool = "ml_al_is_mouse_installed"
+external uninstall_mouse : unit -> unit = "ml_al_uninstall_mouse"
 
-val get_mouse_event_source : unit -> event_source
+external get_mouse_event_source : unit -> event_source = "ml_al_get_mouse_event_source"
 
 
 (** {1 System routines} *)
 
-val init : unit -> unit
-val uninstall_system : unit -> unit
-val is_system_installed : unit -> bool
-val get_allegro_version : unit -> int
+external init : unit -> unit = "ml_al_init"
+external uninstall_system : unit -> unit = "ml_al_uninstall_system"
+external is_system_installed : unit -> bool = "ml_al_is_system_installed"
+external get_allegro_version : unit -> int = "ml_al_get_allegro_version"
 
-val set_app_name : string -> unit
-val set_org_name : string -> unit
-val get_app_name : unit -> string
-val get_org_name : unit -> string
+external set_app_name : string -> unit = "ml_al_set_app_name"
+external set_org_name : string -> unit = "ml_al_set_org_name"
+external get_app_name : unit -> string = "ml_al_get_app_name"
+external get_org_name : unit -> string = "ml_al_get_org_name"
 
-val al_get_cpu_count : unit -> int
-val al_get_ram_size : unit -> int
+external al_get_cpu_count : unit -> int = "ml_al_get_cpu_count"
+external al_get_ram_size : unit -> int = "ml_al_get_ram_size"
 
 
 (** {1 Time} *)
 
-val get_time : unit -> float
-
-val rest : float -> unit
+external get_time : unit -> float = "ml_al_get_time"
+external rest : float -> unit = "ml_al_rest"
 
 
 (** {1 Primitives addon} *)
 
 (** {2 General} *)
 
-val get_allegro_primitives_version : unit -> int
-val init_primitives_addon : unit -> unit
-val is_primitives_addon_initialized : unit -> bool
-val shutdown_primitives_addon : unit -> unit
+external get_allegro_primitives_version : unit -> int = "ml_al_get_allegro_primitives_version"
+external init_primitives_addon : unit -> unit = "ml_al_init_primitives_addon"
+external is_primitives_addon_initialized : unit -> bool = "ml_al_is_primitives_addon_initialized"
+external shutdown_primitives_addon : unit -> unit = "ml_al_shutdown_primitives_addon"
 
 (** {2 High level drawing routines} *)
 
-val draw_line : pos -> pos -> color -> float -> unit
-val draw_triangle : pos -> pos -> pos -> color -> float -> unit
-val draw_filled_triangle : pos -> pos -> pos -> color -> unit
-val draw_rectangle : pos -> pos -> color -> float -> unit
-val draw_filled_rectangle : pos -> pos -> color -> unit
-val draw_rounded_rectangle : pos -> pos -> pos -> color -> float -> unit
-val draw_filled_rounded_rectangle : pos -> pos -> pos -> color -> unit
-val draw_pieslice : pos -> float -> float -> float -> color -> float -> unit
-val draw_filled_pieslice : pos -> float -> float -> float -> color -> unit
-val draw_ellipse : pos -> pos -> color -> float -> unit
-val draw_filled_ellipse : pos -> pos -> color -> unit
-val draw_circle : pos -> float -> color -> float -> unit
-val draw_filled_circle : pos -> float -> color -> unit
-val draw_arc : pos -> float -> float -> float -> color -> float -> unit
-val draw_elliptical_arc : pos -> pos -> float -> float -> color -> float -> unit
+external draw_line : pos -> pos -> color -> float -> unit = "ml_al_draw_line"
+external draw_triangle : pos -> pos -> pos -> color -> float -> unit = "ml_al_draw_triangle"
+external draw_filled_triangle : pos -> pos -> pos -> color -> unit = "ml_al_draw_filled_triangle"
+external draw_rectangle : pos -> pos -> color -> float -> unit = "ml_al_draw_rectangle"
+external draw_filled_rectangle : pos -> pos -> color -> unit = "ml_al_draw_filled_rectangle"
+external draw_rounded_rectangle : pos -> pos -> pos -> color -> float -> unit = "ml_al_draw_rounded_rectangle"
+external draw_filled_rounded_rectangle : pos -> pos -> pos -> color -> unit = "ml_al_draw_filled_rounded_rectangle"
+external draw_pieslice : pos -> float -> float -> float -> color -> float -> unit = "ml_al_draw_pieslice_bytecode" "ml_al_draw_pieslice"
+external draw_filled_pieslice : pos -> float -> float -> float -> color -> unit = "ml_al_draw_filled_pieslice"
+external draw_ellipse : pos -> pos -> color -> float -> unit = "ml_al_draw_ellipse"
+external draw_filled_ellipse : pos -> pos -> color -> unit = "ml_al_draw_filled_ellipse"
+external draw_circle : pos -> float -> color -> float -> unit = "ml_al_draw_circle"
+external draw_filled_circle : pos -> float -> color -> unit = "ml_al_draw_filled_circle"
+external draw_arc : pos -> float -> float -> float -> color -> float -> unit = "ml_al_draw_arc_bytecode" "ml_al_draw_arc"
+external draw_elliptical_arc : pos -> pos -> float -> float -> color -> float -> unit = "ml_al_draw_elliptical_arc_bytecode" "ml_al_draw_elliptical_arc"
+
+
+(** {1 Image I/O addon} *)
+
+external get_allegro_image_version : unit -> int = "ml_al_get_allegro_image_version"
+external init_image_addon : unit -> unit = "ml_al_init_image_addon"
+external is_image_addon_initialized : unit -> bool = "ml_al_is_image_addon_initialized"
+external shutdown_image_addon : unit -> unit = "ml_al_shutdown_image_addon"

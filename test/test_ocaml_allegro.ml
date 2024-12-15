@@ -1,36 +1,65 @@
-module MouseDisc = struct
+module ClickShape = struct
+  type shape =
+  | Disc
+  | Triangle
+
   type t = {
     pos: Al5.pos;
+    shape: shape;
     time: float;
   }
 
   let delay = 5.
 
-  let is_visible disc =
-    Al5.get_time () -. disc.time <= delay
+  let is_visible shape =
+    Al5.get_time () -. shape.time <= delay
 
-  let draw disc =
-    let time_diff = Al5.get_time () -. disc.time in
-    let disc_alpha = 1. -. time_diff /. delay in
-    Al5.draw_filled_circle disc.pos 20. (Al5.premul_rgba_f 1. 0. 0. disc_alpha);
-    ()
+  let draw shape =
+    let time_diff = Al5.get_time () -. shape.time in
+    let alpha = 1. -. time_diff /. delay in
+    let x, y = shape.pos in
+    match shape.shape with
+    | Disc ->
+        Al5.draw_filled_circle shape.pos 20. (Al5.premul_rgba_f 1. 0. 0. alpha);
+        ()
+    | Triangle ->
+        Al5.draw_filled_triangle (x -. 20., y +. 10.) (x +. 20., y +. 10.) (x, y -. 10.)
+          (Al5.premul_rgba_f 0. 0. 1. alpha);
+        ()
 end
 
 module MouseLine = struct
+  type shape =
+  | Line
+  | Allegator
+
   type t = {
     pos1: Al5.pos;
     pos2: Al5.pos;
+    shape: shape;
     time: float;
   }
 
   let delay = 0.5
 
+  let alleg_img = ref None
+
   let is_visible line =
     Al5.get_time () -. line.time <= delay
 
   let draw line =
-    Al5.draw_line line.pos1 line.pos2 (Al5.map_rgb 0 0 0) 1.;
-    ()
+    let x2, y2 = line.pos2 in
+    let alpha = 1. -. (Al5.get_time () -. line.time) /. delay in
+    match line.shape with
+    | Line ->
+        Al5.draw_line line.pos1 line.pos2 (Al5.map_rgba_f 0. 0. 0. alpha) 1.;
+        ()
+    | Allegator ->
+        let alleg_img = Option.get !alleg_img in
+        let x = x2 -. float_of_int (Al5.get_bitmap_width alleg_img) /. 2.
+        and y = y2 -. float_of_int (Al5.get_bitmap_height alleg_img) /. 2. in
+        Al5.draw_bitmap alleg_img ~tint:(Al5.premul_rgba_f 1. 1. 1. alpha) (x, y) 0;
+        ()
 end
 
 let quitting_delay = 10.
@@ -39,6 +68,8 @@ let quitting_delay = 10.
 let () =
 
   Al5.init ();
+  Al5.init_image_addon ();
+  Al5.init_primitives_addon ();
 
   Al5.install_keyboard ();
   Al5.install_mouse ();
@@ -51,17 +82,21 @@ let () =
   Al5.register_event_source queue (Al5.get_keyboard_event_source ());
   Al5.register_event_source queue (Al5.get_mouse_event_source ());
 
+  let rsrc_folder = List.hd Sites.Sites.ocaml_allegro5 in
+  MouseLine.alleg_img := Some (Al5.load_bitmap (Filename.concat rsrc_folder "allegator.png"));
+
   let quit = ref false in
+  let cur_style = ref 0 in
   let last_event_time = ref (Al5.get_time ()) in
-  let mouse_discs = ref [] in
+  let click_shapes = ref [] in
   let mouse_lines = ref [] in
   while not !quit && Al5.get_time () -. !last_event_time < quitting_delay do
 
     Al5.clear_to_color (Al5.map_rgb 128 128 128);
-    mouse_discs := List.filter MouseDisc.is_visible !mouse_discs;
+    click_shapes := List.filter ClickShape.is_visible !click_shapes;
     mouse_lines := List.filter MouseLine.is_visible !mouse_lines;
-    List.iter MouseDisc.draw !mouse_discs;
-    List.iter MouseLine.draw !mouse_lines;
+    List.iter ClickShape.draw (List.rev !click_shapes);
+    List.iter MouseLine.draw (List.rev !mouse_lines);
     Al5.flip_display ();
 
     let rec process_event evt_or_none =
@@ -81,18 +116,25 @@ let () =
                 end
 
             | Al5.Event.MOUSE_AXES move ->
-                mouse_lines := {
-                    pos1 = float_of_int (move.x - move.dx), float_of_int (move.y - move.dy);
-                    pos2 = float_of_int move.x, float_of_int move.y;
-                    time = !last_event_time;
-                  } :: !mouse_lines;
+                if move.dx <> 0 || move.dy <> 0 then (
+                  mouse_lines := {
+                      pos1 = float_of_int (move.x - move.dx), float_of_int (move.y - move.dy);
+                      pos2 = float_of_int move.x, float_of_int move.y;
+                      shape = (match !cur_style with 0 -> Line | _ -> Allegator);
+                      time = !last_event_time;
+                    } :: !mouse_lines;
+                ) else if move.dz <> 0 then (
+                  let nb_styles = 2 in
+                  cur_style := ((!cur_style + move.dz) mod nb_styles + nb_styles) mod nb_styles;
+                );
 
             | Al5.Event.MOUSE_BUTTON_DOWN button ->
                 if button.button = Al5.MouseButton.left then
-                  mouse_discs := {
+                  click_shapes := {
                       pos = float_of_int button.x, float_of_int button.y;
-                      time = !last_event_time
-                    } :: !mouse_discs;
+                      shape = (match !cur_style with 0 -> Disc | _ -> Triangle);
+                      time = !last_event_time;
+                    } :: !click_shapes;
 
             | Al5.Event.DISPLAY_CLOSE _ -> quit := true;
 
