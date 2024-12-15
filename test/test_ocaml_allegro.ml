@@ -1,7 +1,6 @@
 module MouseDisc = struct
   type t = {
-    x: float;
-    y: float;
+    pos: float * float;
     time: float;
   }
 
@@ -12,17 +11,15 @@ module MouseDisc = struct
 
   let draw disc =
     let time_diff = Al5.get_time () -. disc.time in
-    let disc_alpha = int_of_float ((1. -. time_diff /. delay) *. 255.) in
-    Al5.draw_filled_circle (disc.x, disc.y) 20. (Al5.premul_rgba 255 0 0 disc_alpha);
+    let disc_alpha = 1. -. time_diff /. delay in
+    Al5.draw_filled_circle disc.pos 20. (Al5.premul_rgba_f 1. 0. 0. disc_alpha);
     ()
 end
 
 module MouseLine = struct
   type t = {
-    x1: float;
-    y1: float;
-    x2: float;
-    y2: float;
+    pos1: float * float;
+    pos2: float * float;
     time: float;
   }
 
@@ -32,7 +29,7 @@ module MouseLine = struct
     Al5.get_time () -. line.time <= delay
 
   let draw line =
-    Al5.draw_line (line.x1, line.y1) (line.x2, line.y2) (Al5.map_rgb 0 0 0) 1.;
+    Al5.draw_line line.pos1 line.pos2 (Al5.map_rgb 0 0 0) 1.;
     ()
 end
 
@@ -85,18 +82,15 @@ let () =
 
             | Al5.Event.MOUSE_AXES move ->
                 mouse_lines := {
-                    x1 = float_of_int (move.x - move.dx);
-                    y1 = float_of_int (move.y - move.dy);
-                    x2 = float_of_int move.x;
-                    y2 = float_of_int move.y;
+                    pos1 = float_of_int (move.x - move.dx), float_of_int (move.y - move.dy);
+                    pos2 = float_of_int move.x, float_of_int move.y;
                     time = !last_event_time;
                   } :: !mouse_lines;
 
             | Al5.Event.MOUSE_BUTTON_DOWN button ->
                 if button.button = Al5.MouseButton.left then
                   mouse_discs := {
-                      x = float_of_int button.x;
-                      y = float_of_int button.y;
+                      pos = float_of_int button.x, float_of_int button.y;
                       time = !last_event_time
                     } :: !mouse_discs;
 

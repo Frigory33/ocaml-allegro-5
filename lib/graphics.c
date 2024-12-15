@@ -42,5 +42,80 @@ CAMLprim value ml_al_premul_rgba(value r, value g, value b, value a)
     CAMLreturn(alloc_color(c_color));
 }
 
+CAMLprim value ml_al_map_rgb_f(value r, value g, value b)
+{
+    CAMLparam3(r, g, b);
+    ALLEGRO_COLOR c_color = al_map_rgb_f(Double_val(r), Double_val(g), Double_val(b));
+    CAMLreturn(alloc_color(c_color));
+}
+
+CAMLprim value ml_al_map_rgba_f(value r, value g, value b, value a)
+{
+    CAMLparam4(r, g, b, a);
+    ALLEGRO_COLOR c_color = al_map_rgba_f(Double_val(r), Double_val(g), Double_val(b), Double_val(a));
+    CAMLreturn(alloc_color(c_color));
+}
+
+CAMLprim value ml_al_premul_rgba_f(value r, value g, value b, value a)
+{
+    CAMLparam4(r, g, b, a);
+    ALLEGRO_COLOR c_color = al_premul_rgba_f(Double_val(r), Double_val(g), Double_val(b), Double_val(a));
+    CAMLreturn(alloc_color(c_color));
+}
+
+CAMLprim value ml_al_unmap_rgb(value color)
+{
+    CAMLparam1(color);
+    unsigned char c_r, c_g, c_b;
+    al_unmap_rgb(AlColor_val(color), &c_r, &c_g, &c_b);
+    CAMLlocal1(rgb);
+    rgb = caml_alloc_tuple(3);
+    Store_field(rgb, 0, Val_int(c_r));
+    Store_field(rgb, 1, Val_int(c_g));
+    Store_field(rgb, 2, Val_int(c_b));
+    CAMLreturn(rgb);
+}
+
+CAMLprim value ml_al_unmap_rgba(value color)
+{
+    CAMLparam1(color);
+    unsigned char c_r, c_g, c_b, c_a;
+    al_unmap_rgba(AlColor_val(color), &c_r, &c_g, &c_b, &c_a);
+    CAMLlocal1(rgba);
+    rgba = caml_alloc_tuple(4);
+    Store_field(rgba, 0, Val_int(c_r));
+    Store_field(rgba, 1, Val_int(c_g));
+    Store_field(rgba, 2, Val_int(c_b));
+    Store_field(rgba, 3, Val_int(c_a));
+    CAMLreturn(rgba);
+}
+
+CAMLprim value ml_al_unmap_rgb_f(value color)
+{
+    CAMLparam1(color);
+    float c_r, c_g, c_b;
+    al_unmap_rgb_f(AlColor_val(color), &c_r, &c_g, &c_b);
+    CAMLlocal1(rgb);
+    rgb = caml_alloc_tuple(3);
+    Store_field(rgb, 0, caml_copy_double(c_r));
+    Store_field(rgb, 1, caml_copy_double(c_g));
+    Store_field(rgb, 2, caml_copy_double(c_b));
+    CAMLreturn(rgb);
+}
+
+CAMLprim value ml_al_unmap_rgba_f(value color)
+{
+    CAMLparam1(color);
+    float c_r, c_g, c_b, c_a;
+    al_unmap_rgba_f(AlColor_val(color), &c_r, &c_g, &c_b, &c_a);
+    CAMLlocal1(rgba);
+    rgba = caml_alloc_tuple(4);
+    Store_field(rgba, 0, caml_copy_double(c_r));
+    Store_field(rgba, 1, caml_copy_double(c_g));
+    Store_field(rgba, 2, caml_copy_double(c_b));
+    Store_field(rgba, 3, caml_copy_double(c_a));
+    CAMLreturn(rgba);
+}
+
 
 ml_function_1arg(al_clear_to_color, AlColor_val)

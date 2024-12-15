@@ -273,7 +273,7 @@ external get_display_event_source : display -> event_source = "ml_al_get_display
 
 (** {1 Events} *)
 
-(** {2 Event queue creation and registering} *)
+(** {2 General} *)
 
 external create_event_queue : unit -> event_queue = "ml_al_create_event_queue"
 external destroy_event_queue : event_queue -> unit = "ml_al_destroy_event_queue"
@@ -301,6 +301,13 @@ external wait_for_event_timed : event_queue -> bool -> float -> Event.t option =
 external map_rgb : int -> int -> int -> color = "ml_al_map_rgb"
 external map_rgba : int -> int -> int -> int -> color = "ml_al_map_rgba"
 external premul_rgba : int -> int -> int -> int -> color = "ml_al_premul_rgba"
+external map_rgb_f : float -> float -> float -> color = "ml_al_map_rgb_f"
+external map_rgba_f : float -> float -> float -> float -> color = "ml_al_map_rgba_f"
+external premul_rgba_f : float -> float -> float -> float -> color = "ml_al_premul_rgba_f"
+external unmap_rgb : color -> int * int * int = "ml_al_unmap_rgb"
+external unmap_rgba : color -> int * int * int * int = "ml_al_unmap_rgba"
+external unmap_rgb_f : color -> float * float * float = "ml_al_unmap_rgb_f"
+external unmap_rgba_f : color -> float * float * float * float = "ml_al_unmap_rgba_f"
 
 (** {2 Drawing operations} *)
 

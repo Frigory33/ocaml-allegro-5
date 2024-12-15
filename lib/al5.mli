@@ -274,7 +274,7 @@ val get_display_event_source : display -> event_source
 
 (** {1 Events} *)
 
-(** {2 Event queue creation and registering} *)
+(** {2 General} *)
 
 val create_event_queue : unit -> event_queue
 val destroy_event_queue : event_queue -> unit
@@ -302,6 +302,13 @@ val wait_for_event_timed : event_queue -> bool -> float -> Event.t option
 val map_rgb : int -> int -> int -> color
 val map_rgba : int -> int -> int -> int -> color
 val premul_rgba : int -> int -> int -> int -> color
+val map_rgb_f : float -> float -> float -> color
+val map_rgba_f : float -> float -> float -> float -> color
+val premul_rgba_f : float -> float -> float -> float -> color
+val unmap_rgb : color -> int * int * int
+val unmap_rgba : color -> int * int * int * int
+val unmap_rgb_f : color -> float * float * float
+val unmap_rgba_f : color -> float * float * float * float
 
 (** {2 Drawing operations} *)
 
