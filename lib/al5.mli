@@ -9,6 +9,10 @@ type display
 type joystick
 type timer
 
+(** {2 Aggregation types} *)
+
+type pos = float * float
+
 (** {2 Enumerations} *)
 
 module Key : sig
@@ -367,6 +371,18 @@ val shutdown_primitives_addon : unit -> unit
 
 (** {2 High level drawing routines} *)
 
-val draw_line : float * float -> float * float -> color -> float -> unit
-val draw_circle : float * float -> float -> color -> float -> unit
-val draw_filled_circle : float * float -> float -> color -> unit
+val draw_line : pos -> pos -> color -> float -> unit
+val draw_triangle : pos -> pos -> pos -> color -> float -> unit
+val draw_filled_triangle : pos -> pos -> pos -> color -> unit
+val draw_rectangle : pos -> pos -> color -> float -> unit
+val draw_filled_rectangle : pos -> pos -> color -> unit
+val draw_rounded_rectangle : pos -> pos -> pos -> color -> float -> unit
+val draw_filled_rounded_rectangle : pos -> pos -> pos -> color -> unit
+val draw_pieslice : pos -> float -> float -> float -> color -> float -> unit
+val draw_filled_pieslice : pos -> float -> float -> float -> color -> unit
+val draw_ellipse : pos -> pos -> color -> float -> unit
+val draw_filled_ellipse : pos -> pos -> color -> unit
+val draw_circle : pos -> float -> color -> float -> unit
+val draw_filled_circle : pos -> float -> color -> unit
+val draw_arc : pos -> float -> float -> float -> color -> float -> unit
+val draw_elliptical_arc : pos -> pos -> float -> float -> color -> float -> unit

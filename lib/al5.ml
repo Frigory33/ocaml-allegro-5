@@ -9,6 +9,10 @@ type display
 type joystick
 type timer
 
+(** {2 Aggregation types} *)
+
+type pos = float * float
+
 (** {2 Enumerations} *)
 
 module Key = struct
@@ -366,6 +370,18 @@ external shutdown_primitives_addon : unit -> unit = "ml_al_shutdown_primitives_a
 
 (** {2 High level drawing routines} *)
 
-external draw_line : float * float -> float * float -> color -> float -> unit = "ml_al_draw_line"
-external draw_circle : float * float -> float -> color -> float -> unit = "ml_al_draw_circle"
-external draw_filled_circle : float * float -> float -> color -> unit = "ml_al_draw_filled_circle"
+external draw_line : pos -> pos -> color -> float -> unit = "ml_al_draw_line"
+external draw_triangle : pos -> pos -> pos -> color -> float -> unit = "ml_al_draw_triangle"
+external draw_filled_triangle : pos -> pos -> pos -> color -> unit = "ml_al_draw_filled_triangle"
+external draw_rectangle : pos -> pos -> color -> float -> unit = "ml_al_draw_rectangle"
+external draw_filled_rectangle : pos -> pos -> color -> unit = "ml_al_draw_filled_rectangle"
+external draw_rounded_rectangle : pos -> pos -> pos -> color -> float -> unit = "ml_al_draw_rounded_rectangle"
+external draw_filled_rounded_rectangle : pos -> pos -> pos -> color -> unit = "ml_al_draw_filled_rounded_rectangle"
+external draw_pieslice : pos -> float -> float -> float -> color -> float -> unit = "ml_al_draw_pieslice_bytecode" "ml_al_draw_pieslice"
+external draw_filled_pieslice : pos -> float -> float -> float -> color -> unit = "ml_al_draw_filled_pieslice"
+external draw_ellipse : pos -> pos -> color -> float -> unit = "ml_al_draw_ellipse"
+external draw_filled_ellipse : pos -> pos -> color -> unit = "ml_al_draw_filled_ellipse"
+external draw_circle : pos -> float -> color -> float -> unit = "ml_al_draw_circle"
+external draw_filled_circle : pos -> float -> color -> unit = "ml_al_draw_filled_circle"
+external draw_arc : pos -> float -> float -> float -> color -> float -> unit = "ml_al_draw_arc_bytecode" "ml_al_draw_arc"
+external draw_elliptical_arc : pos -> pos -> float -> float -> color -> float -> unit = "ml_al_draw_elliptical_arc_bytecode" "ml_al_draw_elliptical_arc"

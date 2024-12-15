@@ -1,6 +1,6 @@
 module MouseDisc = struct
   type t = {
-    pos: float * float;
+    pos: Al5.pos;
     time: float;
   }
 
@@ -18,8 +18,8 @@ end
 
 module MouseLine = struct
   type t = {
-    pos1: float * float;
-    pos2: float * float;
+    pos1: Al5.pos;
+    pos2: Al5.pos;
     time: float;
   }
 
