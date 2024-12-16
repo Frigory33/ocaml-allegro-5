@@ -118,6 +118,26 @@ CAMLprim value ml_al_unmap_rgba_f(value color)
 }
 
 
+CAMLprim value ml_al_create_bitmap(value w, value h)
+{
+    CAMLparam2(w, h);
+    ALLEGRO_BITMAP *c_bmp = al_create_bitmap(Int_val(w), Int_val(h));
+    CAMLreturn(Val_ptr(c_bmp));
+}
+
+CAMLprim value ml_al_create_sub_bitmap(value parent, value x, value y, value w, value h)
+{
+    CAMLparam5(parent, x, y, w, h);
+    ALLEGRO_BITMAP *c_bmp = al_create_sub_bitmap(Ptr_val(parent),
+        Int_val(x), Int_val(y), Int_val(w), Int_val(h));
+    CAMLreturn(Val_ptr(c_bmp));
+}
+
+ml_function_1arg_ret(al_clone_bitmap, Ptr_val, Val_ptr)
+
+ml_function_1arg(al_destroy_bitmap, Ptr_val)
+
+
 ml_function_1arg_ret(al_get_bitmap_width, Ptr_val, Val_int)
 
 ml_function_1arg_ret(al_get_bitmap_height, Ptr_val, Val_int)
@@ -263,6 +283,15 @@ CAMLprim value ml_al_draw_scaled_rotated_bitmap_region_bytecode(value * argv, in
     return ml_al_draw_scaled_rotated_bitmap_region(argv[0], argv[1], argv[2],
         argv[3], argv[4], argv[5], argv[6], argv[7], argv[8]);
 }
+
+
+ml_function_noarg_ret(al_get_target_bitmap, Val_ptr)
+
+ml_function_1arg(al_set_target_bitmap, Ptr_val)
+
+ml_function_1arg(al_set_target_backbuffer, Ptr_val)
+
+ml_function_noarg_ret(al_get_current_display, Val_ptr)
 
 
 CAMLprim value ml_al_load_bitmap(value filename)

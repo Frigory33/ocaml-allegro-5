@@ -351,6 +351,13 @@ external unmap_rgba : color -> int * int * int * int = "ml_al_unmap_rgba"
 external unmap_rgb_f : color -> float * float * float = "ml_al_unmap_rgb_f"
 external unmap_rgba_f : color -> float * float * float * float = "ml_al_unmap_rgba_f"
 
+(** {2 Bitmap creation} *)
+
+external create_bitmap : int -> int -> bitmap = "ml_al_create_bitmap"
+external create_sub_bitmap : bitmap -> int -> int -> int -> int -> bitmap = "ml_al_create_sub_bitmap"
+external clone_bitmap : bitmap -> bitmap = "ml_al_clone_bitmap"
+external destroy_bitmap : bitmap -> unit = "ml_al_destroy_bitmap"
+
 (** {2 Bitmap properties} *)
 
 external get_bitmap_width : bitmap -> int = "ml_al_get_bitmap_width"
@@ -371,6 +378,12 @@ external draw_scaled_rotated_bitmap : bitmap -> ?tint: color -> pos -> pos -> po
 external draw_scaled_rotated_bitmap_region : bitmap -> pos -> pos -> ?tint: color -> pos -> pos -> pos -> float -> int -> unit =
   "ml_al_draw_scaled_rotated_bitmap_region_bytecode" "ml_al_draw_scaled_rotated_bitmap_region"
 
+(** {2 Target bitmap} *)
+
+external get_target_bitmap : unit -> bitmap = "al_get_target_bitmap"
+external set_target_bitmap : bitmap -> unit = "al_set_target_bitmap"
+external set_target_backbuffer : display -> unit = "al_set_target_backbuffer"
+external get_current_display : unit -> display = "al_get_current_display"
 
 (** {2 Image I/O} *)
 
