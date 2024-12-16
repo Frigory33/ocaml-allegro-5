@@ -267,17 +267,49 @@ end
 val flip_horizontal : int
 val flip_vertical : int
 
+module LineJoin : sig
+  type t =
+  | NONE
+  | BEVEL
+  | ROUND
+  | MITER of float
+end
+
+module LineCap : sig
+  type t =
+  | NONE
+  | SQUARE
+  | ROUND
+  | TRIANGLE
+  | CLOSED
+end
+
 
 (** {1 Displays} *)
+
+(** {2 Display creation} *)
 
 external create_display : int -> int -> display = "ml_al_create_display"
 external destroy_display : display -> unit = "ml_al_destroy_display"
 
-external flip_display : unit -> unit = "ml_al_flip_display"
-
-external set_new_window_title : string -> unit = "ml_al_set_new_window_title"
+(** {2 Display operations} *)
 
 external get_display_event_source : display -> event_source = "ml_al_get_display_event_source"
+external flip_display : unit -> unit = "ml_al_flip_display"
+external get_backbuffer : display -> bitmap = "ml_al_get_backbuffer"
+
+(** {2 Display size and position} *)
+
+external get_display_width : display -> int = "ml_al_get_display_width"
+external get_display_height : display -> int = "ml_al_get_display_height"
+
+(** {2 Display settings} *)
+
+external set_window_title : display -> string -> unit = "ml_al_set_window_title"
+external set_new_window_title : string -> unit = "ml_al_set_new_window_title"
+external get_new_window_title : unit -> string = "ml_al_get_new_window_title"
+external set_display_icon : display -> bitmap -> unit = "ml_al_set_display_icon"
+external set_display_icons : display -> bitmap array -> unit = "ml_al_set_display_icons"
 
 
 (** {1 Events} *)
@@ -400,6 +432,12 @@ external draw_circle : pos -> float -> color -> float -> unit = "ml_al_draw_circ
 external draw_filled_circle : pos -> float -> color -> unit = "ml_al_draw_filled_circle"
 external draw_arc : pos -> float -> float -> float -> color -> float -> unit = "ml_al_draw_arc_bytecode" "ml_al_draw_arc"
 external draw_elliptical_arc : pos -> pos -> float -> float -> color -> float -> unit = "ml_al_draw_elliptical_arc_bytecode" "ml_al_draw_elliptical_arc"
+
+(** {2 Polygon routines} *)
+
+external draw_polyline : pos array -> LineJoin.t -> LineCap.t -> color -> float -> unit = "ml_al_draw_polyline"
+external draw_polygon : pos array -> LineJoin.t -> color -> float -> unit = "ml_al_draw_polygon"
+external draw_filled_polygon : pos array -> color -> unit = "ml_al_draw_filled_polygon"
 
 
 (** {1 Image I/O addon} *)

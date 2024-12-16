@@ -38,5 +38,12 @@
       CAMLreturn(Val_unit); \
   }
 
+#define ml_function_1arg_ret(func, castarg, castret) \
+  CAMLprim value ml_ ## func(value v) \
+  { \
+      CAMLparam1(v); \
+      CAMLreturn(castret(func(castarg(v)))); \
+  }
+
 
 #endif

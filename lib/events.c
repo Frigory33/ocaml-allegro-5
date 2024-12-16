@@ -141,19 +141,9 @@ CAMLprim value ml_al_pause_event_queue(value queue, value pause)
     CAMLreturn(Val_unit);
 }
 
-CAMLprim value ml_al_is_event_queue_paused(value queue)
-{
-    CAMLparam1(queue);
-    bool paused = al_is_event_queue_paused(Ptr_val(queue));
-    CAMLreturn(Val_bool(paused));
-}
+ml_function_1arg_ret(al_is_event_queue_paused, Ptr_val, Val_bool)
 
-CAMLprim value ml_al_is_event_queue_empty(value queue)
-{
-    CAMLparam1(queue);
-    bool empty = al_is_event_queue_empty(Ptr_val(queue));
-    CAMLreturn(Val_bool(empty));
-}
+ml_function_1arg_ret(al_is_event_queue_empty, Ptr_val, Val_bool)
 
 CAMLprim value ml_al_get_next_event(value queue)
 {
@@ -175,12 +165,7 @@ CAMLprim value ml_al_peek_next_event(value queue)
     CAMLreturn(caml_alloc_some(convert_event(c_evt)));
 }
 
-CAMLprim value ml_al_drop_next_event(value queue)
-{
-    CAMLparam1(queue);
-    bool dropped = al_drop_next_event(Ptr_val(queue));
-    CAMLreturn(Val_bool(dropped));
-}
+ml_function_1arg_ret(al_drop_next_event, Ptr_val, Val_bool)
 
 ml_function_1arg(al_flush_event_queue, Ptr_val);
 

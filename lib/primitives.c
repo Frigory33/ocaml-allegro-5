@@ -172,3 +172,96 @@ CAMLprim value ml_al_draw_elliptical_arc_bytecode(value * argv, int argc)
     return ml_al_draw_elliptical_arc(argv[0], argv[1],
         argv[2], argv[3], argv[4], argv[5]);
 }
+
+
+static void convert_points(value points, float c_points[][2])
+{
+    CAMLparam1(points);
+    int point_count = Wosize_val(points);
+    CAMLlocal1(p);
+    for (int i = 0; i < point_count; ++i) {
+        p = Field(points, i);
+        c_points[i][0] = Double_val(Field(p, 0));
+        c_points[i][1] = Double_val(Field(p, 1));
+    }
+    CAMLreturn0;
+}
+
+enum {
+    ML_LINE_JOIN_NONE,
+    ML_LINE_JOIN_BEVEL,
+    ML_LINE_JOIN_ROUND,
+};
+enum {
+    ML_LINE_JOIN_MITER,
+};
+
+enum {
+    ML_LINE_CAP_NONE,
+    ML_LINE_CAP_SQUARE,
+    ML_LINE_CAP_ROUND,
+    ML_LINE_CAP_TRIANGLE,
+    ML_LINE_CAP_CLOSED,
+};
+
+static int convert_line_join(value join_style)
+{
+    CAMLparam1(join_style);
+    if (Is_block(join_style)) {
+        CAMLreturnT(int, ALLEGRO_LINE_JOIN_MITER);
+    }
+    int c_join_style = (int[]){
+            [ML_LINE_JOIN_NONE] = ALLEGRO_LINE_JOIN_NONE,
+            [ML_LINE_JOIN_BEVEL] = ALLEGRO_LINE_JOIN_BEVEL,
+            [ML_LINE_JOIN_ROUND] = ALLEGRO_LINE_JOIN_ROUND,
+        }[Int_val(join_style)];
+    CAMLreturnT(int, c_join_style);
+}
+
+static int convert_line_cap(value cap_style)
+{
+    CAMLparam1(cap_style);
+    int c_cap_style = (int[]){
+            [ML_LINE_CAP_NONE] = ALLEGRO_LINE_CAP_NONE,
+            [ML_LINE_CAP_SQUARE] = ALLEGRO_LINE_CAP_SQUARE,
+            [ML_LINE_CAP_ROUND] = ALLEGRO_LINE_CAP_ROUND,
+            [ML_LINE_CAP_TRIANGLE] = ALLEGRO_LINE_CAP_TRIANGLE,
+            [ML_LINE_CAP_CLOSED] = ALLEGRO_LINE_CAP_CLOSED,
+        }[Int_val(cap_style)];
+    CAMLreturnT(int, c_cap_style);
+}
+
+CAMLprim value ml_al_draw_polyline(value vertices, value join_style, value cap_style, value color, value thickness)
+{
+    CAMLparam5(vertices, join_style, cap_style, color, thickness);
+    int vertex_count = Wosize_val(vertices);
+    float c_vertices[vertex_count][2];
+    convert_points(vertices, c_vertices);
+    float miter_limit = Is_block(join_style) ? Double_val(Field(join_style, 0)) : 0.f;
+    al_draw_polyline((float *)c_vertices, sizeof(*c_vertices), vertex_count,
+        convert_line_join(join_style), convert_line_cap(cap_style),
+        AlColor_val(color), Double_val(thickness), miter_limit);
+    CAMLreturn(Val_unit);
+}
+
+CAMLprim value ml_al_draw_polygon(value vertices, value join_style, value color, value thickness)
+{
+    CAMLparam4(vertices, join_style, color, thickness);
+    int vertex_count = Wosize_val(vertices);
+    float c_vertices[vertex_count][2];
+    convert_points(vertices, c_vertices);
+    float miter_limit = Is_block(join_style) ? Double_val(Field(join_style, 0)) : 0.f;
+    al_draw_polygon((float *)c_vertices, vertex_count, convert_line_join(join_style),
+        AlColor_val(color), Double_val(thickness), miter_limit);
+    CAMLreturn(Val_unit);
+}
+
+CAMLprim value ml_al_draw_filled_polygon(value vertices, value color)
+{
+    CAMLparam2(vertices, color);
+    int vertex_count = Wosize_val(vertices);
+    float c_vertices[vertex_count][2];
+    convert_points(vertices, c_vertices);
+    al_draw_filled_polygon((float *)c_vertices, vertex_count, AlColor_val(color));
+    CAMLreturn(Val_unit);
+}

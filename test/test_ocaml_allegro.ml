@@ -74,16 +74,18 @@ let () =
   Al5.install_keyboard ();
   Al5.install_mouse ();
 
+  let rsrc_folder = List.hd Sites.Sites.ocaml_allegro5 in
+  let alleg_img = Al5.load_bitmap (Filename.concat rsrc_folder "allegator.png") in
+  MouseLine.alleg_img := Some alleg_img;
+
   Al5.set_new_window_title "OCaml Allegro 5 test";
   let disp = Al5.create_display 640 480 in
+  Al5.set_display_icon disp alleg_img;
 
   let queue = Al5.create_event_queue () in
   Al5.register_event_source queue (Al5.get_display_event_source disp);
   Al5.register_event_source queue (Al5.get_keyboard_event_source ());
   Al5.register_event_source queue (Al5.get_mouse_event_source ());
-
-  let rsrc_folder = List.hd Sites.Sites.ocaml_allegro5 in
-  MouseLine.alleg_img := Some (Al5.load_bitmap (Filename.concat rsrc_folder "allegator.png"));
 
   let quit = ref false in
   let cur_style = ref 0 in
@@ -93,6 +95,8 @@ let () =
   while not !quit && Al5.get_time () -. !last_event_time < quitting_delay do
 
     Al5.clear_to_color (Al5.map_rgb 128 128 128);
+    Al5.draw_polyline [|100., 200.; 200., 100.; 400., 300.; 500., 200.|]
+      (Al5.LineJoin.MITER 2.) Al5.LineCap.ROUND (Al5.map_rgb 0 224 0) 10.;
     click_shapes := List.filter ClickShape.is_visible !click_shapes;
     mouse_lines := List.filter MouseLine.is_visible !mouse_lines;
     List.iter ClickShape.draw (List.rev !click_shapes);
