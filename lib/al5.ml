@@ -360,7 +360,17 @@ external get_bitmap_height : bitmap -> int = "ml_al_get_bitmap_height"
 
 external clear_to_color : color -> unit = "ml_al_clear_to_color"
 external draw_bitmap : bitmap -> ?tint: color -> pos -> int -> unit = "ml_al_draw_bitmap"
-external draw_bitmap_region : bitmap -> ?tint: color -> pos -> pos -> pos -> int -> unit = "ml_al_draw_bitmap_region_bytecode" "ml_al_draw_bitmap_region"
+external draw_bitmap_region : bitmap -> ?tint: color -> pos -> pos -> pos -> int -> unit =
+  "ml_al_draw_bitmap_region_bytecode" "ml_al_draw_bitmap_region"
+external draw_rotated_bitmap : bitmap -> ?tint: color -> pos -> pos -> float -> int -> unit =
+  "ml_al_draw_rotated_bitmap_bytecode" "ml_al_draw_rotated_bitmap"
+external draw_scaled_bitmap : bitmap -> ?tint: color -> pos -> pos -> pos -> pos -> int -> unit =
+  "ml_al_draw_scaled_bitmap_bytecode" "ml_al_draw_scaled_bitmap"
+external draw_scaled_rotated_bitmap : bitmap -> ?tint: color -> pos -> pos -> pos -> float -> int -> unit =
+  "ml_al_draw_scaled_rotated_bitmap_bytecode" "ml_al_draw_scaled_rotated_bitmap"
+external draw_scaled_rotated_bitmap_region : bitmap -> pos -> pos -> ?tint: color -> pos -> pos -> pos -> float -> int -> unit =
+  "ml_al_draw_scaled_rotated_bitmap_region_bytecode" "ml_al_draw_scaled_rotated_bitmap_region"
+
 
 (** {2 Image I/O} *)
 

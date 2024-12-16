@@ -174,6 +174,96 @@ CAMLprim value ml_al_draw_bitmap_region_bytecode(value * argv, int argc)
         argv[2], argv[3], argv[4], argv[5]);
 }
 
+CAMLprim value ml_al_draw_rotated_bitmap(value bmp, value tint, value cpos, value dpos, value angle, value flags)
+{
+    CAMLparam5(bmp, tint, cpos, dpos, angle);
+    CAMLxparam1(flags);
+    if (Is_none(tint)) {
+        al_draw_rotated_bitmap(Ptr_val(bmp),
+            PosX_val(cpos), PosY_val(cpos), PosX_val(dpos), PosY_val(dpos),
+            Double_val(angle), convert_draw_bitmap_flags(flags));
+    } else {
+        al_draw_tinted_rotated_bitmap(Ptr_val(bmp), AlColor_val(Some_val(tint)),
+            PosX_val(cpos), PosY_val(cpos), PosX_val(dpos), PosY_val(dpos),
+            Double_val(angle), convert_draw_bitmap_flags(flags));
+    }
+    CAMLreturn(Val_unit);
+}
+
+CAMLprim value ml_al_draw_rotated_bitmap_bytecode(value * argv, int argc)
+{
+    return ml_al_draw_rotated_bitmap(argv[0], argv[1],
+        argv[2], argv[3], argv[4], argv[5]);
+}
+
+CAMLprim value ml_al_draw_scaled_bitmap(value bmp, value tint, value spos, value ssize, value dpos, value dsize, value flags)
+{
+    CAMLparam5(bmp, tint, spos, ssize, dpos);
+    CAMLxparam2(dsize, flags);
+    if (Is_none(tint)) {
+        al_draw_scaled_bitmap(Ptr_val(bmp),
+            PosX_val(spos), PosY_val(spos), PosX_val(ssize), PosY_val(ssize),
+            PosX_val(dpos), PosY_val(dpos), PosX_val(dsize), PosY_val(dsize),
+            convert_draw_bitmap_flags(flags));
+    } else {
+        al_draw_tinted_scaled_bitmap(Ptr_val(bmp), AlColor_val(Some_val(tint)),
+            PosX_val(spos), PosY_val(spos), PosX_val(ssize), PosY_val(ssize),
+            PosX_val(dpos), PosY_val(dpos), PosX_val(dsize), PosY_val(dsize),
+            convert_draw_bitmap_flags(flags));
+    }
+    CAMLreturn(Val_unit);
+}
+
+CAMLprim value ml_al_draw_scaled_bitmap_bytecode(value * argv, int argc)
+{
+    return ml_al_draw_scaled_bitmap(argv[0], argv[1],
+        argv[2], argv[3], argv[4], argv[5], argv[6]);
+}
+
+CAMLprim value ml_al_draw_scaled_rotated_bitmap(value bmp, value tint, value cpos, value dpos, value scale, value angle, value flags)
+{
+    CAMLparam5(bmp, tint, cpos, dpos, scale);
+    CAMLxparam2(angle, flags);
+    if (Is_none(tint)) {
+        al_draw_scaled_rotated_bitmap(Ptr_val(bmp),
+            PosX_val(cpos), PosY_val(cpos), PosX_val(dpos), PosY_val(dpos),
+            PosX_val(scale), PosY_val(scale),
+            Double_val(angle), convert_draw_bitmap_flags(flags));
+    } else {
+        al_draw_tinted_scaled_rotated_bitmap(Ptr_val(bmp), AlColor_val(Some_val(tint)),
+            PosX_val(cpos), PosY_val(cpos), PosX_val(dpos), PosY_val(dpos),
+            PosX_val(scale), PosY_val(scale),
+            Double_val(angle), convert_draw_bitmap_flags(flags));
+    }
+    CAMLreturn(Val_unit);
+}
+
+CAMLprim value ml_al_draw_scaled_rotated_bitmap_bytecode(value * argv, int argc)
+{
+    return ml_al_draw_scaled_rotated_bitmap(argv[0], argv[1],
+        argv[2], argv[3], argv[4], argv[5], argv[6]);
+}
+
+CAMLprim value ml_al_draw_scaled_rotated_bitmap_region(
+    value bmp, value spos, value ssize, value tint, value cpos, value dpos, value scale, value angle, value flags)
+{
+    CAMLparam5(bmp, spos, ssize, tint, cpos);
+    CAMLxparam4(dpos, scale, angle, flags);
+    al_draw_tinted_scaled_rotated_bitmap_region(Ptr_val(bmp),
+        PosX_val(spos), PosY_val(spos), PosX_val(ssize), PosY_val(ssize),
+        Is_none(tint) ? al_map_rgb(255, 255, 255) : AlColor_val(Some_val(tint)),
+        PosX_val(cpos), PosY_val(cpos), PosX_val(dpos), PosY_val(dpos),
+        PosX_val(scale), PosY_val(scale),
+        Double_val(angle), convert_draw_bitmap_flags(flags));
+    CAMLreturn(Val_unit);
+}
+
+CAMLprim value ml_al_draw_scaled_rotated_bitmap_region_bytecode(value * argv, int argc)
+{
+    return ml_al_draw_scaled_rotated_bitmap_region(argv[0], argv[1], argv[2],
+        argv[3], argv[4], argv[5], argv[6], argv[7], argv[8]);
+}
+
 
 CAMLprim value ml_al_load_bitmap(value filename)
 {
