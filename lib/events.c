@@ -190,3 +190,17 @@ CAMLprim value ml_al_wait_for_event_timed(value queue, value get, value secs)
     }
     CAMLreturn(caml_alloc_some(convert_event(c_evt)));
 }
+
+CAMLprim value ml_al_wait_for_event_until(value queue, value get, value timeout)
+{
+    CAMLparam3(queue, get, timeout);
+    if (!Bool_val(get)) {
+        al_wait_for_event_until(Ptr_val(queue), NULL, Data_custom_val(timeout));
+        CAMLreturn(Val_none);
+    }
+    ALLEGRO_EVENT c_evt;
+    if (!al_wait_for_event_until(Ptr_val(queue), &c_evt, Data_custom_val(timeout))) {
+        CAMLreturn(Val_none);
+    }
+    CAMLreturn(caml_alloc_some(convert_event(c_evt)));
+}

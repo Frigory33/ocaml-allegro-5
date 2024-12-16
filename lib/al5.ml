@@ -8,6 +8,7 @@ type event_queue
 type event_source
 type display
 type joystick
+type timeout
 type timer
 
 (** {2 Aggregation types} *)
@@ -332,6 +333,7 @@ external drop_next_event : event_queue -> bool = "ml_al_drop_next_event"
 external flush_event_queue : event_queue -> unit = "ml_al_flush_event_queue"
 external wait_for_event : event_queue -> Event.t = "ml_al_wait_for_event"
 external wait_for_event_timed : event_queue -> bool -> float -> Event.t option = "ml_al_wait_for_event_timed"
+external wait_for_event_until : event_queue -> bool -> timeout -> Event.t option = "ml_al_wait_for_event_timeout"
 
 
 (** {1 Graphics routines} *)
@@ -402,6 +404,7 @@ external al_get_ram_size : unit -> int = "ml_al_get_ram_size"
 (** {1 Time} *)
 
 external get_time : unit -> float = "ml_al_get_time"
+external init_timeout : float -> timeout = "ml_al_init_timeout"
 external rest : float -> unit = "ml_al_rest"
 
 
