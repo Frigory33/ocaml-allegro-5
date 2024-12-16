@@ -3,6 +3,6 @@
  (public_name allegro5)
  (foreign_stubs
   (language c)
-  (names display events graphics keyboard mouse system time timer image primitives)
+  (names al5 display events graphics keyboard mouse system time timer image primitives)
   (flags -std=c11 -Wall -O2 -I %{env:HOME=.}/.local/include -fPIC))
  (c_library_flags -L %{env:HOME=.}/.local/lib -lallegro_image -lallegro_primitives -lallegro))

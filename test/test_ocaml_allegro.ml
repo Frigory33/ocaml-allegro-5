@@ -48,7 +48,8 @@ module MouseLine = struct
     Al5.get_time () -. line.time <= delay
 
   let draw line =
-    let x2, y2 = line.pos2 in
+    let x1, y1 = line.pos1
+    and x2, y2 = line.pos2 in
     let alpha = 1. -. (Al5.get_time () -. line.time) /. delay in
     match line.shape with
     | Line ->
@@ -56,9 +57,10 @@ module MouseLine = struct
         ()
     | Allegator ->
         let alleg_img = Option.get !alleg_img in
-        let x = x2 -. float_of_int (Al5.get_bitmap_width alleg_img) /. 2.
-        and y = y2 -. float_of_int (Al5.get_bitmap_height alleg_img) /. 2. in
-        Al5.draw_bitmap alleg_img ~tint:(Al5.premul_rgba_f 1. 1. 1. alpha) (x, y) 0;
+        let cx = float_of_int (Al5.get_bitmap_width alleg_img) /. 2.
+        and cy = float_of_int (Al5.get_bitmap_height alleg_img) /. 2. in
+        let angle = atan2 (y2 -. y1) (x2 -. x1) in
+        Al5.draw_rotated_bitmap alleg_img ~tint:(Al5.premul_rgba_f 1. 1. 1. alpha) (cx, cy) line.pos2 angle 0;
         ()
 end
 
@@ -150,6 +152,8 @@ let () =
     process_event (Al5.get_next_event queue);
 
   done;
+
+  Al5.destroy_bitmap alleg_img;
 
   Al5.destroy_event_queue queue;
   Al5.destroy_display disp;

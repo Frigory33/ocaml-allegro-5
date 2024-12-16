@@ -17,6 +17,26 @@ type pos = float * float
 
 (** {2 Enumerations} *)
 
+module DisplayFlag = struct
+  let windowed = 1 lsl 0
+  let fullscreen_window = 1 lsl 1
+  let fullscreen = 1 lsl 2
+  let resizable = 1 lsl 3
+  let maximized = 1 lsl 4
+  let opengl = 1 lsl 5
+  let opengl_3_0 = 1 lsl 6
+  let opengl_forward_compatible = 1 lsl 7
+  let opengl_es_profile = 1 lsl 8
+  let opengl_core_profile = 1 lsl 9
+  let direct3d = 1 lsl 10
+  let programmable_pipeline = 1 lsl 11
+  let frameless = 1 lsl 12
+  let noframe = 1 lsl 13
+  let generate_expose_events = 1 lsl 14
+  let gtk_toplevel = 1 lsl 15
+  let drag_and_drop = 1 lsl 16
+end
+
 module Key = struct
   type t =
   | A
@@ -188,8 +208,10 @@ module DisplayOrientation = struct
   | FACE_DOWN
 end
 
-let flip_horizontal = 1 lsl 0
-let flip_vertical = 1 lsl 1
+module Flip = struct
+  let horizontal = 1 lsl 0
+  let vertical = 1 lsl 1
+end
 
 module LineJoin = struct
   type t =
@@ -291,6 +313,8 @@ end
 
 external create_display : int -> int -> display = "ml_al_create_display"
 external destroy_display : display -> unit = "ml_al_destroy_display"
+external get_new_display_flags : unit -> int = "ml_al_get_new_display_flags"
+external set_new_display_flags : int -> unit = "ml_al_set_new_display_flags"
 
 (** {2 Display operations} *)
 

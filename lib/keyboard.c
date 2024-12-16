@@ -157,30 +157,25 @@ value convert_keycode(int c_keycode)
 
 value convert_keymod(int c_keymod)
 {
-    int const modifiers[][2] = {
-        { ALLEGRO_KEYMOD_SHIFT, ML_KEYMOD_SHIFT },
-        { ALLEGRO_KEYMOD_CTRL, ML_KEYMOD_CTRL },
-        { ALLEGRO_KEYMOD_ALT, ML_KEYMOD_ALT },
-        { ALLEGRO_KEYMOD_LWIN, ML_KEYMOD_LWIN },
-        { ALLEGRO_KEYMOD_RWIN, ML_KEYMOD_RWIN },
-        { ALLEGRO_KEYMOD_MENU, ML_KEYMOD_MENU },
-        { ALLEGRO_KEYMOD_ALTGR, ML_KEYMOD_ALTGR },
-        { ALLEGRO_KEYMOD_COMMAND, ML_KEYMOD_COMMAND },
-        { ALLEGRO_KEYMOD_SCROLLLOCK, ML_KEYMOD_SCROLLLOCK },
-        { ALLEGRO_KEYMOD_NUMLOCK, ML_KEYMOD_NUMLOCK },
-        { ALLEGRO_KEYMOD_CAPSLOCK, ML_KEYMOD_CAPSLOCK },
-        { ALLEGRO_KEYMOD_INALTSEQ, ML_KEYMOD_INALTSEQ },
-        { ALLEGRO_KEYMOD_ACCENT1, ML_KEYMOD_ACCENT1 },
-        { ALLEGRO_KEYMOD_ACCENT2, ML_KEYMOD_ACCENT2 },
-        { ALLEGRO_KEYMOD_ACCENT3, ML_KEYMOD_ACCENT3 },
-        { ALLEGRO_KEYMOD_ACCENT4, ML_KEYMOD_ACCENT4 },
+    static int const keymod_conv[][2] = {
+        { ML_KEYMOD_SHIFT, ALLEGRO_KEYMOD_SHIFT },
+        { ML_KEYMOD_CTRL, ALLEGRO_KEYMOD_CTRL },
+        { ML_KEYMOD_ALT, ALLEGRO_KEYMOD_ALT },
+        { ML_KEYMOD_LWIN, ALLEGRO_KEYMOD_LWIN },
+        { ML_KEYMOD_RWIN, ALLEGRO_KEYMOD_RWIN },
+        { ML_KEYMOD_MENU, ALLEGRO_KEYMOD_MENU },
+        { ML_KEYMOD_ALTGR, ALLEGRO_KEYMOD_ALTGR },
+        { ML_KEYMOD_COMMAND, ALLEGRO_KEYMOD_COMMAND },
+        { ML_KEYMOD_SCROLLLOCK, ALLEGRO_KEYMOD_SCROLLLOCK },
+        { ML_KEYMOD_NUMLOCK, ALLEGRO_KEYMOD_NUMLOCK },
+        { ML_KEYMOD_CAPSLOCK, ALLEGRO_KEYMOD_CAPSLOCK },
+        { ML_KEYMOD_INALTSEQ, ALLEGRO_KEYMOD_INALTSEQ },
+        { ML_KEYMOD_ACCENT1, ALLEGRO_KEYMOD_ACCENT1 },
+        { ML_KEYMOD_ACCENT2, ALLEGRO_KEYMOD_ACCENT2 },
+        { ML_KEYMOD_ACCENT3, ALLEGRO_KEYMOD_ACCENT3 },
+        { ML_KEYMOD_ACCENT4, ALLEGRO_KEYMOD_ACCENT4 },
     };
-    int keymod = 0;
-    for (int i = 0; i < sizeof(modifiers) / sizeof(*modifiers); ++i) {
-        if ((c_keymod & modifiers[i][0]) == modifiers[i][0]) {
-            keymod |= modifiers[i][1];
-        }
-    }
+    int keymod = convert_flags(c_keymod, keymod_conv, 1);
     return Val_int(keymod);
 }
 

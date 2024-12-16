@@ -17,6 +17,26 @@ type pos = float * float
 
 (** {2 Enumerations} *)
 
+module DisplayFlag : sig
+  val windowed : int
+  val fullscreen_window : int
+  val fullscreen : int
+  val resizable : int
+  val maximized : int
+  val opengl : int
+  val opengl_3_0 : int
+  val opengl_forward_compatible : int
+  val opengl_es_profile : int
+  val opengl_core_profile : int
+  val direct3d : int
+  val programmable_pipeline : int
+  val frameless : int
+  val noframe : int
+  val generate_expose_events : int
+  val gtk_toplevel : int
+  val drag_and_drop : int
+end
+
 module Key : sig
   type t =
   | A
@@ -188,8 +208,10 @@ module DisplayOrientation : sig
   | FACE_DOWN
 end
 
-val flip_horizontal : int
-val flip_vertical : int
+module Flip : sig
+  val horizontal : int
+  val vertical : int
+end
 
 module LineJoin : sig
   type t =
@@ -292,6 +314,8 @@ end
 
 external create_display : int -> int -> display = "ml_al_create_display"
 external destroy_display : display -> unit = "ml_al_destroy_display"
+external get_new_display_flags : unit -> int = "ml_al_get_new_display_flags"
+external set_new_display_flags : int -> unit = "ml_al_set_new_display_flags"
 
 (** {2 Display operations} *)
 

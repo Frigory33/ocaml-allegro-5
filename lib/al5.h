@@ -31,19 +31,24 @@
     }
 
 #define ml_function_1arg(func, cast) \
-  CAMLprim value ml_ ## func(value v) \
-  { \
-      CAMLparam1(v); \
-      func(cast(v)); \
-      CAMLreturn(Val_unit); \
-  }
+    CAMLprim value ml_ ## func(value v) \
+    { \
+        CAMLparam1(v); \
+        func(cast(v)); \
+        CAMLreturn(Val_unit); \
+    }
 
 #define ml_function_1arg_ret(func, castarg, castret) \
-  CAMLprim value ml_ ## func(value v) \
-  { \
-      CAMLparam1(v); \
-      CAMLreturn(castret(func(castarg(v)))); \
-  }
+    CAMLprim value ml_ ## func(value v) \
+    { \
+        CAMLparam1(v); \
+        CAMLreturn(castret(func(castarg(v)))); \
+    }
+
+
+int convert_flags_(int flags_from, int flags_num, int const flags_conv[][2], int from_index);
+#define convert_flags(flags_from, flags_conv, from_index) \
+    convert_flags_(flags_from, sizeof(flags_conv) / sizeof(*(flags_conv)), flags_conv, from_index)
 
 
 #endif
