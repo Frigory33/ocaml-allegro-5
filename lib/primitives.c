@@ -265,3 +265,32 @@ CAMLprim value ml_al_draw_filled_polygon(value vertices, value color)
     al_draw_filled_polygon((float *)c_vertices, vertex_count, AlColor_val(color));
     CAMLreturn(Val_unit);
 }
+
+CAMLprim value ml_al_draw_filled_polygon_with_holes(value polygon, value holes, value color)
+{
+    CAMLparam3(polygon, holes, color);
+    CAMLlocal1(h);
+    int hole_count = 0;
+    for (h = holes; h != Val_emptylist; h = Field(h, 1)) {
+        ++hole_count;
+    }
+    int vertex_counts[1 + hole_count + 1];
+    vertex_counts[0] = Wosize_val(polygon);
+    int vertex_total = vertex_counts[0];
+    int i = 0;
+    for (h = holes; h != Val_emptylist; h = Field(h, 1)) {
+        ++i;
+        vertex_counts[i] = Wosize_val(Field(h, 0));
+        vertex_total += vertex_counts[i];
+    }
+    vertex_counts[1 + hole_count] = 0;
+    float c_vertices[vertex_total][2];
+    convert_points(polygon, c_vertices);
+    int pos = 0;
+    for (h = holes; h != Val_emptylist; h = Field(h, 1)) {
+        pos += vertex_counts[i];
+        convert_points(Field(h, 0), c_vertices + pos);
+    }
+    al_draw_filled_polygon_with_holes((float *)c_vertices, vertex_counts, AlColor_val(color));
+    CAMLreturn(Val_unit);
+}

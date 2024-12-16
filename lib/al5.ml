@@ -187,6 +187,26 @@ module DisplayOrientation = struct
   | FACE_DOWN
 end
 
+let flip_horizontal = 1 lsl 0
+let flip_vertical = 1 lsl 1
+
+module LineJoin = struct
+  type t =
+  | NONE
+  | BEVEL
+  | ROUND
+  | MITER of float
+end
+
+module LineCap = struct
+  type t =
+  | NONE
+  | SQUARE
+  | ROUND
+  | TRIANGLE
+  | CLOSED
+end
+
 (** {2 Events} *)
 
 module Event = struct
@@ -261,26 +281,6 @@ module Event = struct
   | DISPLAY_DISCONNECTED of display
   | DROP of int * int * (string * bool * int * bool) option
   | UNKNOWN of int
-end
-
-let flip_horizontal = 1 lsl 0
-let flip_vertical = 1 lsl 1
-
-module LineJoin = struct
-  type t =
-  | NONE
-  | BEVEL
-  | ROUND
-  | MITER of float
-end
-
-module LineCap = struct
-  type t =
-  | NONE
-  | SQUARE
-  | ROUND
-  | TRIANGLE
-  | CLOSED
 end
 
 
@@ -437,6 +437,7 @@ external draw_elliptical_arc : pos -> pos -> float -> float -> color -> float ->
 external draw_polyline : pos array -> LineJoin.t -> LineCap.t -> color -> float -> unit = "ml_al_draw_polyline"
 external draw_polygon : pos array -> LineJoin.t -> color -> float -> unit = "ml_al_draw_polygon"
 external draw_filled_polygon : pos array -> color -> unit = "ml_al_draw_filled_polygon"
+external draw_filled_polygon_with_holes : pos array -> pos array list -> color -> unit = "ml_al_draw_filled_polygon_with_holes"
 
 
 (** {1 Image I/O addon} *)
