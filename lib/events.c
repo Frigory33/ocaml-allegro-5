@@ -123,6 +123,11 @@ static value convert_event(ALLEGRO_EVENT c_evt)
             Store_field(info, 6, Val_ptr(c_evt.mouse.display));
             Store_field(evt, 0, info);
             break;
+        case ALLEGRO_EVENT_TIMER:
+            evt = caml_alloc(2, ML_EVENT_TIMER);
+            Store_field(evt, 0, Val_ptr(c_evt.timer.source));
+            Store_field(evt, 1, caml_copy_int64(c_evt.timer.count));
+            break;
         case ALLEGRO_EVENT_DISPLAY_CLOSE:
             evt = caml_alloc(1, ML_EVENT_DISPLAY_CLOSE);
             Store_field(evt, 0, caml_copy_nativeint((intnat)c_evt.display.source));

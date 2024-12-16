@@ -333,7 +333,7 @@ external drop_next_event : event_queue -> bool = "ml_al_drop_next_event"
 external flush_event_queue : event_queue -> unit = "ml_al_flush_event_queue"
 external wait_for_event : event_queue -> Event.t = "ml_al_wait_for_event"
 external wait_for_event_timed : event_queue -> bool -> float -> Event.t option = "ml_al_wait_for_event_timed"
-external wait_for_event_until : event_queue -> bool -> timeout -> Event.t option = "ml_al_wait_for_event_timeout"
+external wait_for_event_until : event_queue -> bool -> timeout -> Event.t option = "ml_al_wait_for_event_until"
 
 
 (** {1 Graphics routines} *)
@@ -406,6 +406,22 @@ external al_get_ram_size : unit -> int = "ml_al_get_ram_size"
 external get_time : unit -> float = "ml_al_get_time"
 external init_timeout : float -> timeout = "ml_al_init_timeout"
 external rest : float -> unit = "ml_al_rest"
+
+
+(** {1 Timer} *)
+
+external create_timer : float -> timer = "ml_al_create_timer"
+external start_timer : timer -> unit = "ml_al_start_timer"
+external resume_timer : timer -> unit = "ml_al_resume_timer"
+external stop_timer : timer -> unit = "ml_al_stop_timer"
+external get_timer_started : timer -> bool = "ml_al_get_timer_started"
+external destroy_timer : timer -> unit = "ml_al_destroy_timer"
+external get_timer_count : timer -> int64 = "ml_al_get_timer_count"
+external set_timer_count : timer -> int64 -> unit = "ml_al_set_timer_count"
+external add_timer_count : timer -> int64 -> unit = "ml_al_add_timer_count"
+external get_timer_speed : timer -> float = "ml_al_get_timer_speed"
+external set_timer_speed : timer -> float -> unit = "ml_al_set_timer_speed"
+external get_timer_event_source : timer -> event_source = "ml_al_get_timer_event_source"
 
 
 (** {1 Primitives addon} *)

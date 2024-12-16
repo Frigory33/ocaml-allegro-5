@@ -22,3 +22,5 @@ dune uninstall
 ## Contribute
 
 Merge requests and bug reports are very welcome! Please join the project!
+
+You can also create a bug report for a feature request.
