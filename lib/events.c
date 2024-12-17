@@ -81,14 +81,14 @@ static value convert_event(ALLEGRO_EVENT c_evt)
         case ALLEGRO_EVENT_KEY_DOWN:
         case ALLEGRO_EVENT_KEY_UP:
             evt = caml_alloc(2, c_evt.type == ALLEGRO_EVENT_KEY_UP ? ML_EVENT_KEY_UP : ML_EVENT_KEY_DOWN);
-            Store_field(evt, 0, convert_keycode(c_evt.keyboard.keycode));
+            Store_field(evt, 0, convert_keycode_from_c(c_evt.keyboard.keycode));
             Store_field(evt, 1, Val_ptr(c_evt.keyboard.display));
             break;
         case ALLEGRO_EVENT_KEY_CHAR:
             evt = caml_alloc(5, ML_EVENT_KEY_CHAR);
-            Store_field(evt, 0, convert_keycode(c_evt.keyboard.keycode));
+            Store_field(evt, 0, convert_keycode_from_c(c_evt.keyboard.keycode));
             Store_field(evt, 1, Val_int(c_evt.keyboard.unichar));
-            Store_field(evt, 2, convert_keymod(c_evt.keyboard.modifiers));
+            Store_field(evt, 2, convert_keymod_from_c(c_evt.keyboard.modifiers));
             Store_field(evt, 3, Val_bool(c_evt.keyboard.repeat));
             Store_field(evt, 4, Val_ptr(c_evt.keyboard.display));
             break;

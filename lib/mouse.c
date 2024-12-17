@@ -14,5 +14,74 @@ ml_function_noarg_ret(al_is_mouse_installed, Val_bool)
 
 ml_function_noarg(al_uninstall_mouse)
 
-
 ml_function_noarg_ret(al_get_mouse_event_source, Val_ptr)
+
+
+#define MouseState_val(v) (*((ALLEGRO_MOUSE_STATE *)Data_custom_val(v)))
+
+static struct custom_operations allegro_mouse_state_ops = {
+  "org.allegro5.mouse_state",
+  custom_finalize_default,
+  custom_compare_default,
+  custom_hash_default,
+  custom_serialize_default,
+  custom_deserialize_default,
+  custom_compare_ext_default,
+  custom_fixed_length_default
+};
+
+ml_function_noarg_ret(al_get_mouse_num_axes, Val_int);
+
+ml_function_noarg_ret(al_get_mouse_num_buttons, Val_int);
+
+CAMLprim value ml_al_get_mouse_state(value unit)
+{
+    CAMLparam1(unit);
+    CAMLlocal1(state);
+    state = caml_alloc_custom(&allegro_mouse_state_ops, sizeof(ALLEGRO_MOUSE_STATE), 1, 64);
+    al_get_mouse_state(&MouseState_val(state));
+    CAMLreturn(state);
+}
+
+CAMLprim value ml_al_get_mouse_state_axis(value state, value axis)
+{
+    CAMLparam2(state, axis);
+    int c_pos = al_get_mouse_state_axis(&MouseState_val(state), Int_val(axis));
+    CAMLreturn(Val_int(c_pos));
+}
+
+CAMLprim value ml_al_mouse_button_down(value state, value button)
+{
+    CAMLparam2(state, button);
+    bool c_down = al_mouse_button_down(&MouseState_val(state), Int_val(button));
+    CAMLreturn(Val_bool(c_down));
+}
+
+CAMLprim value ml_al_get_mouse_state_pressure(value state)
+{
+    CAMLparam1(state);
+    CAMLreturn(caml_copy_double(MouseState_val(state).pressure));
+}
+
+
+CAMLprim value ml_al_set_mouse_xy(value display, value x, value y)
+{
+    CAMLparam3(display, x, y);
+    bool success = al_set_mouse_xy(Ptr_val(display), Int_val(x), Int_val(y));
+    CAMLreturn(Val_bool(success));
+}
+
+ml_function_1arg_ret(al_set_mouse_z, Int_val, Val_bool)
+
+ml_function_1arg_ret(al_set_mouse_w, Int_val, Val_bool)
+
+CAMLprim value ml_al_set_mouse_axis(value which, value pos)
+{
+    CAMLparam2(which, pos);
+    bool success = al_set_mouse_axis(Int_val(which), Int_val(pos));
+    CAMLreturn(Val_bool(success));
+}
+
+ml_function_1arg(al_set_mouse_wheel_precision, Int_val)
+
+ml_function_noarg_ret(al_get_mouse_wheel_precision, Val_int)

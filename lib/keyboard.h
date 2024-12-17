@@ -161,8 +161,8 @@ enum {
 };
 
 
-value convert_keycode(int c_keycode);
-value convert_keymod(int c_keymod);
+value convert_keycode_from_c(int c_keycode);
+value convert_keymod_from_c(int c_keymod);
 
 
 #endif

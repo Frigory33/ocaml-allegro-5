@@ -1,4 +1,4 @@
-(** {1 Types} *)
+(** {1 Types and constants} *)
 
 (** {2 Abstract types} *)
 
@@ -8,6 +8,8 @@ type event_queue
 type event_source
 type display
 type joystick
+type keyboard_state
+type mouse_state
 type timeout
 type timer
 
@@ -339,8 +341,6 @@ external set_display_icons : display -> bitmap array -> unit = "ml_al_set_displa
 
 (** {1 Events} *)
 
-(** {2 General} *)
-
 external create_event_queue : unit -> event_queue = "ml_al_create_event_queue"
 external destroy_event_queue : event_queue -> unit = "ml_al_destroy_event_queue"
 external register_event_source : event_queue -> event_source -> unit = "ml_al_register_event_source"
@@ -420,8 +420,16 @@ external load_bitmap : string -> bitmap = "ml_al_load_bitmap"
 external install_keyboard : unit -> unit = "ml_al_install_keyboard"
 external is_keyboard_installed : unit -> bool = "ml_al_is_keyboard_installed"
 external uninstall_keyboard : unit -> unit = "ml_al_uninstall_keyboard"
-
 external get_keyboard_event_source : unit -> event_source = "ml_al_get_keyboard_event_source"
+
+(** {2 Keyboard information} *)
+
+external get_keyboard_state : unit -> keyboard_state = "ml_al_get_keyboard_state"
+external key_down : keyboard_state -> Key.t = "ml_al_key_down"
+external get_keyboard_state_display : keyboard_state -> display = "ml_al_get_keyboard_state_display"
+external keycode_to_name : Key.t -> string = "ml_al_keycode_to_name"
+external can_set_keyboard_leds : unit -> bool = "ml_al_can_set_keyboard_leds"
+external set_keyboard_leds : int -> unit = "ml_al_set_keyboard_leds"
 
 
 (** {1 Mouse routines} *)
@@ -429,8 +437,22 @@ external get_keyboard_event_source : unit -> event_source = "ml_al_get_keyboard_
 external install_mouse : unit -> unit = "ml_al_install_mouse"
 external is_mouse_installed : unit -> bool = "ml_al_is_mouse_installed"
 external uninstall_mouse : unit -> unit = "ml_al_uninstall_mouse"
-
 external get_mouse_event_source : unit -> event_source = "ml_al_get_mouse_event_source"
+
+(** {2 Mouse information} *)
+
+external get_mouse_num_axis : unit -> int = "ml_al_get_mouse_num_axes"
+external get_mouse_num_buttons : unit -> int = "ml_al_get_mouse_num_buttons"
+external get_mouse_state : unit -> mouse_state = "ml_al_get_mouse_state"
+external get_mouse_state_axis : mouse_state -> int -> int = "ml_al_get_mouse_state_axis"
+external mouse_button_down : mouse_state -> int -> bool = "ml_al_mouse_button_down"
+external get_mouse_state_pressure : mouse_state -> float = "ml_al_get_mouse_state_pressure"
+external set_mouse_xy : display -> int -> int -> bool = "ml_al_set_mouse_xy"
+external set_mouse_z : int -> bool = "ml_al_set_mouse_z"
+external set_mouse_w : int -> bool = "ml_al_set_mouse_w"
+external set_mouse_axis : int -> int -> bool = "ml_al_set_mouse_axis"
+external set_mouse_wheel_precision : int -> unit = "ml_al_set_mouse_wheel_precision"
+external get_mouse_wheel_precision : unit -> int = "ml_al_get_mouse_wheel_precision"
 
 
 (** {1 System routines} *)
@@ -445,8 +467,8 @@ external set_org_name : string -> unit = "ml_al_set_org_name"
 external get_app_name : unit -> string = "ml_al_get_app_name"
 external get_org_name : unit -> string = "ml_al_get_org_name"
 
-external al_get_cpu_count : unit -> int = "ml_al_get_cpu_count"
-external al_get_ram_size : unit -> int = "ml_al_get_ram_size"
+external get_cpu_count : unit -> int = "ml_al_get_cpu_count"
+external get_ram_size : unit -> int = "ml_al_get_ram_size"
 
 
 (** {1 Time} *)
