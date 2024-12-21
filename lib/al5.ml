@@ -33,10 +33,9 @@ module DisplayFlag = struct
   let direct3d = 1 lsl 10
   let programmable_pipeline = 1 lsl 11
   let frameless = 1 lsl 12
-  let noframe = 1 lsl 13
-  let generate_expose_events = 1 lsl 14
-  let gtk_toplevel = 1 lsl 15
-  let drag_and_drop = 1 lsl 16
+  let generate_expose_events = 1 lsl 13
+  let gtk_toplevel = 1 lsl 14
+  let drag_and_drop = 1 lsl 15
 end
 
 module Key = struct

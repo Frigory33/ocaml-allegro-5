@@ -33,7 +33,6 @@ module DisplayFlag : sig
   val direct3d : int
   val programmable_pipeline : int
   val frameless : int
-  val noframe : int
   val generate_expose_events : int
   val gtk_toplevel : int
   val drag_and_drop : int
