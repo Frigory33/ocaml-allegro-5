@@ -7,6 +7,7 @@ type color
 type event_queue
 type event_source
 type display
+type font
 type joystick
 type keyboard_state
 type mouse_state
@@ -493,14 +494,54 @@ external set_timer_speed : timer -> float -> unit = "ml_al_set_timer_speed"
 external get_timer_event_source : timer -> event_source = "ml_al_get_timer_event_source"
 
 
+(** {1 Image I/O addon} *)
+
+external init_image_addon : unit -> unit = "ml_al_init_image_addon"
+external is_image_addon_initialized : unit -> bool = "ml_al_is_image_addon_initialized"
+external shutdown_image_addon : unit -> unit = "ml_al_shutdown_image_addon"
+external get_allegro_image_version : unit -> int = "ml_al_get_allegro_image_version"
+
+
+(** {1 Font addons} *)
+
+external init_font_addon : unit -> unit = "ml_al_init_font_addon"
+external is_font_addon_initialized : unit -> bool = "ml_al_is_font_addon_initialized"
+external shutdown_font_addon : unit -> unit = "ml_al_shutdown_font_addon"
+external get_allegro_font_version : unit -> int = "ml_al_get_allegro_font_version"
+
+(** {2 General font routines} *)
+
+external load_font : string -> int -> int -> font = "ml_al_load_font"
+external destroy_font : font -> unit = "ml_al_destroy_font"
+external get_font_line_height : font -> int = "ml_al_get_font_line_height"
+external get_font_ascent : font -> int = "ml_al_get_font_ascent"
+external get_font_descent : font -> int = "ml_al_get_font_descent"
+external get_text_width : font -> string -> int = "ml_al_get_text_width"
+external draw_text : font -> color -> pos -> int -> string -> unit = "ml_al_draw_text"
+external get_text_dimensions : font -> string -> int * int * int * int = "ml_al_get_text_dimensions"
+external set_fallback_font : font -> font option -> unit = "ml_al_set_fallback_font"
+external get_fallback_font : font -> font = "ml_al_get_fallback_font"
+
+(** {2 Bitmap fonts} *)
+
+external create_builtin_font : unit -> font = "ml_al_create_builtin_font"
+
+(** {2 TTF fonts} *)
+
+external init_ttf_addon : unit -> unit = "ml_al_init_ttf_addon"
+external is_ttf_addon_initialized : unit -> bool = "ml_al_is_ttf_addon_initialized"
+external shutdown_ttf_addon : unit -> unit = "ml_al_shutdown_ttf_addon"
+external get_allegro_ttf_version : unit -> int = "ml_al_get_allegro_ttf_version"
+external load_ttf_font : string -> int -> int -> font = "ml_al_load_ttf_font"
+external load_ttf_font_stretch : string -> int -> int -> int -> font = "ml_al_load_ttf_font_stretch"
+
+
 (** {1 Primitives addon} *)
 
-(** {2 General} *)
-
-external get_allegro_primitives_version : unit -> int = "ml_al_get_allegro_primitives_version"
 external init_primitives_addon : unit -> unit = "ml_al_init_primitives_addon"
 external is_primitives_addon_initialized : unit -> bool = "ml_al_is_primitives_addon_initialized"
 external shutdown_primitives_addon : unit -> unit = "ml_al_shutdown_primitives_addon"
+external get_allegro_primitives_version : unit -> int = "ml_al_get_allegro_primitives_version"
 
 (** {2 High level drawing routines} *)
 
@@ -526,11 +567,3 @@ external draw_polyline : pos array -> LineJoin.t -> LineCap.t -> color -> float 
 external draw_polygon : pos array -> LineJoin.t -> color -> float -> unit = "ml_al_draw_polygon"
 external draw_filled_polygon : pos array -> color -> unit = "ml_al_draw_filled_polygon"
 external draw_filled_polygon_with_holes : pos array -> pos array list -> color -> unit = "ml_al_draw_filled_polygon_with_holes"
-
-
-(** {1 Image I/O addon} *)
-
-external get_allegro_image_version : unit -> int = "ml_al_get_allegro_image_version"
-external init_image_addon : unit -> unit = "ml_al_init_image_addon"
-external is_image_addon_initialized : unit -> bool = "ml_al_is_image_addon_initialized"
-external shutdown_image_addon : unit -> unit = "ml_al_shutdown_image_addon"

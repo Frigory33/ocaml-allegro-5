@@ -70,6 +70,7 @@ let quitting_delay = 10.
 let () =
 
   Al5.init ();
+  Al5.init_font_addon ();
   Al5.init_image_addon ();
   Al5.init_primitives_addon ();
 
@@ -79,26 +80,33 @@ let () =
   let rsrc_folder = List.hd Sites.Sites.ocaml_allegro5 in
   let alleg_img = Al5.load_bitmap (Filename.concat rsrc_folder "allegator.png") in
   MouseLine.alleg_img := Some alleg_img;
+  let font = Al5.create_builtin_font () in
 
   Al5.set_new_window_title "OCaml Allegro 5 test";
   let disp = Al5.create_display 640 480 in
   Al5.set_display_icon disp alleg_img;
 
+  let timer = Al5.create_timer 0.1 in
+  Al5.start_timer timer;
+
   let queue = Al5.create_event_queue () in
   Al5.register_event_source queue (Al5.get_display_event_source disp);
   Al5.register_event_source queue (Al5.get_keyboard_event_source ());
   Al5.register_event_source queue (Al5.get_mouse_event_source ());
+  Al5.register_event_source queue (Al5.get_timer_event_source timer);
 
   let quit = ref false in
   let cur_style = ref 0 in
   let last_event_time = ref (Al5.get_time ()) in
   let click_shapes = ref [] in
   let mouse_lines = ref [] in
+  let timer_value = ref 0 in
   while not !quit && Al5.get_time () -. !last_event_time < quitting_delay do
 
     Al5.clear_to_color (Al5.map_rgb 128 128 128);
     Al5.draw_polyline [|100., 200.; 200., 100.; 400., 300.; 500., 200.|]
       (Al5.LineJoin.MITER 2.) Al5.LineCap.ROUND (Al5.map_rgb 0 224 0) 10.;
+    Al5.draw_text font (Al5.map_rgb 0 0 0) (4., 4.) 0 (Printf.sprintf "%d" !timer_value);
     click_shapes := List.filter ClickShape.is_visible !click_shapes;
     mouse_lines := List.filter MouseLine.is_visible !mouse_lines;
     List.iter ClickShape.draw (List.rev !click_shapes);
@@ -142,6 +150,8 @@ let () =
                       time = !last_event_time;
                     } :: !click_shapes;
 
+            | Al5.Event.TIMER _ -> incr timer_value;
+
             | Al5.Event.DISPLAY_CLOSE _ -> quit := true;
 
             | _ -> ()
@@ -154,6 +164,7 @@ let () =
   done;
 
   Al5.destroy_bitmap alleg_img;
+  Al5.destroy_font font;
 
   Al5.destroy_event_queue queue;
   Al5.destroy_display disp;

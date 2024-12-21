@@ -3,8 +3,6 @@
 #include <allegro5/allegro_primitives.h>
 
 
-ml_function_noarg_ret(al_get_allegro_primitives_version, Val_int)
-
 CAMLprim value ml_al_init_primitives_addon(value unit)
 {
     CAMLparam1(unit);
@@ -17,6 +15,8 @@ CAMLprim value ml_al_init_primitives_addon(value unit)
 ml_function_noarg_ret(al_is_primitives_addon_initialized, Val_bool)
 
 ml_function_noarg(al_shutdown_primitives_addon)
+
+ml_function_noarg_ret(al_get_allegro_primitives_version, Val_int)
 
 
 CAMLprim value ml_al_draw_line(value pos1, value pos2, value color, value thickness)
