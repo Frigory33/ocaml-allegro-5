@@ -39,6 +39,12 @@ module Display = struct
   let drag_and_drop = 1 lsl 15
 end
 
+module Bitmap = struct
+  let no_premultiplied_alpha = 1 lsl 0
+  let keep_index = 1 lsl 1
+  let keep_bitmap_format = 1 lsl 2
+end
+
 module Key = struct
   type t =
   | A
@@ -239,6 +245,12 @@ module Text = struct
   let align_integer = 1 lsl 3
 end
 
+module Ttf = struct
+  let no_kerning = 1 lsl 0
+  let monochrome = 1 lsl 1
+  let no_autohint = 1 lsl 2
+end
+
 (** {2 Events} *)
 
 module Event = struct
@@ -387,6 +399,8 @@ external unmap_rgba_f : color -> float * float * float * float = "ml_al_unmap_rg
 external create_bitmap : int -> int -> bitmap = "ml_al_create_bitmap"
 external create_sub_bitmap : bitmap -> int -> int -> int -> int -> bitmap = "ml_al_create_sub_bitmap"
 external clone_bitmap : bitmap -> bitmap = "ml_al_clone_bitmap"
+external convert_bitmap : bitmap -> unit = "ml_al_convert_bitmap"
+external convert_memory_bitmaps : unit -> unit = "ml_al_convert_memory_bitmaps"
 external destroy_bitmap : bitmap -> unit = "ml_al_destroy_bitmap"
 
 (** {2 Bitmap properties} *)
@@ -517,7 +531,6 @@ external get_allegro_font_version : unit -> int = "ml_al_get_allegro_font_versio
 
 (** {2 General font routines} *)
 
-external load_font : string -> int -> int -> font = "ml_al_load_font"
 external destroy_font : font -> unit = "ml_al_destroy_font"
 external get_font_line_height : font -> int = "ml_al_get_font_line_height"
 external get_font_ascent : font -> int = "ml_al_get_font_ascent"
@@ -532,6 +545,9 @@ external get_fallback_font : font -> font = "ml_al_get_fallback_font"
 
 (** {2 Bitmap fonts} *)
 
+external grab_font_from_bitmap : bitmap -> (int * int) array -> font = "ml_al_grab_font_from_bitmap"
+external load_bitmap_font : string -> font = "ml_al_load_bitmap_font"
+external load_bitmap_font_flags : string -> int -> font = "ml_al_load_bitmap_font_flags"
 external create_builtin_font : unit -> font = "ml_al_create_builtin_font"
 
 (** {2 TTF fonts} *)

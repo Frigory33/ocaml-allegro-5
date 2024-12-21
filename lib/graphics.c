@@ -135,6 +135,10 @@ CAMLprim value ml_al_create_sub_bitmap(value parent, value x, value y, value w, 
 
 ml_function_1arg_ret(al_clone_bitmap, Ptr_val, Val_ptr)
 
+ml_function_1arg(al_convert_bitmap, Ptr_val)
+
+ml_function_noarg(al_convert_memory_bitmaps)
+
 ml_function_1arg(al_destroy_bitmap, Ptr_val)
 
 
@@ -294,10 +298,29 @@ ml_function_1arg(al_set_target_backbuffer, Ptr_val)
 ml_function_noarg_ret(al_get_current_display, Val_ptr)
 
 
-CAMLprim value ml_al_load_bitmap(value filename)
+enum {
+    ML_NO_PREMULTIPLIED_ALPHA = 1 << 0,
+    ML_KEEP_INDEX = 1 << 1,
+    ML_KEEP_BITMAP_FORMAT = 1 << 2,
+};
+
+static int const load_flags_conv[][2] = {
+    { ML_NO_PREMULTIPLIED_ALPHA, ALLEGRO_NO_PREMULTIPLIED_ALPHA },
+    { ML_KEEP_INDEX, ALLEGRO_KEEP_INDEX },
+    { ML_KEEP_BITMAP_FORMAT, ALLEGRO_KEEP_BITMAP_FORMAT },
+};
+
+int convert_load_bitmap_flags_from_ml(value flags)
 {
-    CAMLparam1(filename);
-    ALLEGRO_BITMAP *c_bmp = al_load_bitmap(String_val(filename));
+    CAMLparam1(flags);
+    CAMLreturnT(int, convert_flags(Int_val(flags), load_flags_conv, 0));
+}
+
+CAMLprim value ml_al_load_bitmap_flags(value filename, value flags)
+{
+    CAMLparam2(filename, flags);
+    int c_flags = convert_load_bitmap_flags_from_ml(flags);
+    ALLEGRO_BITMAP *c_bmp = al_load_bitmap_flags(String_val(filename), c_flags);
     if (c_bmp == NULL) {
         char const *c_func = "al_load_bitmap",
             *c_filename = String_val(filename);
@@ -306,4 +329,10 @@ CAMLprim value ml_al_load_bitmap(value filename)
         caml_failwith_value(caml_copy_string(c_msg));
     }
     CAMLreturn(Val_ptr(c_bmp));
+}
+
+CAMLprim value ml_al_load_bitmap(value filename)
+{
+    CAMLparam1(filename);
+    CAMLreturn(ml_al_load_bitmap_flags(filename, Val_int(0)));
 }

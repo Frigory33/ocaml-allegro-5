@@ -11,4 +11,7 @@
 #define PosY_val(v) (Double_val(Field((v), 1)))
 
 
+int convert_load_bitmap_flags_from_ml(value flags);
+
+
 #endif

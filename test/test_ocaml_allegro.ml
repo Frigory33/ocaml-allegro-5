@@ -112,8 +112,8 @@ let () =
     Al5.clear_to_color (Al5.map_rgb 128 128 128);
     Al5.draw_polyline [|100., 200.; 200., 100.; 400., 300.; 500., 200.|]
       (Al5.LineJoin.MITER 2.) Al5.LineCap.ROUND (Al5.map_rgb 0 224 0) 10.;
-    Al5.draw_text font (Al5.map_rgb 0 0 0) (320., 10.) Al5.Text.align_centre
-      (Printf.sprintf "OCaml Allegro 5 ~~ %d ~~ Allegro %d.%d.%d[%d]" !timer_value major minor revision release);
+    Printf.sprintf "OCaml Allegro 5 ~~ %d ~~ Allegro %d.%d.%d[%d]" !timer_value major minor revision release
+    |> Al5.draw_text font (Al5.map_rgb 0 0 0) (320., 10.) Al5.Text.align_centre;
     click_shapes := List.filter ClickShape.is_visible !click_shapes;
     mouse_lines := List.filter MouseLine.is_visible !mouse_lines;
     List.iter ClickShape.draw (List.rev !click_shapes);
