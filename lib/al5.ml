@@ -20,7 +20,7 @@ type pos = float * float
 
 (** {2 Enumerations} *)
 
-module DisplayFlag = struct
+module Display = struct
   let windowed = 1 lsl 0
   let fullscreen_window = 1 lsl 1
   let fullscreen = 1 lsl 2
@@ -230,6 +230,13 @@ module LineCap = struct
   | ROUND
   | TRIANGLE
   | CLOSED
+end
+
+module Text = struct
+  let align_left = 1 lsl 0
+  let align_centre = 1 lsl 1
+  let align_right = 1 lsl 2
+  let align_integer = 1 lsl 3
 end
 
 (** {2 Events} *)
@@ -517,6 +524,8 @@ external get_font_ascent : font -> int = "ml_al_get_font_ascent"
 external get_font_descent : font -> int = "ml_al_get_font_descent"
 external get_text_width : font -> string -> int = "ml_al_get_text_width"
 external draw_text : font -> color -> pos -> int -> string -> unit = "ml_al_draw_text"
+external draw_justified_text : font -> color -> pos -> float -> float -> int -> string -> unit =
+  "ml_al_draw_justified_text_bytecode" "ml_al_draw_justified_text"
 external get_text_dimensions : font -> string -> int * int * int * int = "ml_al_get_text_dimensions"
 external set_fallback_font : font -> font option -> unit = "ml_al_set_fallback_font"
 external get_fallback_font : font -> font = "ml_al_get_fallback_font"

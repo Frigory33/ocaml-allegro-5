@@ -103,10 +103,17 @@ let () =
   let timer_value = ref 0 in
   while not !quit && Al5.get_time () -. !last_event_time < quitting_delay do
 
+    let version = Al5.get_allegro_version () in
+    let major = version lsr 24
+    and minor = (version lsr 16) land 0xFF
+    and revision = (version lsr 8) land 0xFF
+    and release = version land 0xFF in
+
     Al5.clear_to_color (Al5.map_rgb 128 128 128);
     Al5.draw_polyline [|100., 200.; 200., 100.; 400., 300.; 500., 200.|]
       (Al5.LineJoin.MITER 2.) Al5.LineCap.ROUND (Al5.map_rgb 0 224 0) 10.;
-    Al5.draw_text font (Al5.map_rgb 0 0 0) (4., 4.) 0 (Printf.sprintf "%d" !timer_value);
+    Al5.draw_text font (Al5.map_rgb 0 0 0) (320., 10.) Al5.Text.align_centre
+      (Printf.sprintf "OCaml Allegro 5 ~~ %d ~~ Allegro %d.%d.%d[%d]" !timer_value major minor revision release);
     click_shapes := List.filter ClickShape.is_visible !click_shapes;
     mouse_lines := List.filter MouseLine.is_visible !mouse_lines;
     List.iter ClickShape.draw (List.rev !click_shapes);

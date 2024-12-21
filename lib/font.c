@@ -20,6 +20,20 @@ ml_function_noarg(al_shutdown_font_addon)
 ml_function_noarg_ret(al_get_allegro_font_version, Val_int)
 
 
+enum {
+    ML_ALIGN_LEFT = 1 << 0,
+    ML_ALIGN_CENTRE = 1 << 1,
+    ML_ALIGN_RIGHT = 1 << 2,
+    ML_ALIGN_INTEGER = 1 << 3,
+};
+
+static int const text_flags_conv[][2] = {
+    { ML_ALIGN_LEFT, ALLEGRO_ALIGN_LEFT },
+    { ML_ALIGN_CENTRE, ALLEGRO_ALIGN_CENTRE },
+    { ML_ALIGN_RIGHT, ALLEGRO_ALIGN_RIGHT },
+    { ML_ALIGN_INTEGER, ALLEGRO_ALIGN_INTEGER },
+};
+
 CAMLprim value ml_al_load_font(value filename, value size, value flags)
 {
     CAMLparam3(filename, size, flags);
@@ -45,9 +59,27 @@ CAMLprim value ml_al_get_text_width(value font, value str)
 CAMLprim value ml_al_draw_text(value font, value color, value pos, value flags, value text)
 {
     CAMLparam5(font, color, pos, flags, text);
+    int c_flags = convert_flags(Int_val(flags), text_flags_conv, 0);
     al_draw_text(Ptr_val(font), AlColor_val(color),
-        PosX_val(pos), PosY_val(pos), Int_val(flags), String_val(text));
+        PosX_val(pos), PosY_val(pos), c_flags, String_val(text));
     CAMLreturn(Val_unit);
+}
+
+CAMLprim value ml_al_draw_justified_text(value font, value color, value pos, value x2, value diff, value flags, value text)
+{
+    CAMLparam5(font, color, pos, x2, diff);
+    CAMLxparam2(flags, text);
+    int c_flags = convert_flags(Int_val(flags), text_flags_conv, 0);
+    al_draw_justified_text(Ptr_val(font), AlColor_val(color),
+        PosX_val(pos), Double_val(x2), PosY_val(pos), Double_val(diff),
+        c_flags, String_val(text));
+    CAMLreturn(Val_unit);
+}
+
+CAMLprim value ml_al_draw_justified_text_bytecode(value *argv, int argc)
+{
+    return ml_al_draw_justified_text(argv[0], argv[1],
+        argv[2], argv[3], argv[4], argv[5], argv[6]);
 }
 
 CAMLprim value ml_al_get_text_dimensions(value font, value text)

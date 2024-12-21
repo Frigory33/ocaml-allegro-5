@@ -97,7 +97,7 @@ CAMLprim value ml_al_draw_pieslice(value cpos, value r, value start_theta, value
     CAMLreturn(Val_unit);
 }
 
-CAMLprim value ml_al_draw_pieslice_bytecode(value * argv, int argc)
+CAMLprim value ml_al_draw_pieslice_bytecode(value *argv, int argc)
 {
     return ml_al_draw_pieslice(argv[0], argv[1],
         argv[2], argv[3], argv[4], argv[5]);
@@ -151,7 +151,7 @@ CAMLprim value ml_al_draw_arc(value cpos, value r, value start_theta, value delt
     CAMLreturn(Val_unit);
 }
 
-CAMLprim value ml_al_draw_arc_bytecode(value * argv, int argc)
+CAMLprim value ml_al_draw_arc_bytecode(value *argv, int argc)
 {
     return ml_al_draw_arc(argv[0], argv[1],
         argv[2], argv[3], argv[4], argv[5]);
@@ -167,7 +167,7 @@ CAMLprim value ml_al_draw_elliptical_arc(value cpos, value r, value start_theta,
     CAMLreturn(Val_unit);
 }
 
-CAMLprim value ml_al_draw_elliptical_arc_bytecode(value * argv, int argc)
+CAMLprim value ml_al_draw_elliptical_arc_bytecode(value *argv, int argc)
 {
     return ml_al_draw_elliptical_arc(argv[0], argv[1],
         argv[2], argv[3], argv[4], argv[5]);
