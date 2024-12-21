@@ -5,7 +5,7 @@
 
 (generate_opam_files)
 
-(source (gitlab Frigory33/ocaml-allegro-5))
+(source (github Frigory33/ocaml-allegro-5))
 
 (authors "Sylvain Chiron")
 (maintainers "Sylvain Chiron <chironsylvain@orange.fr>")
