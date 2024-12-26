@@ -10,6 +10,7 @@ bug-reports: "https://github.com/Frigory33/ocaml-allegro-5/issues"
 depends: [
   "ocaml"
   "dune" {>= "3.11"}
+  "conf-allegro5"
   "odoc" {with-doc}
 ]
 build: [
@@ -29,3 +30,9 @@ build: [
   ["dune" "install" "-p" name "--create-install-files" name]
 ]
 dev-repo: "git+https://github.com/Frigory33/ocaml-allegro-5.git"
+post-messages: [
+  """\
+We're sorry that your install failed. Please check in the README.md file
+what minimal version of Allegro this package requires."""
+    {failure}
+]
