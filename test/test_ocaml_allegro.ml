@@ -99,7 +99,11 @@ let draw data =
 
 let events data =
   let rec process_event data evt =
-    let last_event_time = Al5.get_time () in
+    let last_event_time =
+      match evt with
+      | Al5.Event.TIMER _ -> data.last_event_time
+      | _ -> Al5.get_time ()
+    in
     let data =
       match evt with
 
@@ -218,8 +222,8 @@ let () =
   in
 
   let timer = Al5.create_timer 0.1 in
-  Al5.start_timer timer;
   Al5.register_event_source queue (Al5.get_timer_event_source timer);
+  Al5.start_timer timer;
 
   main_loop {
       disp; font; queue;
