@@ -11,6 +11,7 @@ depends: [
   "ocaml"
   "dune" {>= "3.11"}
   "conf-allegro5"
+  "dune-site" {with-test}
   "odoc" {with-doc}
 ]
 build: [
