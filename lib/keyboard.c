@@ -525,6 +525,11 @@ CAMLprim value ml_al_get_keyboard_state_display(value state)
 
 ml_function_1arg_ret(al_keycode_to_name, convert_keycode_from_ml, caml_copy_string)
 
+#if ALLEGRO_VERSION_INT < 0x05020900
+bool al_can_set_keyboard_leds()
+{ return false; }
+#endif
+
 ml_function_noarg_ret(al_can_set_keyboard_leds, Val_bool)
 
 ml_function_1arg(al_set_keyboard_leds, convert_keymod_from_ml)
