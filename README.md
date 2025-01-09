@@ -7,7 +7,7 @@ You shall install it with:
 opam install allegro5
 ```
 
-Allegro 5 development libraries (including addons) must be installed on your system for OCaml Allegro 5 to work. For instance, on Arch Linux, they are provided by the `allegro` package.
+Allegro 5 development libraries (including addons) must be installed on your system for OCaml Allegro 5 to work. For instance, on Arch Linux, they are provided by the `allegro` package. The minimum supported version is Allegro 5.2.7.
 
 ## Dune commands
 
