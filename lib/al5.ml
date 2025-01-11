@@ -445,7 +445,7 @@ external get_keyboard_event_source : unit -> event_source = "ml_al_get_keyboard_
 (** {2 Keyboard information} *)
 
 external get_keyboard_state : unit -> keyboard_state = "ml_al_get_keyboard_state"
-external key_down : keyboard_state -> Key.t = "ml_al_key_down"
+external key_down : keyboard_state -> Key.t -> bool = "ml_al_key_down"
 external get_keyboard_state_display : keyboard_state -> display = "ml_al_get_keyboard_state_display"
 external keycode_to_name : Key.t -> string = "ml_al_keycode_to_name"
 external can_set_keyboard_leds : unit -> bool = "ml_al_can_set_keyboard_leds"
