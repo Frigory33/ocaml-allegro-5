@@ -76,9 +76,9 @@ ml_function_1arg_ret(al_get_backbuffer, Ptr_val, Val_ptr)
 ml_function_noarg(al_flip_display)
 
 
-ml_function_1arg_ret(al_get_display_width, Ptr_val, Int_val)
+ml_function_1arg_ret(al_get_display_width, Ptr_val, Val_int)
 
-ml_function_1arg_ret(al_get_display_height, Ptr_val, Int_val)
+ml_function_1arg_ret(al_get_display_height, Ptr_val, Val_int)
 
 
 CAMLprim value ml_al_set_window_title(value disp, value title)
