@@ -488,6 +488,7 @@ int convert_keymod_from_ml(value keymod)
 
 
 #define KbState_val(v) (*((ALLEGRO_KEYBOARD_STATE *)Data_custom_val(v)))
+#define KB_STATE_INDEX 1
 
 static struct custom_operations allegro_kb_state_ops = {
   "org.allegro5.keyboard_state",
@@ -503,9 +504,14 @@ static struct custom_operations allegro_kb_state_ops = {
 CAMLprim value ml_al_get_keyboard_state(value unit)
 {
     CAMLparam1(unit);
-    CAMLlocal1(state);
-    state = caml_alloc_custom(&allegro_kb_state_ops, sizeof(ALLEGRO_KEYBOARD_STATE), 1, 4);
-    al_get_keyboard_state(&KbState_val(state));
+    CAMLlocal2(state, state_priv);
+    ALLEGRO_KEYBOARD_STATE c_state;
+    al_get_keyboard_state(&c_state);
+    state = caml_alloc_tuple(2);
+    Store_field(state, 0, Val_ptr(c_state.display));
+    state_priv = caml_alloc_custom(&allegro_kb_state_ops, sizeof(ALLEGRO_KEYBOARD_STATE), 1, 4);
+    KbState_val(state_priv) = c_state;
+    Store_field(state, KB_STATE_INDEX, state_priv);
     CAMLreturn(state);
 }
 

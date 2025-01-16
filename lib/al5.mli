@@ -9,14 +9,35 @@ type event_source
 type display
 type font
 type joystick
-type keyboard_state
-type mouse_state
 type timeout
 type timer
 
 (** {2 Aggregation types} *)
 
 type pos = float * float
+
+module KeyboardState : sig
+  type priv
+
+  type t = {
+    display : display;
+    priv : priv;
+  }
+end
+
+module MouseState : sig
+  type priv
+
+  type t = {
+    x : int;
+    y : int;
+    z : int;
+    w : int;
+    buttons : int;
+    pressure : float;
+    priv : priv;
+  }
+end
 
 (** {2 Enumerations} *)
 
@@ -256,39 +277,39 @@ end
 module Event : sig
   module Touch : sig
     type t = {
-      display: display;
-      id: int;
-      x: float;
-      y: float;
-      dx: float;
-      dy: float;
+      display : display;
+      id : int;
+      x : float;
+      y : float;
+      dx : float;
+      dy : float;
     }
   end
 
   module MouseButton : sig
     type t = {
-      x: int;
-      y: int;
-      z: int;
-      w: int;
-      button: int;
-      pressure: float;
-      display: display;
+      x : int;
+      y : int;
+      z : int;
+      w : int;
+      button : int;
+      pressure : float;
+      display : display;
     }
   end
 
   module MouseMove : sig
     type t = {
-      x: int;
-      y: int;
-      z: int;
-      w: int;
-      dx: int;
-      dy: int;
-      dz: int;
-      dw: int;
-      pressure: float;
-      display: display;
+      x : int;
+      y : int;
+      z : int;
+      w : int;
+      dx : int;
+      dy : int;
+      dz : int;
+      dw : int;
+      pressure : float;
+      display : display;
     }
   end
 
@@ -445,9 +466,8 @@ external get_keyboard_event_source : unit -> event_source = "ml_al_get_keyboard_
 
 (** {2 Keyboard information} *)
 
-external get_keyboard_state : unit -> keyboard_state = "ml_al_get_keyboard_state"
-external key_down : keyboard_state -> Key.t -> bool = "ml_al_key_down"
-external get_keyboard_state_display : keyboard_state -> display = "ml_al_get_keyboard_state_display"
+external get_keyboard_state : unit -> KeyboardState.t = "ml_al_get_keyboard_state"
+external key_down : KeyboardState.t -> Key.t -> bool = "ml_al_key_down"
 external keycode_to_name : Key.t -> string = "ml_al_keycode_to_name"
 external can_set_keyboard_leds : unit -> bool = "ml_al_can_set_keyboard_leds"
 external set_keyboard_leds : int -> unit = "ml_al_set_keyboard_leds"
@@ -464,10 +484,9 @@ external get_mouse_event_source : unit -> event_source = "ml_al_get_mouse_event_
 
 external get_mouse_num_axis : unit -> int = "ml_al_get_mouse_num_axes"
 external get_mouse_num_buttons : unit -> int = "ml_al_get_mouse_num_buttons"
-external get_mouse_state : unit -> mouse_state = "ml_al_get_mouse_state"
-external get_mouse_state_axis : mouse_state -> int -> int = "ml_al_get_mouse_state_axis"
-external mouse_button_down : mouse_state -> int -> bool = "ml_al_mouse_button_down"
-external get_mouse_state_pressure : mouse_state -> float = "ml_al_get_mouse_state_pressure"
+external get_mouse_state : unit -> MouseState.t = "ml_al_get_mouse_state"
+external get_mouse_state_axis : MouseState.t -> int -> int = "ml_al_get_mouse_state_axis"
+external mouse_button_down : MouseState.t -> int -> bool = "ml_al_mouse_button_down"
 external set_mouse_xy : display -> int -> int -> bool = "ml_al_set_mouse_xy"
 external set_mouse_z : int -> bool = "ml_al_set_mouse_z"
 external set_mouse_w : int -> bool = "ml_al_set_mouse_w"

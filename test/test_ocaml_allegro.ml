@@ -4,9 +4,9 @@ module ClickShape = struct
   | Triangle
 
   type t = {
-    pos: Al5.pos;
-    shape: shape;
-    time: float;
+    pos : Al5.pos;
+    shape : shape;
+    time : float;
   }
 
   let delay = 5.
@@ -34,10 +34,10 @@ module MouseLine = struct
   | Allegator
 
   type t = {
-    pos1: Al5.pos;
-    pos2: Al5.pos;
-    shape: shape;
-    time: float;
+    pos1 : Al5.pos;
+    pos2 : Al5.pos;
+    shape : shape;
+    time : float;
   }
 
   let delay = 0.5
@@ -65,15 +65,15 @@ module MouseLine = struct
 end
 
 type data = {
-  disp: Al5.display option;
-  font: Al5.font;
-  queue: Al5.event_queue;
-  quit: bool;
-  cur_style: int;
-  last_event_time: float;
-  click_shapes: ClickShape.t list;
-  mouse_lines: MouseLine.t list;
-  timer_value: int;
+  disp : Al5.display option;
+  font : Al5.font;
+  queue : Al5.event_queue;
+  quit : bool;
+  cur_style : int;
+  last_event_time : float;
+  click_shapes : ClickShape.t list;
+  mouse_lines : MouseLine.t list;
+  timer_value : int;
 }
 
 let quitting_delay = 5.

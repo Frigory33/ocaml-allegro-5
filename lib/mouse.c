@@ -18,6 +18,7 @@ ml_function_noarg_ret(al_get_mouse_event_source, Val_ptr)
 
 
 #define MouseState_val(v) (*((ALLEGRO_MOUSE_STATE *)Data_custom_val(v)))
+#define MOUSE_STATE_INDEX 6
 
 static struct custom_operations allegro_mouse_state_ops = {
   "org.allegro5.mouse_state",
@@ -37,30 +38,38 @@ ml_function_noarg_ret(al_get_mouse_num_buttons, Val_int);
 CAMLprim value ml_al_get_mouse_state(value unit)
 {
     CAMLparam1(unit);
-    CAMLlocal1(state);
-    state = caml_alloc_custom(&allegro_mouse_state_ops, sizeof(ALLEGRO_MOUSE_STATE), 1, 64);
-    al_get_mouse_state(&MouseState_val(state));
+    CAMLlocal2(state, state_priv);
+    ALLEGRO_MOUSE_STATE c_state;
+    al_get_mouse_state(&c_state);
+    state = caml_alloc_tuple(7);
+    Store_field(state, 0, Val_int(c_state.x));
+    Store_field(state, 1, Val_int(c_state.y));
+    Store_field(state, 2, Val_int(c_state.z));
+    Store_field(state, 3, Val_int(c_state.w));
+    Store_field(state, 4, Val_int(c_state.buttons));
+    Store_field(state, 5, caml_copy_double(c_state.pressure));
+    state_priv = caml_alloc_custom(&allegro_mouse_state_ops, sizeof(ALLEGRO_MOUSE_STATE), 1, 64);
+    MouseState_val(state_priv) = c_state;
+    Store_field(state, MOUSE_STATE_INDEX, state_priv);
     CAMLreturn(state);
 }
 
 CAMLprim value ml_al_get_mouse_state_axis(value state, value axis)
 {
     CAMLparam2(state, axis);
-    int c_pos = al_get_mouse_state_axis(&MouseState_val(state), Int_val(axis));
+    CAMLlocal1(state_priv);
+    state_priv = Field(state, MOUSE_STATE_INDEX);
+    int c_pos = al_get_mouse_state_axis(&MouseState_val(state_priv), Int_val(axis));
     CAMLreturn(Val_int(c_pos));
 }
 
 CAMLprim value ml_al_mouse_button_down(value state, value button)
 {
     CAMLparam2(state, button);
-    bool c_down = al_mouse_button_down(&MouseState_val(state), Int_val(button));
+    CAMLlocal1(state_priv);
+    state_priv = Field(state, MOUSE_STATE_INDEX);
+    bool c_down = al_mouse_button_down(&MouseState_val(state_priv), Int_val(button));
     CAMLreturn(Val_bool(c_down));
-}
-
-CAMLprim value ml_al_get_mouse_state_pressure(value state)
-{
-    CAMLparam1(state);
-    CAMLreturn(caml_copy_double(MouseState_val(state).pressure));
 }
 
 
