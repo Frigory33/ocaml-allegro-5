@@ -7,7 +7,7 @@
 
 (source (github Frigory33/ocaml-allegro-5))
 
-(authors "Sylvain Chiron")
+(authors "Sylvain Chiron <chironsylvain@orange.fr>")
 (maintainers "Sylvain Chiron <chironsylvain@orange.fr>")
 
 (license LGPL-3.0-or-later)
