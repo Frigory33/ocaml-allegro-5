@@ -22,5 +22,5 @@
  (foreign_stubs
   (language c)
   (names al5 display events graphics keyboard mouse system time timer font image primitives)
-  (flags -std=c11 -Wall -O2 -I -fPIC (:include c_flags.sexp)))
- (c_library_flags (:include lib_flags.sexp)))
+  (flags :standard -std=c11 -Wall -O2 (:include c_flags.sexp)))
+ (c_library_flags :standard (:include lib_flags.sexp)))
