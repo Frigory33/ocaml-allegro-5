@@ -1,5 +1,4 @@
 (lang dune 3.11)
-(using dune_site 0.1)
 
 (name allegro5)
 
@@ -16,5 +15,5 @@
  (name allegro5)
  (synopsis "OCaml Allegro 5")
  (description "An OCaml binding of the Allegro 5 game & multimedia C library")
- (depends (ocaml (>= 4.12)) dune conf-allegro5 (dune-site :with-test))
+ (depends (ocaml (>= 4.12)) dune conf-allegro5)
  (sites (share ocaml_allegro5)))
