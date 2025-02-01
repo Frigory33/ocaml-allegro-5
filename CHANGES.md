@@ -1,4 +1,4 @@
-# 0.2 (2025-01)
+# 0.1 (2025-02)
 
 First release. Includes elements of the following Allegro 5 modules:
 
