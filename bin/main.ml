@@ -205,7 +205,7 @@ let () =
     | Failure _ -> ()
   in
 
-  let rsrc_folder = List.hd Sites.Sites.test_ocaml_allegro5 in
+  let rsrc_folder = List.hd Sites.Sites.ocaml_allegro5_test in
   let alleg_img = Al5.load_bitmap (Filename.concat rsrc_folder "allegator.png") in
   MouseLine.alleg_img := Some alleg_img;
   let font = Al5.create_builtin_font () in
