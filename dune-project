@@ -17,5 +17,5 @@
  (name allegro5)
  (synopsis "OCaml Allegro 5")
  (description "An OCaml binding of the Allegro 5 game & multimedia C library")
- (depends (ocaml (>= 4.04)) dune conf-allegro5)
+ (depends (ocaml (>= 4.08)) dune conf-allegro5)
  (sites (share ocaml_allegro5)))
