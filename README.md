@@ -24,4 +24,4 @@ Merge requests and bug reports are very welcome! Please join the project!
 
 You can also create a bug report for a feature request.
 
-A small repository for testing the binding is available at [ocaml-allegro-5-test](https://github.com/Frigory33/ocaml/allegro-5-test).
+A small repository for testing the binding is available at [ocaml-allegro-5-test](https://github.com/Frigory33/ocaml-allegro-5-test).
