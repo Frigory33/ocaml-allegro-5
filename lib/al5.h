@@ -9,6 +9,16 @@
 #include <caml/fail.h>
 #include <caml/memory.h>
 #include <caml/mlvalues.h>
+#include <caml/version.h>
+
+
+#if OCAML_VERSION < 41200
+#define Some_val(v) Field(v, 0)
+#define Val_none Val_int(0)
+#define Is_none(v) (v == Val_none)
+
+value caml_alloc_some(value v);
+#endif
 
 
 #define Ptr_val(v) ((void *)Nativeint_val(v))
