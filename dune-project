@@ -11,6 +11,8 @@
 
 (license LGPL-3.0-or-later)
 
+(documentation https://frigory33.github.io/ocaml-allegro-5/)
+
 (package
  (name allegro5)
  (synopsis "OCaml Allegro 5")
