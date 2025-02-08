@@ -23,6 +23,10 @@ type sample_id
 
 type pos = float * float
 
+module JoystickState : sig
+  type t
+end
+
 module KeyboardState : sig
   type priv
 
@@ -474,6 +478,33 @@ external get_current_display : unit -> display = "al_get_current_display"
 external load_bitmap : string -> bitmap = "ml_al_load_bitmap"
 
 
+(** {1 Joystick routines} *)
+
+external install_joystick : unit -> unit = "ml_al_install_joystick"
+external is_joystick_installed : unit -> bool = "ml_al_is_joystick_installed"
+external uninstall_joystick : unit -> unit = "ml_al_uninstall_joystick"
+external get_joystick_event_source : unit -> event_source = "ml_al_get_joystick_event_source"
+external reconfigure_joysticks : unit -> bool = "ml_al_reconfigure_joysticks"
+
+(** {2 Joystick information} *)
+
+external get_num_joysticks : unit -> int = "ml_al_get_num_joysticks"
+external get_joystick : int -> joystick = "ml_al_get_joystick"
+external release_joystick : joystick -> unit = "ml_al_release_joystick"
+external get_joystick_active : joystick -> bool = "ml_al_get_joystick_active"
+external get_joystick_name : joystick -> string = "ml_al_get_joystick_name"
+external get_joystick_stick_name : joystick -> int -> string option = "ml_al_get_joystick_stick_name"
+external get_joystick_axis_name : joystick -> int -> int -> string option = "ml_al_get_joystick_axis_name"
+external get_joystick_button_name : joystick -> int -> string option = "ml_al_get_joystick_button_name"
+external is_joystick_stick_analogue : joystick -> int -> bool = "ml_al_is_joystick_stick_analogue"
+external get_joystick_num_sticks : joystick -> int = "ml_al_get_joystick_num_sticks"
+external get_joystick_num_axes : joystick -> int -> int = "ml_al_get_joystick_num_axes"
+external get_joystick_num_buttons : joystick -> int = "ml_al_get_joystick_num_buttons"
+external get_joystick_state : joystick -> JoystickState.t = "ml_al_get_joystick_state"
+external get_joystick_state_axis : JoystickState.t -> int -> int -> float = "ml_al_get_joystick_state_axis"
+external get_joystick_state_button : JoystickState.t -> int -> int = "ml_al_get_joystick_state_button"
+
+
 (** {1 Keyboard routines} *)
 
 external install_keyboard : unit -> unit = "ml_al_install_keyboard"
@@ -551,7 +582,7 @@ external set_timer_speed : timer -> float -> unit = "ml_al_set_timer_speed"
 external get_timer_event_source : timer -> event_source = "ml_al_get_timer_event_source"
 
 
-(** {1 Audio addon} *)
+(** {1 Audio addons} *)
 
 external install_audio : unit -> unit = "ml_al_install_audio"
 external is_audio_installed : unit -> bool = "ml_al_is_audio_installed"

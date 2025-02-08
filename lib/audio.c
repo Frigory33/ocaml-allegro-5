@@ -99,13 +99,13 @@ CAMLprim value ml_al_reserve_samples(value count)
 CAMLprim value ml_al_play_sample(value spl, value gain, value pan, value speed, value loop)
 {
     CAMLparam5(spl, gain, pan, speed, loop);
-    ALLEGRO_SAMPLE_ID spl_id;
+    ALLEGRO_SAMPLE_ID c_spl_id;
     bool success = al_play_sample(Ptr_val(spl),
         Double_val(gain), Double_val(pan), Double_val(speed),
         convert_playmode_from_ml(loop),
-        &spl_id);
+        &c_spl_id);
     if (success) {
-        CAMLreturn(caml_alloc_some(alloc_sample_id(spl_id)));
+        CAMLreturn(caml_alloc_some(alloc_sample_id(c_spl_id)));
     }
     CAMLreturn(Val_none);
 }
@@ -123,9 +123,9 @@ ml_function_noarg(al_stop_samples)
 CAMLprim value ml_al_load_audio_stream(value filename, value buffer_count, value samples)
 {
     CAMLparam3(filename, buffer_count, samples);
-    ALLEGRO_AUDIO_STREAM * stream = al_load_audio_stream(
+    ALLEGRO_AUDIO_STREAM * c_stream = al_load_audio_stream(
         String_val(filename), Int_val(buffer_count), Int_val(samples));
-    CAMLreturn(Val_ptr(stream));
+    CAMLreturn(Val_ptr(c_stream));
 }
 
 ml_function_1arg(al_destroy_audio_stream, Ptr_val)

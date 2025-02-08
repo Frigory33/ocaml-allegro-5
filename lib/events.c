@@ -97,6 +97,21 @@ static value convert_event(ALLEGRO_EVENT c_evt)
         case ALLEGRO_EVENT_AUDIO_STREAM_FINISHED:
             evt = Val_int(ML_EVENT_AUDIO_STREAM_FINISHED);
             break;
+        case ALLEGRO_EVENT_JOYSTICK_AXIS:
+            evt = caml_alloc(4, ML_EVENT_JOYSTICK_AXIS);
+            Store_field(evt, 0, Val_ptr(c_evt.joystick.id));
+            Store_field(evt, 1, Val_int(c_evt.joystick.stick));
+            Store_field(evt, 2, Val_int(c_evt.joystick.axis));
+            Store_field(evt, 3, caml_copy_double(c_evt.joystick.pos));
+            break;
+        case ALLEGRO_EVENT_JOYSTICK_BUTTON_DOWN:
+        case ALLEGRO_EVENT_JOYSTICK_BUTTON_UP:
+            evt = caml_alloc(2,
+                c_evt.type == ALLEGRO_EVENT_JOYSTICK_BUTTON_UP ?
+                    ML_EVENT_JOYSTICK_BUTTON_UP : ML_EVENT_JOYSTICK_BUTTON_DOWN);
+            Store_field(evt, 0, Val_ptr(c_evt.joystick.id));
+            Store_field(evt, 1, Val_int(c_evt.joystick.button));
+            break;
         case ALLEGRO_EVENT_KEY_DOWN:
         case ALLEGRO_EVENT_KEY_UP:
             evt = caml_alloc(2, c_evt.type == ALLEGRO_EVENT_KEY_UP ? ML_EVENT_KEY_UP : ML_EVENT_KEY_DOWN);
