@@ -1,3 +1,9 @@
+# 0.2
+
+- Audio: support for a basic API.
+- Joystick: full support.
+
+
 # 0.1 (2025-02)
 
 First release. Includes elements of the following Allegro 5 modules:
