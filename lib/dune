@@ -4,7 +4,7 @@
   (with-stdout-to %{targets}
    (progn
     (echo "(")
-    (run "pkg-config" "--cflags" "allegro_image-5" "allegro_primitives-5" "allegro_ttf-5")
+    (run "pkg-config" "--cflags" "allegro_acodec-5" "allegro_image-5" "allegro_primitives-5" "allegro_ttf-5")
     (echo ")")))))
 
 (rule
@@ -13,7 +13,7 @@
   (with-stdout-to %{targets}
    (progn
     (echo "(")
-    (run "pkg-config" "--libs" "allegro_image-5" "allegro_primitives-5" "allegro_ttf-5")
+    (run "pkg-config" "--libs" "allegro_acodec-5" "allegro_image-5" "allegro_primitives-5" "allegro_ttf-5")
     (echo ")")))))
 
 (library
@@ -21,6 +21,6 @@
  (public_name allegro5)
  (foreign_stubs
   (language c)
-  (names al5 display events graphics keyboard mouse system time timer font image primitives)
+  (names al5 display events graphics keyboard mouse system time timer acodec audio font image primitives)
   (flags :standard -std=c11 -Wall -O2 (:include c_flags.sexp)))
  (c_library_flags :standard (:include lib_flags.sexp)))

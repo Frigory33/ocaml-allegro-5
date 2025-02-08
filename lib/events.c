@@ -1,5 +1,7 @@
 #include "keyboard.h"
 
+#include <allegro5/allegro_audio.h>
+
 
 CAMLprim value ml_al_create_event_queue(value unit)
 {
@@ -70,6 +72,8 @@ enum {
     ML_EVENT_JOYSTICK_CONFIGURATION,
     ML_EVENT_DISPLAY_HALT_DRAWING,
     ML_EVENT_DISPLAY_RESUME_DRAWING,
+    ML_EVENT_AUDIO_STREAM_FRAGMENT,
+    ML_EVENT_AUDIO_STREAM_FINISHED,
 };
 
 
@@ -78,6 +82,21 @@ static value convert_event(ALLEGRO_EVENT c_evt)
     CAMLparam0();
     CAMLlocal2(evt, info);
     switch (c_evt.type) {
+        case ALLEGRO_EVENT_JOYSTICK_CONFIGURATION:
+            evt = Val_int(ML_EVENT_JOYSTICK_CONFIGURATION);
+            break;
+        case ALLEGRO_EVENT_DISPLAY_HALT_DRAWING:
+            evt = Val_int(ML_EVENT_DISPLAY_HALT_DRAWING);
+            break;
+        case ALLEGRO_EVENT_DISPLAY_RESUME_DRAWING:
+            evt = Val_int(ML_EVENT_DISPLAY_RESUME_DRAWING);
+            break;
+        case ALLEGRO_EVENT_AUDIO_STREAM_FRAGMENT:
+            evt = Val_int(ML_EVENT_AUDIO_STREAM_FRAGMENT);
+            break;
+        case ALLEGRO_EVENT_AUDIO_STREAM_FINISHED:
+            evt = Val_int(ML_EVENT_AUDIO_STREAM_FINISHED);
+            break;
         case ALLEGRO_EVENT_KEY_DOWN:
         case ALLEGRO_EVENT_KEY_UP:
             evt = caml_alloc(2, c_evt.type == ALLEGRO_EVENT_KEY_UP ? ML_EVENT_KEY_UP : ML_EVENT_KEY_DOWN);

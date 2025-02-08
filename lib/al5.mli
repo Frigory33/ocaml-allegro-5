@@ -12,6 +12,13 @@ type joystick
 type timeout
 type timer
 
+(** {3 Audio} *)
+
+type audio_stream
+type mixer
+type sample
+type sample_id
+
 (** {2 Aggregation types} *)
 
 type pos = float * float
@@ -272,6 +279,14 @@ module Ttf : sig
   val no_autohint : int
 end
 
+module Playmode : sig
+  type t =
+  | ONCE
+  | LOOP
+  | LOOP_ONCE
+  | BIDIR
+end
+
 (** {2 Events} *)
 
 module Event : sig
@@ -346,6 +361,8 @@ module Event : sig
   | DISPLAY_CONNECTED of display
   | DISPLAY_DISCONNECTED of display
   | DROP of int * int * (string * bool * int * bool) option
+  | AUDIO_STREAM_FRAGMENT
+  | AUDIO_STREAM_FINISHED
   | UNKNOWN of int
 end
 
@@ -532,6 +549,47 @@ external add_timer_count : timer -> int64 -> unit = "ml_al_add_timer_count"
 external get_timer_speed : timer -> float = "ml_al_get_timer_speed"
 external set_timer_speed : timer -> float -> unit = "ml_al_set_timer_speed"
 external get_timer_event_source : timer -> event_source = "ml_al_get_timer_event_source"
+
+
+(** {1 Audio addon} *)
+
+external install_audio : unit -> unit = "ml_al_install_audio"
+external is_audio_installed : unit -> bool = "ml_al_is_audio_installed"
+external uninstall_audio : unit -> unit = "ml_al_uninstall_audio"
+external get_allegro_audio_version : unit -> int = "ml_al_get_allegro_audio_version"
+
+(** {2 Samples} *)
+
+external load_sample : string -> sample = "ml_al_load_sample"
+external save_sample : string -> sample -> bool = "ml_al_save_sample"
+external destroy_sample : sample -> unit = "ml_al_destroy_sample"
+external reserve_samples : int -> unit = "ml_al_reserve_samples"
+external play_sample : sample -> float -> float -> float -> Playmode.t -> sample_id option = "ml_al_play_sample"
+external stop_sample : sample -> unit = "ml_al_stop_sample"
+external stop_samples : unit -> unit = "ml_al_stop_samples"
+
+(** {2 Audio streams} *)
+
+external load_audio_stream : string -> int -> int -> audio_stream = "ml_al_load_audio_stream"
+external destroy_audio_stream : audio_stream -> unit = "ml_al_destroy_audio_stream"
+external get_audio_stream_event_source : audio_stream -> event_source = "ml_al_get_audio_stream_event_source"
+external rewind_audio_stream : audio_stream -> bool = "ml_al_rewind_audio_stream"
+external detach_audio_stream : audio_stream -> bool = "ml_al_detach_audio_stream"
+external get_audio_stream_playing : audio_stream -> bool = "ml_al_get_audio_stream_playing"
+external set_audio_stream_playing : audio_stream -> bool -> bool = "ml_al_set_audio_stream_playing"
+external get_audio_stream_playmode : audio_stream -> Playmode.t = "ml_al_get_audio_stream_playmode"
+external set_audio_stream_playmode : audio_stream -> Playmode.t -> bool = "ml_al_set_audio_stream_playmode"
+
+(** {2 Mixers} *)
+
+external get_default_mixer : unit -> mixer = "ml_al_get_default_mixer"
+external attach_audio_stream_to_mixer : audio_stream -> mixer -> bool = "ml_al_attach_audio_stream_to_mixer"
+
+(** {2 Audio codecs} *)
+
+external init_acodec_addon : unit -> unit = "ml_al_init_acodec_addon"
+external is_acodec_addon_initialized : unit -> bool = "ml_al_is_acodec_addon_initialized"
+external get_allegro_acodec_version : unit -> int = "ml_al_get_allegro_acodec_version"
 
 
 (** {1 Image I/O addon} *)
