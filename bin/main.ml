@@ -31,7 +31,7 @@ end
 module MouseLine = struct
   type shape =
   | Line
-  | Allegator
+  | Image
 
   type t = {
     pos1 : Al5.pos;
@@ -42,7 +42,7 @@ module MouseLine = struct
 
   let delay = 0.5
 
-  let alleg_img = ref None
+  let img = ref None
 
   let is_visible line =
     Al5.get_time () -. line.time <= delay
@@ -55,8 +55,8 @@ module MouseLine = struct
     | Line ->
         Al5.draw_line line.pos1 line.pos2 (Al5.map_rgba_f 0. 0. 0. alpha) 1.;
         ()
-    | Allegator ->
-        let alleg_img = Option.get !alleg_img in
+    | Image ->
+        let alleg_img = Option.get !img in
         let cx = float_of_int (Al5.get_bitmap_width alleg_img) /. 2.
         and cy = float_of_int (Al5.get_bitmap_height alleg_img) /. 2. in
         let angle = atan2 (y2 -. y1) (x2 -. x1) in
@@ -67,6 +67,8 @@ end
 type data = {
   disp : Al5.display option;
   font : Al5.font;
+  music: Al5.audio_stream;
+  sound: Al5.sample;
   queue : Al5.event_queue;
   quit : bool;
   cur_style : int;
@@ -122,13 +124,23 @@ let events data =
             let mouse_line = MouseLine.{
                 pos1 = float_of_int (move.x - move.dx), float_of_int (move.y - move.dy);
                 pos2 = float_of_int move.x, float_of_int move.y;
-                shape = (match data.cur_style with 0 -> Line | _ -> Allegator);
+                shape = (match data.cur_style with 0 -> Line | _ -> Image);
                 time = data.last_event_time;
               } in
             { data with mouse_lines = mouse_line :: data.mouse_lines }
           ) else if move.dz <> 0 then (
             let nb_styles = 2 in
             let cur_style = ((data.cur_style + move.dz) mod nb_styles + nb_styles) mod nb_styles in
+            begin
+              match cur_style with
+              | 0 ->
+                  ignore @@ Al5.set_audio_stream_playing data.music false;
+                  ignore @@ Al5.play_sample data.sound 1. 0. 1. Al5.Playmode.ONCE;
+              | 1 ->
+                  ignore @@ Al5.rewind_audio_stream data.music;
+                  ignore @@ Al5.set_audio_stream_playing data.music true;
+              | _ -> ()
+            end;
             { data with cur_style }
           ) else (
             data
@@ -183,6 +195,8 @@ let rec main_loop data =
 let () =
 
   Al5.init ();
+  Al5.install_audio ();
+  Al5.init_acodec_addon ();
   Al5.init_font_addon ();
   Al5.init_image_addon ();
   Al5.init_primitives_addon ();
@@ -206,15 +220,27 @@ let () =
   in
 
   let rsrc_folder = List.hd Sites.Sites.ocaml_allegro5_test in
-  let alleg_img = Al5.load_bitmap (Filename.concat rsrc_folder "allegator.png") in
-  MouseLine.alleg_img := Some alleg_img;
+  let img = Al5.load_bitmap (Filename.concat rsrc_folder "image.png") in
+  MouseLine.img := Some img;
   let font = Al5.create_builtin_font () in
+  let music = Al5.load_audio_stream (Filename.concat rsrc_folder "music.ogg") 4 2048 in
+  let sound = Al5.load_sample (Filename.concat rsrc_folder "sound.wav") in
+
+  begin
+    try
+      Al5.reserve_samples 1;
+      ignore @@ Al5.set_audio_stream_playing music false;
+      ignore @@ Al5.set_audio_stream_playmode music Al5.Playmode.LOOP;
+      ignore @@ Al5.attach_audio_stream_to_mixer music (Al5.get_default_mixer ());
+    with
+    | Failure _ -> ()
+  end;
 
   let disp =
     try
       Al5.set_new_window_title "OCaml Allegro 5 test";
       let disp = Al5.create_display 640 480 in
-      Al5.set_display_icon disp alleg_img;
+      Al5.set_display_icon disp img;
       Al5.register_event_source queue (Al5.get_display_event_source disp);
       Some disp
     with
@@ -226,7 +252,7 @@ let () =
   Al5.start_timer timer;
 
   main_loop {
-      disp; font; queue;
+      disp; font; music; sound; queue;
       quit = false;
       cur_style = 0;
       last_event_time = Al5.get_time ();
@@ -235,8 +261,10 @@ let () =
       timer_value = 0;
     };
 
-  Al5.destroy_bitmap alleg_img;
+  Al5.destroy_bitmap img;
   Al5.destroy_font font;
+  Al5.destroy_audio_stream music;
+  Al5.destroy_sample sound;
 
   Al5.destroy_event_queue queue;
   Option.iter Al5.destroy_display disp;
