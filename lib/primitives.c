@@ -187,6 +187,30 @@ static void convert_points(value points, float c_points[][2])
     CAMLreturn0;
 }
 
+CAMLprim value ml_al_draw_spline(value points, value color, value thickness)
+{
+    CAMLparam3(points, color, thickness);
+    if (Wosize_val(points) != 4) {
+        caml_invalid_argument("Al5.draw_spline: Array.length points <> 4");
+    }
+    float c_points[4][2];
+    convert_points(points, c_points);
+    al_draw_spline((float *)c_points, AlColor_val(color), Double_val(thickness));
+    CAMLreturn(Val_unit);
+}
+
+CAMLprim value ml_al_draw_ribbon(value points, value color, value thickness)
+{
+    CAMLparam3(points, color, thickness);
+    int point_count = Wosize_val(points);
+    float c_points[point_count][2];
+    convert_points(points, c_points);
+    al_draw_ribbon((float *)c_points, sizeof(*c_points),
+        AlColor_val(color), Double_val(thickness), point_count);
+    CAMLreturn(Val_unit);
+}
+
+
 enum {
     ML_LINE_JOIN_NONE,
     ML_LINE_JOIN_BEVEL,

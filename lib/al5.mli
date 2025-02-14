@@ -693,6 +693,8 @@ external draw_circle : pos -> float -> color -> float -> unit = "ml_al_draw_circ
 external draw_filled_circle : pos -> float -> color -> unit = "ml_al_draw_filled_circle"
 external draw_arc : pos -> float -> float -> float -> color -> float -> unit = "ml_al_draw_arc_bytecode" "ml_al_draw_arc"
 external draw_elliptical_arc : pos -> pos -> float -> float -> color -> float -> unit = "ml_al_draw_elliptical_arc_bytecode" "ml_al_draw_elliptical_arc"
+external draw_spline : pos array -> color -> float -> unit = "ml_al_draw_spline"
+external draw_ribbon : pos array -> color -> float -> unit = "ml_al_draw_ribbon"
 
 (** {2 Polygon routines} *)
 
