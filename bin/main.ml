@@ -89,13 +89,23 @@ let draw data =
   and release = version land 0xFF in
 
   Al5.clear_to_color (Al5.map_rgb 128 128 128);
+
+  let middle = float_of_int (Al5.get_display_width (Option.get data.disp)) /. 2.
+  and bottom = float_of_int (Al5.get_display_height (Option.get data.disp)) in
+  let font_height = float_of_int (Al5.get_font_line_height data.font) in
+  Printf.sprintf "OCaml Allegro 5 ~~ %d ~~ Allegro %d.%d.%d[%d]" data.timer_value major minor revision release
+  |> Al5.draw_text data.font (Al5.map_rgb 0 0 0) (middle, 10.) Al5.Text.align_centre;
+  Al5.get_standard_path Al5.StandardPath.EXENAME
+  |> Al5.draw_text data.font (Al5.map_rgb 0 0 0) (middle, bottom -. 10. -. font_height) Al5.Text.align_centre;
+
   Al5.draw_polyline [|100., 200.; 200., 100.; 400., 300.; 500., 200.|]
     (Al5.LineJoin.MITER 2.) Al5.LineCap.ROUND (Al5.map_rgb 0 224 0) 10.;
-  Printf.sprintf "OCaml Allegro 5 ~~ %d ~~ Allegro %d.%d.%d[%d]" data.timer_value major minor revision release
-  |> Al5.draw_text data.font (Al5.map_rgb 0 0 0) (320., 10.) Al5.Text.align_centre;
+
   List.iter ClickShape.draw (List.rev data.click_shapes);
   List.iter MouseLine.draw (List.rev data.mouse_lines);
+
   Al5.flip_display ();
+
   ()
 
 
@@ -161,6 +171,10 @@ let events data =
       | Al5.Event.TIMER _ -> { data with timer_value = data.timer_value + 1 }
 
       | Al5.Event.DISPLAY_CLOSE _ -> { data with quit = true }
+
+      | Al5.Event.DISPLAY_RESIZE (disp, _, _, _, _) ->
+          Al5.acknowledge_resize disp;
+          data
 
       | _ -> data
     in
@@ -238,6 +252,7 @@ let () =
 
   let disp =
     try
+      Al5.set_new_display_flags (Al5.Display.windowed lor Al5.Display.resizable);
       Al5.set_new_window_title "OCaml Allegro 5 test";
       let disp = Al5.create_display 640 480 in
       Al5.set_display_icon disp img;
