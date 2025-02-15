@@ -253,6 +253,17 @@ module Flip = struct
   let vertical = 1 lsl 1
 end
 
+module StandardPath = struct
+  type t =
+  | RESOURCES
+  | TEMP
+  | USER_HOME
+  | USER_DOCUMENTS
+  | USER_DATA
+  | USER_SETTINGS
+  | EXENAME
+end
+
 module LineJoin = struct
   type t =
   | NONE
@@ -549,6 +560,8 @@ external uninstall_system : unit -> unit = "ml_al_uninstall_system"
 external is_system_installed : unit -> bool = "ml_al_is_system_installed"
 external get_allegro_version : unit -> int = "ml_al_get_allegro_version"
 
+external get_standard_path : StandardPath.t -> string = "ml_al_get_standard_path"
+external set_exe_name : string -> unit = "ml_al_set_exe_name"
 external set_app_name : string -> unit = "ml_al_set_app_name"
 external set_org_name : string -> unit = "ml_al_set_org_name"
 external get_app_name : unit -> string = "ml_al_get_app_name"
