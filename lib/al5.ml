@@ -402,6 +402,12 @@ external get_display_width : display -> int = "ml_al_get_display_width"
 external get_display_height : display -> int = "ml_al_get_display_height"
 external resize_display : display -> int -> int -> bool = "ml_al_resize_display"
 external acknowledge_resize : display -> unit = "ml_al_acknowledge_resize"
+external get_window_position : display -> int * int = "ml_al_get_window_position"
+external set_window_position : display -> int -> int -> unit = "ml_al_set_window_position"
+external get_window_constraints : display -> int * int * int * int = "ml_al_get_window_constraints"
+external set_window_constraints : display -> int -> int -> int -> int -> unit = "ml_al_set_window_constraints"
+external apply_window_constraints : display -> bool -> unit = "ml_al_apply_window_constraints"
+external get_display_adapter : display -> int = "ml_al_get_display_adapter"
 
 (** {2 Display settings} *)
 

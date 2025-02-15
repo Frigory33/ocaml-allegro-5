@@ -96,6 +96,60 @@ CAMLprim value ml_al_acknowledge_resize(value disp)
     CAMLreturn(Val_unit);
 }
 
+CAMLprim value ml_al_get_window_position(value disp)
+{
+    CAMLparam1(disp);
+    int c_x, c_y;
+    al_get_window_position(Ptr_val(disp), &c_x, &c_y);
+    CAMLlocal1(pos);
+    pos = caml_alloc_tuple(2);
+    Store_field(pos, 0, Val_int(c_x));
+    Store_field(pos, 1, Val_int(c_y));
+    CAMLreturn(pos);
+}
+
+CAMLprim value ml_al_set_window_position(value disp, value x, value y)
+{
+    CAMLparam3(disp, x, y);
+    al_set_window_position(Ptr_val(disp), Int_val(x), Int_val(y));
+    CAMLreturn(Val_unit);
+}
+
+CAMLprim value ml_al_get_window_constraints(value disp)
+{
+    CAMLparam1(disp);
+    int c_min_w, c_min_h, c_max_w, c_max_h;
+    al_get_window_constraints(Ptr_val(disp), &c_min_w, &c_min_h, &c_max_w, &c_max_h);
+    CAMLlocal1(constr);
+    constr = caml_alloc_tuple(4);
+    Store_field(constr, 0, Val_int(c_min_w));
+    Store_field(constr, 1, Val_int(c_min_h));
+    Store_field(constr, 2, Val_int(c_max_w));
+    Store_field(constr, 3, Val_int(c_max_h));
+    CAMLreturn(constr);
+}
+
+CAMLprim value ml_al_set_window_constraints(value disp, value min_w, value min_h, value max_w, value max_h)
+{
+    CAMLparam5(disp, min_w, min_h, max_w, max_h);
+    al_set_window_constraints(Ptr_val(disp), Int_val(min_w), Int_val(min_h), Int_val(max_w), Int_val(max_h));
+    CAMLreturn(Val_unit);
+}
+
+CAMLprim value ml_al_apply_window_constraints(value disp, value onoff)
+{
+    CAMLparam2(disp, onoff);
+    al_apply_window_constraints(Ptr_val(disp), Bool_val(onoff));
+    CAMLreturn(Val_unit);
+}
+
+#if ALLEGRO_VERSION_INT < 0x05020A00
+int al_get_display_adapter(ALLEGRO_DISPLAY * disp)
+{ return -1; }
+#endif
+
+ml_function_1arg_ret(al_get_display_adapter, Ptr_val, Val_int)
+
 
 CAMLprim value ml_al_set_window_title(value disp, value title)
 {
