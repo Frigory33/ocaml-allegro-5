@@ -42,7 +42,7 @@ static int const display_flags_conv[][2] = {
 static int convert_display_flags_from_ml(value flags)
 {
     CAMLparam1(flags);
-    int c_flags = convert_flags(Val_int(flags), display_flags_conv, 0);
+    int c_flags = convert_flags(Int_val(flags), display_flags_conv, 0);
     CAMLreturnT(int, c_flags);
 }
 
@@ -79,6 +79,22 @@ ml_function_noarg(al_flip_display)
 ml_function_1arg_ret(al_get_display_width, Ptr_val, Val_int)
 
 ml_function_1arg_ret(al_get_display_height, Ptr_val, Val_int)
+
+CAMLprim value ml_al_resize_display(value disp, value width, value height)
+{
+    CAMLparam3(disp, width, height);
+    bool success = al_resize_display(Ptr_val(disp), Int_val(width), Int_val(height));
+    CAMLreturn(Val_bool(success));
+}
+
+CAMLprim value ml_al_acknowledge_resize(value disp)
+{
+    CAMLparam1(disp);
+    if (!al_acknowledge_resize(Ptr_val(disp))) {
+        caml_failwith("al_acknowledge_resize");
+    }
+    CAMLreturn(Val_unit);
+}
 
 
 CAMLprim value ml_al_set_window_title(value disp, value title)

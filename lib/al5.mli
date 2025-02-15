@@ -401,6 +401,8 @@ external get_backbuffer : display -> bitmap = "ml_al_get_backbuffer"
 
 external get_display_width : display -> int = "ml_al_get_display_width"
 external get_display_height : display -> int = "ml_al_get_display_height"
+external resize_display : display -> int -> int -> bool = "ml_al_resize_display"
+external acknowledge_resize : display -> unit = "ml_al_acknowledge_resize"
 
 (** {2 Display settings} *)
 

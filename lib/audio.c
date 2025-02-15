@@ -124,7 +124,7 @@ CAMLprim value ml_al_load_audio_stream(value filename, value buffer_count, value
 {
     CAMLparam3(filename, buffer_count, samples);
     ALLEGRO_AUDIO_STREAM * c_stream = al_load_audio_stream(
-        String_val(filename), Int_val(buffer_count), Int_val(samples));
+        String_val(filename), Long_val(buffer_count), Int_val(samples));
     CAMLreturn(Val_ptr(c_stream));
 }
 

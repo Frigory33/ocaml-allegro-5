@@ -164,7 +164,15 @@ static value convert_event(ALLEGRO_EVENT c_evt)
             break;
         case ALLEGRO_EVENT_DISPLAY_CLOSE:
             evt = caml_alloc(1, ML_EVENT_DISPLAY_CLOSE);
-            Store_field(evt, 0, caml_copy_nativeint((intnat)c_evt.display.source));
+            Store_field(evt, 0, Val_ptr(c_evt.display.source));
+            break;
+        case ALLEGRO_EVENT_DISPLAY_RESIZE:
+            evt = caml_alloc(5, ML_EVENT_DISPLAY_RESIZE);
+            Store_field(evt, 0, Val_ptr(c_evt.display.source));
+            Store_field(evt, 1, Val_int(c_evt.display.x));
+            Store_field(evt, 2, Val_int(c_evt.display.y));
+            Store_field(evt, 3, Val_int(c_evt.display.width));
+            Store_field(evt, 4, Val_int(c_evt.display.height));
             break;
         default:
             evt = caml_alloc(1, ML_EVENT_UNKNOWN);
