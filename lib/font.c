@@ -89,6 +89,23 @@ CAMLprim value ml_al_get_text_dimensions(value font, value text)
     CAMLreturn(bb);
 }
 
+CAMLprim value ml_al_get_font_ranges(value font)
+{
+    CAMLparam1(font);
+    int ranges_count = al_get_font_ranges(Ptr_val(font), 0, NULL);
+    int c_ranges[ranges_count][2];
+    al_get_font_ranges(Ptr_val(font), ranges_count, (int *)c_ranges);
+    CAMLlocal2(ranges, rg);
+    ranges = caml_alloc_tuple(ranges_count);
+    for (int i = 0; i < ranges_count; ++i) {
+        rg = caml_alloc_tuple(2);
+        Store_field(rg, 0, Val_int(c_ranges[i][0]));
+        Store_field(rg, 1, Val_int(c_ranges[i][1]));
+        Store_field(ranges, i, rg);
+    }
+    CAMLreturn(ranges);
+}
+
 CAMLprim value ml_al_set_fallback_font(value font, value fallback)
 {
     CAMLparam2(font, fallback);

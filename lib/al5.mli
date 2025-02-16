@@ -727,6 +727,7 @@ external draw_text : font -> color -> pos -> int -> string -> unit = "ml_al_draw
 external draw_justified_text : font -> color -> pos -> float -> float -> int -> string -> unit =
   "ml_al_draw_justified_text_bytecode" "ml_al_draw_justified_text"
 external get_text_dimensions : font -> string -> int * int * int * int = "ml_al_get_text_dimensions"
+external get_font_ranges : font -> (int * int) array = "ml_al_get_font_ranges"
 external set_fallback_font : font -> font option -> unit = "ml_al_set_fallback_font"
 external get_fallback_font : font -> font = "ml_al_get_fallback_font"
 
