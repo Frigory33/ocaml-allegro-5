@@ -216,7 +216,7 @@ static value convert_event(ALLEGRO_EVENT c_evt)
                 c_evt.type == ALLEGRO_EVENT_DISPLAY_SWITCH_OUT ? ML_EVENT_DISPLAY_SWITCH_OUT :
                 c_evt.type == ALLEGRO_EVENT_DISPLAY_CONNECTED ? ML_EVENT_DISPLAY_CONNECTED :
                 c_evt.type == ALLEGRO_EVENT_DISPLAY_DISCONNECTED ? ML_EVENT_DISPLAY_DISCONNECTED :
-                    ALLEGRO_EVENT_DISPLAY_SWITCH_IN);
+                    ML_EVENT_DISPLAY_SWITCH_IN);
             Store_field(evt, 0, Val_ptr(c_evt.display.source));
             break;
         default:
