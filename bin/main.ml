@@ -125,6 +125,12 @@ let events data =
             match keycode with
             | Al5.Key.ESCAPE ->
                 if modifiers = 0 then { data with quit = true } else data
+            | Al5.Key.BACKSPACE ->
+                if data.disp <> None then (
+                  let disp = Option.get data.disp in
+                  ignore @@ Al5.set_mouse_xy disp (Al5.get_display_width disp / 2) (Al5.get_display_height disp / 2);
+                );
+                data
             | _ -> data
           in
           data
