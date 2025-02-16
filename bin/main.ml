@@ -80,6 +80,8 @@ type data = {
 
 let quitting_delay = 5.
 
+let rsrc_folder = List.hd Data.Sites.files
+
 
 let draw data =
   let version = Al5.get_allegro_version () in
@@ -125,6 +127,21 @@ let events data =
             match keycode with
             | Al5.Key.ESCAPE ->
                 if modifiers = 0 then { data with quit = true } else data
+            | Al5.Key.F3 ->
+                if data.disp <> None then (
+                  let filename =
+                    if modifiers = Al5.Keymod.shift then "screenshot.txt"
+                    else "screenshot.png"
+                  in
+                  let filename = Filename.concat rsrc_folder filename in
+                  try
+                    Al5.save_bitmap filename (Al5.get_backbuffer (Option.get data.disp));
+                  with
+                  | Failure _ ->
+                      Printf.printf "Saving to %s failed\n" filename;
+                      flush stdout;
+                );
+                data
             | Al5.Key.BACKSPACE ->
                 if data.disp <> None then (
                   let disp = Option.get data.disp in
@@ -207,9 +224,26 @@ let rec main_loop data =
     let click_shapes = List.filter ClickShape.is_visible data.click_shapes
     and mouse_lines = List.filter MouseLine.is_visible data.mouse_lines in
 
-    main_loop { data with click_shapes; mouse_lines };
-  );
-  ()
+    (main_loop [@tailcall]) { data with click_shapes; mouse_lines }
+  )
+
+
+let save_txt_bitmap filename bitmap =
+  let aux file =
+    Printf.fprintf file "%d %d\n" (Al5.get_bitmap_width bitmap) (Al5.get_bitmap_height bitmap);
+    for y = 0 to Al5.get_bitmap_height bitmap - 1 do
+      for x = 0 to Al5.get_bitmap_width bitmap - 1 do
+        let r, g, b = Al5.unmap_rgb (Al5.get_pixel bitmap x y) in
+        Printf.fprintf file "(%d,%d,%d)" r g b;
+      done;
+      Printf.fprintf file "\n";
+    done;
+    true
+  in
+  try
+    Out_channel.with_open_text filename aux
+  with
+  | Sys_error _ -> false
 
 
 let () =
@@ -220,6 +254,8 @@ let () =
   Al5.init_font_addon ();
   Al5.init_image_addon ();
   Al5.init_primitives_addon ();
+
+  Al5.register_bitmap_saver ".txt" (Some save_txt_bitmap);
 
   let queue = Al5.create_event_queue () in
 
@@ -239,7 +275,6 @@ let () =
     | Failure _ -> ()
   in
 
-  let rsrc_folder = List.hd Data.Sites.files in
   let img = Al5.load_bitmap (Filename.concat rsrc_folder "image.png") in
   MouseLine.img := Some img;
   let font = Al5.create_builtin_font () in
