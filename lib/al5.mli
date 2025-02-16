@@ -502,6 +502,7 @@ external destroy_bitmap : bitmap -> unit = "ml_al_destroy_bitmap"
 
 external get_bitmap_width : bitmap -> int = "ml_al_get_bitmap_width"
 external get_bitmap_height : bitmap -> int = "ml_al_get_bitmap_height"
+external get_pixel : bitmap -> int -> int -> color = "ml_al_get_pixel"
 
 (** {2 Drawing operations} *)
 
@@ -527,6 +528,7 @@ external get_current_display : unit -> display = "al_get_current_display"
 
 (** {2 Image I/O} *)
 
+external register_bitmap_saver : string -> (string -> bitmap -> bool) option -> unit = "ml_al_register_bitmap_saver"
 external load_bitmap : string -> bitmap = "ml_al_load_bitmap"
 external load_bitmap_flags : string -> int -> bitmap = "ml_al_load_bitmap_flags"
 external save_bitmap : string -> bitmap -> unit = "ml_al_save_bitmap"

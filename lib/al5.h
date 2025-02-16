@@ -5,6 +5,7 @@
 #include <allegro5/allegro.h>
 
 #include <caml/alloc.h>
+#include <caml/callback.h>
 #include <caml/custom.h>
 #include <caml/fail.h>
 #include <caml/memory.h>

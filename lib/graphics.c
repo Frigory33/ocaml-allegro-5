@@ -146,13 +146,20 @@ ml_function_1arg_ret(al_get_bitmap_width, Ptr_val, Val_int)
 
 ml_function_1arg_ret(al_get_bitmap_height, Ptr_val, Val_int)
 
+CAMLprim value ml_al_get_pixel(value bitmap, value x, value y)
+{
+    CAMLparam3(bitmap, x, y);
+    ALLEGRO_COLOR c_color = al_get_pixel(Ptr_val(bitmap), Int_val(x), Int_val(y));
+    CAMLreturn(alloc_color(c_color));
+}
+
 
 enum {
     ML_ALLEGRO_FLIP_HORIZONTAL = 1 << 0,
     ML_ALLEGRO_FLIP_VERTICAL = 1 << 1,
 };
 
-static int convert_draw_bitmap_flags(value flags)
+static int convert_draw_bitmap_flags_from_ml(value flags)
 {
     CAMLparam1(flags);
     int flip_horiz = (Int_val(flags) & ML_ALLEGRO_FLIP_HORIZONTAL) == ML_ALLEGRO_FLIP_HORIZONTAL ? ALLEGRO_FLIP_HORIZONTAL : 0;
@@ -166,10 +173,11 @@ CAMLprim value ml_al_draw_bitmap(value bmp, value tint, value dpos, value flags)
 {
     CAMLparam4(bmp, tint, dpos, flags);
     if (Is_none(tint)) {
-        al_draw_bitmap(Ptr_val(bmp), PosX_val(dpos), PosY_val(dpos), convert_draw_bitmap_flags(flags));
+        al_draw_bitmap(Ptr_val(bmp), PosX_val(dpos), PosY_val(dpos),
+            convert_draw_bitmap_flags_from_ml(flags));
     } else {
         al_draw_tinted_bitmap(Ptr_val(bmp), AlColor_val(Some_val(tint)),
-            PosX_val(dpos), PosY_val(dpos), convert_draw_bitmap_flags(flags));
+            PosX_val(dpos), PosY_val(dpos), convert_draw_bitmap_flags_from_ml(flags));
     }
     CAMLreturn(Val_unit);
 }
@@ -182,12 +190,12 @@ CAMLprim value ml_al_draw_bitmap_region(value bmp, value tint, value spos, value
         al_draw_bitmap_region(Ptr_val(bmp),
             PosX_val(spos), PosY_val(spos),
             PosX_val(ssize), PosY_val(ssize),
-            PosX_val(dpos), PosY_val(dpos), convert_draw_bitmap_flags(flags));
+            PosX_val(dpos), PosY_val(dpos), convert_draw_bitmap_flags_from_ml(flags));
     } else {
         al_draw_tinted_bitmap_region(Ptr_val(bmp), AlColor_val(Some_val(tint)),
             PosX_val(spos), PosY_val(spos),
             PosX_val(ssize), PosY_val(ssize),
-            PosX_val(dpos), PosY_val(dpos), convert_draw_bitmap_flags(flags));
+            PosX_val(dpos), PosY_val(dpos), convert_draw_bitmap_flags_from_ml(flags));
     }
     CAMLreturn(Val_unit);
 }
@@ -205,11 +213,11 @@ CAMLprim value ml_al_draw_rotated_bitmap(value bmp, value tint, value cpos, valu
     if (Is_none(tint)) {
         al_draw_rotated_bitmap(Ptr_val(bmp),
             PosX_val(cpos), PosY_val(cpos), PosX_val(dpos), PosY_val(dpos),
-            Double_val(angle), convert_draw_bitmap_flags(flags));
+            Double_val(angle), convert_draw_bitmap_flags_from_ml(flags));
     } else {
         al_draw_tinted_rotated_bitmap(Ptr_val(bmp), AlColor_val(Some_val(tint)),
             PosX_val(cpos), PosY_val(cpos), PosX_val(dpos), PosY_val(dpos),
-            Double_val(angle), convert_draw_bitmap_flags(flags));
+            Double_val(angle), convert_draw_bitmap_flags_from_ml(flags));
     }
     CAMLreturn(Val_unit);
 }
@@ -220,7 +228,8 @@ CAMLprim value ml_al_draw_rotated_bitmap_bytecode(value *argv, int argc)
         argv[2], argv[3], argv[4], argv[5]);
 }
 
-CAMLprim value ml_al_draw_scaled_bitmap(value bmp, value tint, value spos, value ssize, value dpos, value dsize, value flags)
+CAMLprim value ml_al_draw_scaled_bitmap(
+    value bmp, value tint, value spos, value ssize, value dpos, value dsize, value flags)
 {
     CAMLparam5(bmp, tint, spos, ssize, dpos);
     CAMLxparam2(dsize, flags);
@@ -228,12 +237,12 @@ CAMLprim value ml_al_draw_scaled_bitmap(value bmp, value tint, value spos, value
         al_draw_scaled_bitmap(Ptr_val(bmp),
             PosX_val(spos), PosY_val(spos), PosX_val(ssize), PosY_val(ssize),
             PosX_val(dpos), PosY_val(dpos), PosX_val(dsize), PosY_val(dsize),
-            convert_draw_bitmap_flags(flags));
+            convert_draw_bitmap_flags_from_ml(flags));
     } else {
         al_draw_tinted_scaled_bitmap(Ptr_val(bmp), AlColor_val(Some_val(tint)),
             PosX_val(spos), PosY_val(spos), PosX_val(ssize), PosY_val(ssize),
             PosX_val(dpos), PosY_val(dpos), PosX_val(dsize), PosY_val(dsize),
-            convert_draw_bitmap_flags(flags));
+            convert_draw_bitmap_flags_from_ml(flags));
     }
     CAMLreturn(Val_unit);
 }
@@ -244,7 +253,8 @@ CAMLprim value ml_al_draw_scaled_bitmap_bytecode(value *argv, int argc)
         argv[2], argv[3], argv[4], argv[5], argv[6]);
 }
 
-CAMLprim value ml_al_draw_scaled_rotated_bitmap(value bmp, value tint, value cpos, value dpos, value scale, value angle, value flags)
+CAMLprim value ml_al_draw_scaled_rotated_bitmap(
+    value bmp, value tint, value cpos, value dpos, value scale, value angle, value flags)
 {
     CAMLparam5(bmp, tint, cpos, dpos, scale);
     CAMLxparam2(angle, flags);
@@ -252,12 +262,12 @@ CAMLprim value ml_al_draw_scaled_rotated_bitmap(value bmp, value tint, value cpo
         al_draw_scaled_rotated_bitmap(Ptr_val(bmp),
             PosX_val(cpos), PosY_val(cpos), PosX_val(dpos), PosY_val(dpos),
             PosX_val(scale), PosY_val(scale),
-            Double_val(angle), convert_draw_bitmap_flags(flags));
+            Double_val(angle), convert_draw_bitmap_flags_from_ml(flags));
     } else {
         al_draw_tinted_scaled_rotated_bitmap(Ptr_val(bmp), AlColor_val(Some_val(tint)),
             PosX_val(cpos), PosY_val(cpos), PosX_val(dpos), PosY_val(dpos),
             PosX_val(scale), PosY_val(scale),
-            Double_val(angle), convert_draw_bitmap_flags(flags));
+            Double_val(angle), convert_draw_bitmap_flags_from_ml(flags));
     }
     CAMLreturn(Val_unit);
 }
@@ -278,7 +288,7 @@ CAMLprim value ml_al_draw_scaled_rotated_bitmap_region(
         Is_none(tint) ? al_map_rgb(255, 255, 255) : AlColor_val(Some_val(tint)),
         PosX_val(cpos), PosY_val(cpos), PosX_val(dpos), PosY_val(dpos),
         PosX_val(scale), PosY_val(scale),
-        Double_val(angle), convert_draw_bitmap_flags(flags));
+        Double_val(angle), convert_draw_bitmap_flags_from_ml(flags));
     CAMLreturn(Val_unit);
 }
 
@@ -296,6 +306,62 @@ ml_function_1arg(al_set_target_bitmap, Ptr_val)
 ml_function_1arg(al_set_target_backbuffer, Ptr_val)
 
 ml_function_noarg_ret(al_get_current_display, Val_ptr)
+
+
+static struct {
+    char extension[16];
+    value saver;
+} bitmap_savers[64] = {};
+
+static bool bitmap_saver(char const *filename, ALLEGRO_BITMAP *bmp)
+{
+    char const *extension = strrchr(filename, '.');
+    if (extension == NULL) {
+        return false;
+    }
+    for (int i = 0; i < sizeof(bitmap_savers) / sizeof(*bitmap_savers); ++i) {
+        if (strcmp(extension, bitmap_savers[i].extension) == 0) {
+            value success = caml_callback2(
+                bitmap_savers[i].saver, caml_copy_string(filename), Val_ptr(bmp));
+            return Bool_val(success);
+        }
+    }
+    return false;
+}
+
+CAMLprim value ml_al_register_bitmap_saver(value extension, value saver)
+{
+    CAMLparam2(extension, saver);
+    char const *c_extension = String_val(extension);
+    if (strlen(c_extension) > 15) {
+        caml_failwith("al_register_bitmap_saver: extension too long");
+    }
+    for (int i = 0; i < sizeof(bitmap_savers) / sizeof(*bitmap_savers); ++i) {
+        if (strcmp(c_extension, bitmap_savers[i].extension) == 0) {
+            if (Is_none(saver)) {
+                al_register_bitmap_saver(c_extension, NULL);
+                bitmap_savers[i].extension[0] = '\0';
+                caml_remove_global_root(&bitmap_savers[i].saver);
+            } else {
+                bitmap_savers[i].saver = Some_val(saver);
+            }
+            CAMLreturn(Val_unit);
+        }
+    }
+    if (Is_none(saver)) {
+        caml_failwith("al_register_bitmap_saver");
+    }
+    for (int i = 0; i < sizeof(bitmap_savers) / sizeof(*bitmap_savers); ++i) {
+        if (bitmap_savers[i].extension[0] == '\0') {
+            strcpy(bitmap_savers[i].extension, c_extension);
+            bitmap_savers[i].saver = Some_val(saver);
+            caml_register_global_root(&bitmap_savers[i].saver);
+            al_register_bitmap_saver(c_extension, bitmap_saver);
+            CAMLreturn(Val_unit);
+        }
+    }
+    caml_failwith("al_register_bitmap_saver: limit of 64 savers reached");
+}
 
 
 enum {
