@@ -32,7 +32,7 @@ ml_function_1arg_ret(al_get_joystick_name, Ptr_val, caml_copy_string)
 CAMLprim value ml_al_get_joystick_stick_name(value joy, value stick)
 {
     CAMLparam2(joy, stick);
-    char const * c_name = al_get_joystick_stick_name(Ptr_val(joy), Int_val(stick));
+    char const *c_name = al_get_joystick_stick_name(Ptr_val(joy), Int_val(stick));
     if (c_name != NULL) {
         CAMLreturn(caml_alloc_some(caml_copy_string(c_name)));
     }
@@ -42,7 +42,7 @@ CAMLprim value ml_al_get_joystick_stick_name(value joy, value stick)
 CAMLprim value ml_al_get_joystick_axis_name(value joy, value stick, value axis)
 {
     CAMLparam3(joy, stick, axis);
-    char const * c_name = al_get_joystick_axis_name(Ptr_val(joy), Int_val(stick), Int_val(axis));
+    char const *c_name = al_get_joystick_axis_name(Ptr_val(joy), Int_val(stick), Int_val(axis));
     if (c_name != NULL) {
         CAMLreturn(caml_alloc_some(caml_copy_string(c_name)));
     }
@@ -52,7 +52,7 @@ CAMLprim value ml_al_get_joystick_axis_name(value joy, value stick, value axis)
 CAMLprim value ml_al_get_joystick_button_name(value joy, value button)
 {
     CAMLparam2(joy, button);
-    char const * c_name = al_get_joystick_button_name(Ptr_val(joy), Int_val(button));
+    char const *c_name = al_get_joystick_button_name(Ptr_val(joy), Int_val(button));
     if (c_name != NULL) {
         CAMLreturn(caml_alloc_some(caml_copy_string(c_name)));
     }

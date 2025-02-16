@@ -25,6 +25,15 @@ type sample_id
 
 type pos = float * float
 
+module DisplayMode = struct
+  type t = {
+    width : int;
+    height : int;
+    format : int;
+    refresh_rate : int;
+  }
+end
+
 module JoystickState = struct
   type t
 end
@@ -435,6 +444,11 @@ external set_new_window_title : string -> unit = "ml_al_set_new_window_title"
 external get_new_window_title : unit -> string = "ml_al_get_new_window_title"
 external set_display_icon : display -> bitmap -> unit = "ml_al_set_display_icon"
 external set_display_icons : display -> bitmap array -> unit = "ml_al_set_display_icons"
+
+(** {2 Fullscreen modes} *)
+
+external get_display_mode : int -> DisplayMode.t = "ml_al_get_display_mode"
+external get_num_display_modes : unit -> int = "ml_al_get_num_display_modes"
 
 
 (** {1 Events} *)

@@ -144,7 +144,7 @@ CAMLprim value ml_al_apply_window_constraints(value disp, value onoff)
 }
 
 #if ALLEGRO_VERSION_INT < 0x05020A00
-int al_get_display_adapter(ALLEGRO_DISPLAY * disp)
+int al_get_display_adapter(ALLEGRO_DISPLAY *disp)
 { return -1; }
 #endif
 
@@ -180,3 +180,22 @@ CAMLprim value ml_al_set_display_icons(value disp, value icons)
     al_set_display_icons(Ptr_val(disp), num_icons, c_icons);
     CAMLreturn(Val_unit);
 }
+
+
+CAMLprim value ml_al_get_display_mode(value index)
+{
+    CAMLparam1(index);
+    ALLEGRO_DISPLAY_MODE c_mode;
+    if (al_get_display_mode(Int_val(index), &c_mode) == NULL) {
+        caml_failwith("al_get_display_mode");
+    }
+    CAMLlocal1(mode);
+    mode = caml_alloc_tuple(4);
+    Store_field(mode, 0, Val_int(c_mode.width));
+    Store_field(mode, 1, Val_int(c_mode.height));
+    Store_field(mode, 2, Val_int(c_mode.format));
+    Store_field(mode, 3, Val_int(c_mode.refresh_rate));
+    CAMLreturn(mode);
+}
+
+ml_function_noarg_ret(al_get_num_display_modes, Val_int)

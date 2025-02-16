@@ -192,7 +192,7 @@ CAMLprim value ml_al_draw_bitmap_region(value bmp, value tint, value spos, value
     CAMLreturn(Val_unit);
 }
 
-CAMLprim value ml_al_draw_bitmap_region_bytecode(value * argv, int argc)
+CAMLprim value ml_al_draw_bitmap_region_bytecode(value *argv, int argc)
 {
     return ml_al_draw_bitmap_region(argv[0], argv[1],
         argv[2], argv[3], argv[4], argv[5]);
@@ -214,7 +214,7 @@ CAMLprim value ml_al_draw_rotated_bitmap(value bmp, value tint, value cpos, valu
     CAMLreturn(Val_unit);
 }
 
-CAMLprim value ml_al_draw_rotated_bitmap_bytecode(value * argv, int argc)
+CAMLprim value ml_al_draw_rotated_bitmap_bytecode(value *argv, int argc)
 {
     return ml_al_draw_rotated_bitmap(argv[0], argv[1],
         argv[2], argv[3], argv[4], argv[5]);
@@ -238,7 +238,7 @@ CAMLprim value ml_al_draw_scaled_bitmap(value bmp, value tint, value spos, value
     CAMLreturn(Val_unit);
 }
 
-CAMLprim value ml_al_draw_scaled_bitmap_bytecode(value * argv, int argc)
+CAMLprim value ml_al_draw_scaled_bitmap_bytecode(value *argv, int argc)
 {
     return ml_al_draw_scaled_bitmap(argv[0], argv[1],
         argv[2], argv[3], argv[4], argv[5], argv[6]);
@@ -262,7 +262,7 @@ CAMLprim value ml_al_draw_scaled_rotated_bitmap(value bmp, value tint, value cpo
     CAMLreturn(Val_unit);
 }
 
-CAMLprim value ml_al_draw_scaled_rotated_bitmap_bytecode(value * argv, int argc)
+CAMLprim value ml_al_draw_scaled_rotated_bitmap_bytecode(value *argv, int argc)
 {
     return ml_al_draw_scaled_rotated_bitmap(argv[0], argv[1],
         argv[2], argv[3], argv[4], argv[5], argv[6]);
@@ -282,7 +282,7 @@ CAMLprim value ml_al_draw_scaled_rotated_bitmap_region(
     CAMLreturn(Val_unit);
 }
 
-CAMLprim value ml_al_draw_scaled_rotated_bitmap_region_bytecode(value * argv, int argc)
+CAMLprim value ml_al_draw_scaled_rotated_bitmap_region_bytecode(value *argv, int argc)
 {
     return ml_al_draw_scaled_rotated_bitmap_region(argv[0], argv[1], argv[2],
         argv[3], argv[4], argv[5], argv[6], argv[7], argv[8]);

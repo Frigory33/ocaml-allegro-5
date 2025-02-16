@@ -111,7 +111,7 @@ ml_function_1arg(al_destroy_shader, Ptr_val)
 CAMLprim value ml_al_get_default_shader_source(value platform, value type)
 {
     CAMLparam2(platform, type);
-    char const * source = al_get_default_shader_source(
+    char const *source = al_get_default_shader_source(
         convert_shader_platform_from_ml(platform), convert_shader_type_from_ml(type));
     if (source == NULL) {
         caml_failwith("al_get_default_shader_source");

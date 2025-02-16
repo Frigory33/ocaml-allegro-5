@@ -46,7 +46,7 @@ CAMLprim value ml_al_get_standard_path(value id)
 {
     CAMLparam1(id);
     CAMLlocal1(path);
-    ALLEGRO_PATH * c_path = al_get_standard_path(convert_standard_path_id_from_ml(id));
+    ALLEGRO_PATH *c_path = al_get_standard_path(convert_standard_path_id_from_ml(id));
     path = caml_copy_string(al_path_cstr(c_path, ALLEGRO_NATIVE_PATH_SEP));
     al_destroy_path(c_path);
     CAMLreturn(path);

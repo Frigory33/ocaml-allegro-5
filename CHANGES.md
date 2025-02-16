@@ -2,6 +2,7 @@
 
 - Audio: support for a basic API.
 - Displays: support for size and position.
+- Fullscreen modes: full support (put in the Displays module).
 - Joystick: full support.
 - Shader: full support.
 - System: support for standard paths.
