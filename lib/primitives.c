@@ -181,8 +181,8 @@ static void convert_points(value points, float c_points[][2])
     CAMLlocal1(p);
     for (int i = 0; i < point_count; ++i) {
         p = Field(points, i);
-        c_points[i][0] = Double_val(Field(p, 0));
-        c_points[i][1] = Double_val(Field(p, 1));
+        c_points[i][0] = PosX_val(p);
+        c_points[i][1] = PosY_val(p);
     }
     CAMLreturn0;
 }

@@ -527,6 +527,9 @@ external get_current_display : unit -> display = "al_get_current_display"
 (** {2 Image I/O} *)
 
 external load_bitmap : string -> bitmap = "ml_al_load_bitmap"
+external load_bitmap_flags : string -> int -> bitmap = "ml_al_load_bitmap_flags"
+external save_bitmap : string -> bitmap -> unit = "ml_al_save_bitmap"
+external identify_bitmap : string -> string = "ml_al_identify_bitmap"
 
 
 (** {1 Joystick routines} *)

@@ -316,17 +316,20 @@ int convert_load_bitmap_flags_from_ml(value flags)
     CAMLreturnT(int, convert_flags(Int_val(flags), load_flags_conv, 0));
 }
 
+static void failwith_filename(char const *func, char const *filename)
+{
+    char msg[strlen(func) + 1 + strlen(filename) + 1];
+    sprintf(msg, "%s %s", func, filename);
+    caml_failwith(msg);
+}
+
 CAMLprim value ml_al_load_bitmap_flags(value filename, value flags)
 {
     CAMLparam2(filename, flags);
     int c_flags = convert_load_bitmap_flags_from_ml(flags);
     ALLEGRO_BITMAP *c_bmp = al_load_bitmap_flags(String_val(filename), c_flags);
     if (c_bmp == NULL) {
-        char const *c_func = "al_load_bitmap",
-            *c_filename = String_val(filename);
-        char c_msg[strlen(c_func) + 1 + strlen(c_filename) + 1];
-        sprintf(c_msg, "%s %s", c_func, c_filename);
-        caml_failwith_value(caml_copy_string(c_msg));
+        failwith_filename("al_load_bitmap_flags", String_val(filename));
     }
     CAMLreturn(Val_ptr(c_bmp));
 }
@@ -334,5 +337,21 @@ CAMLprim value ml_al_load_bitmap_flags(value filename, value flags)
 CAMLprim value ml_al_load_bitmap(value filename)
 {
     CAMLparam1(filename);
-    CAMLreturn(ml_al_load_bitmap_flags(filename, Val_int(0)));
+    ALLEGRO_BITMAP *c_bmp = al_load_bitmap(String_val(filename));
+    if (c_bmp == NULL) {
+        failwith_filename("al_load_bitmap", String_val(filename));
+    }
+    CAMLreturn(Val_ptr(c_bmp));
 }
+
+CAMLprim value ml_al_save_bitmap(value filename, value bitmap)
+{
+    CAMLparam2(filename, bitmap);
+    bool success = al_save_bitmap(String_val(filename), Ptr_val(bitmap));
+    if (!success) {
+        failwith_filename("al_save_bitmap", String_val(filename));
+    }
+    CAMLreturn(Val_unit);
+}
+
+ml_function_1arg_ret(al_identify_bitmap, String_val, caml_copy_string)
