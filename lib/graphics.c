@@ -298,6 +298,20 @@ CAMLprim value ml_al_draw_scaled_rotated_bitmap_region_bytecode(value *argv, int
         argv[3], argv[4], argv[5], argv[6], argv[7], argv[8]);
 }
 
+CAMLprim value ml_al_put_pixel(value x, value y, value color)
+{
+    CAMLparam3(x, y, color);
+    al_put_pixel(Int_val(x), Int_val(y), AlColor_val(color));
+    CAMLreturn(Val_unit);
+}
+
+CAMLprim value ml_al_put_blended_pixel(value x, value y, value color)
+{
+    CAMLparam3(x, y, color);
+    al_put_blended_pixel(Int_val(x), Int_val(y), AlColor_val(color));
+    CAMLreturn(Val_unit);
+}
+
 
 ml_function_noarg_ret(al_get_target_bitmap, Val_ptr)
 
@@ -306,62 +320,6 @@ ml_function_1arg(al_set_target_bitmap, Ptr_val)
 ml_function_1arg(al_set_target_backbuffer, Ptr_val)
 
 ml_function_noarg_ret(al_get_current_display, Val_ptr)
-
-
-static struct {
-    char extension[16];
-    value saver;
-} bitmap_savers[64] = {};
-
-static bool bitmap_saver(char const *filename, ALLEGRO_BITMAP *bmp)
-{
-    char const *extension = strrchr(filename, '.');
-    if (extension == NULL) {
-        return false;
-    }
-    for (int i = 0; i < sizeof(bitmap_savers) / sizeof(*bitmap_savers); ++i) {
-        if (strcmp(extension, bitmap_savers[i].extension) == 0) {
-            value success = caml_callback2(
-                bitmap_savers[i].saver, caml_copy_string(filename), Val_ptr(bmp));
-            return Bool_val(success);
-        }
-    }
-    return false;
-}
-
-CAMLprim value ml_al_register_bitmap_saver(value extension, value saver)
-{
-    CAMLparam2(extension, saver);
-    char const *c_extension = String_val(extension);
-    if (strlen(c_extension) > 15) {
-        caml_failwith("al_register_bitmap_saver: extension too long");
-    }
-    for (int i = 0; i < sizeof(bitmap_savers) / sizeof(*bitmap_savers); ++i) {
-        if (strcmp(c_extension, bitmap_savers[i].extension) == 0) {
-            if (Is_none(saver)) {
-                al_register_bitmap_saver(c_extension, NULL);
-                bitmap_savers[i].extension[0] = '\0';
-                caml_remove_global_root(&bitmap_savers[i].saver);
-            } else {
-                bitmap_savers[i].saver = Some_val(saver);
-            }
-            CAMLreturn(Val_unit);
-        }
-    }
-    if (Is_none(saver)) {
-        caml_failwith("al_register_bitmap_saver");
-    }
-    for (int i = 0; i < sizeof(bitmap_savers) / sizeof(*bitmap_savers); ++i) {
-        if (bitmap_savers[i].extension[0] == '\0') {
-            strcpy(bitmap_savers[i].extension, c_extension);
-            bitmap_savers[i].saver = Some_val(saver);
-            caml_register_global_root(&bitmap_savers[i].saver);
-            al_register_bitmap_saver(c_extension, bitmap_saver);
-            CAMLreturn(Val_unit);
-        }
-    }
-    caml_failwith("al_register_bitmap_saver: limit of 64 savers reached");
-}
 
 
 enum {
@@ -379,8 +337,132 @@ static int const load_flags_conv[][2] = {
 int convert_load_bitmap_flags_from_ml(value flags)
 {
     CAMLparam1(flags);
-    CAMLreturnT(int, convert_flags(Int_val(flags), load_flags_conv, 0));
+    int c_flags = convert_flags(Int_val(flags), load_flags_conv, 0);
+    CAMLreturnT(int, c_flags);
 }
+
+value convert_load_bitmap_flags_from_c(int c_flags)
+{
+    int flags = convert_flags(c_flags, load_flags_conv, 1);
+    return Val_int(flags);
+}
+
+
+static struct {
+    char extension[16];
+    value loader;
+} bitmap_loaders[64] = {};
+
+static struct {
+    char extension[16];
+    value saver;
+} bitmap_savers[64] = {};
+
+static ALLEGRO_BITMAP *bitmap_loader(char const *filename, int flags)
+{
+    CAMLparam0();
+    char const *extension = strrchr(filename, '.');
+    if (extension == NULL) {
+        CAMLreturnT(ALLEGRO_BITMAP *, NULL);
+    }
+    CAMLlocal1(bitmap);
+    for (int i = 0; i < sizeof(bitmap_loaders) / sizeof(*bitmap_loaders); ++i) {
+        if (strcmp(extension, bitmap_loaders[i].extension) == 0) {
+            bitmap = caml_callback2(
+                bitmap_loaders[i].loader, caml_copy_string(filename),
+                convert_load_bitmap_flags_from_c(flags));
+            CAMLreturnT(ALLEGRO_BITMAP *, Is_none(bitmap) ? NULL : Ptr_val(bitmap));
+        }
+    }
+    CAMLreturnT(ALLEGRO_BITMAP *, NULL);
+}
+
+static bool bitmap_saver(char const *filename, ALLEGRO_BITMAP *bmp)
+{
+    CAMLparam0();
+    char const *extension = strrchr(filename, '.');
+    if (extension == NULL) {
+        CAMLreturnT(bool, false);
+    }
+    CAMLlocal1(success);
+    for (int i = 0; i < sizeof(bitmap_savers) / sizeof(*bitmap_savers); ++i) {
+        if (strcmp(extension, bitmap_savers[i].extension) == 0) {
+            success = caml_callback2(
+                bitmap_savers[i].saver, caml_copy_string(filename), Val_ptr(bmp));
+            CAMLreturnT(bool, Bool_val(success));
+        }
+    }
+    CAMLreturnT(bool, false);
+}
+
+CAMLprim value ml_al_register_bitmap_loader(value extension, value loader)
+{
+    CAMLparam2(extension, loader);
+    char const *c_extension = String_val(extension);
+    if (strlen(c_extension) > 15) {
+        caml_failwith("al_register_bitmap_loader: extension too long");
+    }
+    for (int i = 0; i < sizeof(bitmap_loaders) / sizeof(*bitmap_loaders); ++i) {
+        if (strcmp(c_extension, bitmap_loaders[i].extension) == 0) {
+            if (Is_none(loader)) {
+                al_register_bitmap_loader(c_extension, NULL);
+                bitmap_loaders[i].extension[0] = '\0';
+                caml_remove_generational_global_root(&bitmap_loaders[i].loader);
+            } else {
+                bitmap_loaders[i].loader = Some_val(loader);
+            }
+            CAMLreturn(Val_unit);
+        }
+    }
+    if (Is_none(loader)) {
+        caml_failwith("al_register_bitmap_loader");
+    }
+    for (int i = 0; i < sizeof(bitmap_loaders) / sizeof(*bitmap_loaders); ++i) {
+        if (bitmap_loaders[i].extension[0] == '\0') {
+            strcpy(bitmap_loaders[i].extension, c_extension);
+            bitmap_loaders[i].loader = Some_val(loader);
+            caml_register_generational_global_root(&bitmap_loaders[i].loader);
+            al_register_bitmap_loader(c_extension, bitmap_loader);
+            CAMLreturn(Val_unit);
+        }
+    }
+    caml_failwith("al_register_bitmap_loader: limit of 64 loaders reached");
+}
+
+CAMLprim value ml_al_register_bitmap_saver(value extension, value saver)
+{
+    CAMLparam2(extension, saver);
+    char const *c_extension = String_val(extension);
+    if (strlen(c_extension) > 15) {
+        caml_failwith("al_register_bitmap_saver: extension too long");
+    }
+    for (int i = 0; i < sizeof(bitmap_savers) / sizeof(*bitmap_savers); ++i) {
+        if (strcmp(c_extension, bitmap_savers[i].extension) == 0) {
+            if (Is_none(saver)) {
+                al_register_bitmap_saver(c_extension, NULL);
+                bitmap_savers[i].extension[0] = '\0';
+                caml_remove_generational_global_root(&bitmap_savers[i].saver);
+            } else {
+                bitmap_savers[i].saver = Some_val(saver);
+            }
+            CAMLreturn(Val_unit);
+        }
+    }
+    if (Is_none(saver)) {
+        caml_failwith("al_register_bitmap_saver");
+    }
+    for (int i = 0; i < sizeof(bitmap_savers) / sizeof(*bitmap_savers); ++i) {
+        if (bitmap_savers[i].extension[0] == '\0') {
+            strcpy(bitmap_savers[i].extension, c_extension);
+            bitmap_savers[i].saver = Some_val(saver);
+            caml_register_generational_global_root(&bitmap_savers[i].saver);
+            al_register_bitmap_saver(c_extension, bitmap_saver);
+            CAMLreturn(Val_unit);
+        }
+    }
+    caml_failwith("al_register_bitmap_saver: limit of 64 savers reached");
+}
+
 
 static void failwith_filename(char const *func, char const *filename)
 {

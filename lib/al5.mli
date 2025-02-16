@@ -518,6 +518,8 @@ external draw_scaled_rotated_bitmap : bitmap -> ?tint: color -> pos -> pos -> po
   "ml_al_draw_scaled_rotated_bitmap_bytecode" "ml_al_draw_scaled_rotated_bitmap"
 external draw_scaled_rotated_bitmap_region : bitmap -> pos -> pos -> ?tint: color -> pos -> pos -> pos -> float -> int -> unit =
   "ml_al_draw_scaled_rotated_bitmap_region_bytecode" "ml_al_draw_scaled_rotated_bitmap_region"
+external put_pixel : int -> int -> color -> unit = "ml_al_put_pixel"
+external put_blended_pixel : int -> int -> color -> unit = "ml_al_put_blended_pixel"
 
 (** {2 Target bitmap} *)
 
@@ -528,6 +530,7 @@ external get_current_display : unit -> display = "al_get_current_display"
 
 (** {2 Image I/O} *)
 
+external register_bitmap_loader : string -> (string -> int -> bitmap option) option -> unit = "ml_al_register_bitmap_loader"
 external register_bitmap_saver : string -> (string -> bitmap -> bool) option -> unit = "ml_al_register_bitmap_saver"
 external load_bitmap : string -> bitmap = "ml_al_load_bitmap"
 external load_bitmap_flags : string -> int -> bitmap = "ml_al_load_bitmap_flags"
