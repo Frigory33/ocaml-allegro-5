@@ -1,0 +1,6 @@
+(install
+ (section (site (ocaml_allegro5_test files)))
+ (files
+  (image.png as image.png)
+  (music.ogg as music.ogg)
+  (sound.wav as sound.wav)))

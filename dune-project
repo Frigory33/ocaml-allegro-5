@@ -15,4 +15,4 @@
  (synopsis "OCaml Allegro 5 Test")
  (description "OCaml Allegro 5 Test")
  (depends (ocaml (>= 4.12)) dune allegro5 dune-site)
- (sites (share ocaml_allegro5_test)))
+ (sites (share files)))

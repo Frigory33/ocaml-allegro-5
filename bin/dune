@@ -1,16 +1,9 @@
-(install
- (section (site (ocaml_allegro5_test ocaml_allegro5_test)))
- (files
-  (image.png as image.png)
-  (music.ogg as music.ogg)
-  (sound.wav as sound.wav)))
-
 (generate_sites_module
- (module sites)
+ (module data)
  (sites ocaml_allegro5_test))
 
 (executable
  (public_name ocaml_allegro5_test)
  (name main)
- (modules main sites)
+ (modules main data)
  (libraries dune-site allegro5))

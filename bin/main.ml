@@ -239,7 +239,7 @@ let () =
     | Failure _ -> ()
   in
 
-  let rsrc_folder = List.hd Sites.Sites.ocaml_allegro5_test in
+  let rsrc_folder = List.hd Data.Sites.files in
   let img = Al5.load_bitmap (Filename.concat rsrc_folder "image.png") in
   MouseLine.img := Some img;
   let font = Al5.create_builtin_font () in
