@@ -21,6 +21,6 @@
  (public_name allegro5)
  (foreign_stubs
   (language c)
-  (names al5 display events graphics joystick keyboard mouse shader system time timer acodec audio font image primitives)
+  (names al5 display events graphics joystick keyboard mouse shader system time timer touch acodec audio font image primitives)
   (flags :standard -std=c11 -Wall -O2 (:include c_flags.sexp)))
  (c_library_flags :standard (:include lib_flags.sexp)))

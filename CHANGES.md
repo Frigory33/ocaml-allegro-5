@@ -7,6 +7,7 @@
 - Joystick: full support.
 - Shader: full support.
 - System: support for standard paths.
+- Touch input: full support.
 - Primitives addon: support for spline and ribbon.
 
 

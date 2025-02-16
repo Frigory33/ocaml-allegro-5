@@ -61,6 +61,18 @@ module MouseState = struct
   }
 end
 
+module TouchState = struct
+  type t = {
+    id : int;
+    x : float;
+    y : float;
+    dx : float;
+    dy : float;
+    primary : bool;
+    display : display;
+  }
+end
+
 (** {2 Enumerations and flags} *)
 
 module Display = struct
@@ -341,6 +353,7 @@ module Event = struct
       y : float;
       dx : float;
       dy : float;
+      primary : bool;
     }
   end
 
@@ -678,6 +691,15 @@ external add_timer_count : timer -> int64 -> unit = "ml_al_add_timer_count"
 external get_timer_speed : timer -> float = "ml_al_get_timer_speed"
 external set_timer_speed : timer -> float -> unit = "ml_al_set_timer_speed"
 external get_timer_event_source : timer -> event_source = "ml_al_get_timer_event_source"
+
+
+(** {1 Touch input} *)
+
+external install_touch_input : unit -> unit = "ml_al_install_touch_input"
+external is_touch_input_installed : unit -> bool = "ml_al_is_touch_input_installed"
+external uninstall_touch_input : unit -> unit = "ml_al_uninstall_touch_input"
+external get_touch_input_event_source : unit -> event_source = "ml_al_get_touch_input_event_source"
+external get_touch_input_state : unit -> TouchState.t array = "ml_al_get_touch_input_state"
 
 
 (** {1 Audio addons} *)
