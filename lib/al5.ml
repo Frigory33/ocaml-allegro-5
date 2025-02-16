@@ -9,8 +9,10 @@ type event_source
 type display
 type font
 type joystick
+type shader
 type timeout
 type timer
+type transform
 
 (** {3 Audio} *)
 
@@ -251,6 +253,23 @@ end
 module Flip = struct
   let horizontal = 1 lsl 0
   let vertical = 1 lsl 1
+end
+
+module ShaderType = struct
+  type t =
+  | VERTEX_SHADER
+  | PIXEL_SHADER
+end
+
+module ShaderPlatform = struct
+  type t =
+  | AUTO
+  | GLSL
+  | HLSL
+  | AUTO_MINIMAL
+  | GLSL_MINIMAL
+  | HLSL_MINIMAL
+  | HLSL_SM_3_0
 end
 
 module StandardPath = struct
@@ -559,6 +578,30 @@ external set_mouse_w : int -> bool = "ml_al_set_mouse_w"
 external set_mouse_axis : int -> int -> bool = "ml_al_set_mouse_axis"
 external set_mouse_wheel_precision : int -> unit = "ml_al_set_mouse_wheel_precision"
 external get_mouse_wheel_precision : unit -> int = "ml_al_get_mouse_wheel_precision"
+
+
+(** {1 Shader routines} *)
+
+external create_shader : ShaderPlatform.t -> shader = "ml_al_create_shader"
+external attach_shader_source : shader -> ShaderType.t -> string -> unit = "ml_al_attach_shader_source"
+external attach_shader_source_file : shader -> ShaderType.t -> string -> unit = "ml_al_attach_shader_source_file"
+external build_shader : shader -> unit = "ml_al_build_shader"
+external get_shader_log : shader -> string = "ml_al_get_shader_log"
+external get_shader_platform : shader -> ShaderPlatform.t = "ml_al_get_shader_platform"
+external use_shader : shader option -> unit = "ml_al_use_shader"
+external get_current_shader : unit -> shader = "ml_al_get_current_shader"
+external destroy_shader : shader -> unit = "ml_al_destroy_shader"
+external get_default_shader_source : ShaderPlatform.t -> ShaderType.t -> string = "ml_al_get_default_shader_source"
+
+(** {2 Uniforms} *)
+
+external set_shader_sampler : string -> bitmap -> int -> unit = "ml_al_set_shader_sampler"
+external set_shader_matrix : string -> transform -> unit = "ml_al_set_shader_matrix"
+external set_shader_int : string -> int -> unit = "ml_al_set_shader_int"
+external set_shader_float : string -> float -> unit = "ml_al_set_shader_float"
+external set_shader_bool : string -> bool -> unit = "ml_al_set_shader_bool"
+external set_shader_int_vector : string -> int array array -> unit = "ml_al_set_shader_int_vector"
+external set_shader_float_vector : string -> float array array -> unit = "ml_al_set_shader_float_vector"
 
 
 (** {1 System routines} *)
