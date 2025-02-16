@@ -520,13 +520,19 @@ external draw_scaled_rotated_bitmap_region : bitmap -> pos -> pos -> ?tint: colo
   "ml_al_draw_scaled_rotated_bitmap_region_bytecode" "ml_al_draw_scaled_rotated_bitmap_region"
 external put_pixel : int -> int -> color -> unit = "ml_al_put_pixel"
 external put_blended_pixel : int -> int -> color -> unit = "ml_al_put_blended_pixel"
+external convert_mask_to_alpha : bitmap -> color -> unit = "ml_al_convert_mask_to_alpha"
 
 (** {2 Target bitmap} *)
 
-external get_target_bitmap : unit -> bitmap = "al_get_target_bitmap"
-external set_target_bitmap : bitmap -> unit = "al_set_target_bitmap"
-external set_target_backbuffer : display -> unit = "al_set_target_backbuffer"
-external get_current_display : unit -> display = "al_get_current_display"
+external get_target_bitmap : unit -> bitmap = "ml_al_get_target_bitmap"
+external set_target_bitmap : bitmap -> unit = "ml_al_set_target_bitmap"
+external set_target_backbuffer : display -> unit = "ml_al_set_target_backbuffer"
+external get_current_display : unit -> display = "ml_al_get_current_display"
+
+(** {2 Deferred drawing} *)
+
+external hold_bitmap_drawing : bool -> unit = "ml_al_hold_bitmap_drawing"
+external is_bitmap_drawing_held : unit -> bool = "ml_al_is_bitmap_drawing_held"
 
 (** {2 Image I/O} *)
 

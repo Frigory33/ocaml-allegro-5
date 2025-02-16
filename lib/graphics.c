@@ -312,6 +312,13 @@ CAMLprim value ml_al_put_blended_pixel(value x, value y, value color)
     CAMLreturn(Val_unit);
 }
 
+CAMLprim value ml_al_convert_mask_to_alpha(value bitmap, value mask_color)
+{
+    CAMLparam2(bitmap, mask_color);
+    al_convert_mask_to_alpha(Ptr_val(bitmap), AlColor_val(mask_color));
+    CAMLreturn(Val_unit);
+}
+
 
 ml_function_noarg_ret(al_get_target_bitmap, Val_ptr)
 
@@ -320,6 +327,11 @@ ml_function_1arg(al_set_target_bitmap, Ptr_val)
 ml_function_1arg(al_set_target_backbuffer, Ptr_val)
 
 ml_function_noarg_ret(al_get_current_display, Val_ptr)
+
+
+ml_function_1arg(al_hold_bitmap_drawing, Bool_val)
+
+ml_function_noarg_ret(al_is_bitmap_drawing_held, Val_bool)
 
 
 enum {
