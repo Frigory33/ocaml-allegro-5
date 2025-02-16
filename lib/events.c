@@ -157,6 +157,34 @@ static value convert_event(ALLEGRO_EVENT c_evt)
             Store_field(info, 6, Val_ptr(c_evt.mouse.display));
             Store_field(evt, 0, info);
             break;
+        case ALLEGRO_EVENT_MOUSE_ENTER_DISPLAY:
+        case ALLEGRO_EVENT_MOUSE_LEAVE_DISPLAY:
+            evt = caml_alloc(5,
+                c_evt.type == ALLEGRO_EVENT_MOUSE_ENTER_DISPLAY ? ML_EVENT_MOUSE_ENTER_DISPLAY : ML_EVENT_MOUSE_LEAVE_DISPLAY);
+            Store_field(evt, 0, Val_int(c_evt.mouse.x));
+            Store_field(evt, 1, Val_int(c_evt.mouse.y));
+            Store_field(evt, 2, Val_int(c_evt.mouse.z));
+            Store_field(evt, 3, Val_int(c_evt.mouse.w));
+            Store_field(evt, 4, Val_ptr(c_evt.mouse.display));
+            break;
+        case ALLEGRO_EVENT_TOUCH_BEGIN:
+        case ALLEGRO_EVENT_TOUCH_END:
+        case ALLEGRO_EVENT_TOUCH_MOVE:
+        case ALLEGRO_EVENT_TOUCH_CANCEL:
+            evt = caml_alloc(1,
+                c_evt.type == ALLEGRO_EVENT_TOUCH_BEGIN ? ML_EVENT_TOUCH_BEGIN :
+                c_evt.type == ALLEGRO_EVENT_TOUCH_END ? ML_EVENT_TOUCH_END :
+                c_evt.type == ALLEGRO_EVENT_TOUCH_MOVE ? ML_EVENT_TOUCH_MOVE : ML_EVENT_TOUCH_CANCEL);
+            info = caml_alloc_tuple(7);
+            Store_field(info, 0, Val_ptr(c_evt.touch.display));
+            Store_field(info, 1, Val_int(c_evt.touch.id));
+            Store_field(info, 2, caml_copy_double(c_evt.touch.x));
+            Store_field(info, 3, caml_copy_double(c_evt.touch.y));
+            Store_field(info, 4, caml_copy_double(c_evt.touch.dx));
+            Store_field(info, 5, caml_copy_double(c_evt.touch.dy));
+            Store_field(info, 6, Val_bool(c_evt.touch.primary));
+            Store_field(evt, 0, info);
+            break;
         case ALLEGRO_EVENT_TIMER:
             evt = caml_alloc(2, ML_EVENT_TIMER);
             Store_field(evt, 0, Val_ptr(c_evt.timer.source));
@@ -166,13 +194,30 @@ static value convert_event(ALLEGRO_EVENT c_evt)
             evt = caml_alloc(1, ML_EVENT_DISPLAY_CLOSE);
             Store_field(evt, 0, Val_ptr(c_evt.display.source));
             break;
+        case ALLEGRO_EVENT_DISPLAY_EXPOSE:
         case ALLEGRO_EVENT_DISPLAY_RESIZE:
-            evt = caml_alloc(5, ML_EVENT_DISPLAY_RESIZE);
+            evt = caml_alloc(5,
+                c_evt.type == ALLEGRO_EVENT_DISPLAY_RESIZE ? ML_EVENT_DISPLAY_RESIZE : ML_EVENT_DISPLAY_EXPOSE);
             Store_field(evt, 0, Val_ptr(c_evt.display.source));
             Store_field(evt, 1, Val_int(c_evt.display.x));
             Store_field(evt, 2, Val_int(c_evt.display.y));
             Store_field(evt, 3, Val_int(c_evt.display.width));
             Store_field(evt, 4, Val_int(c_evt.display.height));
+            break;
+        case ALLEGRO_EVENT_DISPLAY_LOST:
+        case ALLEGRO_EVENT_DISPLAY_FOUND:
+        case ALLEGRO_EVENT_DISPLAY_SWITCH_IN:
+        case ALLEGRO_EVENT_DISPLAY_SWITCH_OUT:
+        case ALLEGRO_EVENT_DISPLAY_CONNECTED:
+        case ALLEGRO_EVENT_DISPLAY_DISCONNECTED:
+            evt = caml_alloc(1,
+                c_evt.type == ALLEGRO_EVENT_DISPLAY_LOST ? ML_EVENT_DISPLAY_LOST :
+                c_evt.type == ALLEGRO_EVENT_DISPLAY_FOUND ? ML_EVENT_DISPLAY_FOUND :
+                c_evt.type == ALLEGRO_EVENT_DISPLAY_SWITCH_OUT ? ML_EVENT_DISPLAY_SWITCH_OUT :
+                c_evt.type == ALLEGRO_EVENT_DISPLAY_CONNECTED ? ML_EVENT_DISPLAY_CONNECTED :
+                c_evt.type == ALLEGRO_EVENT_DISPLAY_DISCONNECTED ? ML_EVENT_DISPLAY_DISCONNECTED :
+                    ALLEGRO_EVENT_DISPLAY_SWITCH_IN);
+            Store_field(evt, 0, Val_ptr(c_evt.display.source));
             break;
         default:
             evt = caml_alloc(1, ML_EVENT_UNKNOWN);

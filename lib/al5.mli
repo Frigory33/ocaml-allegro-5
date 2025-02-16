@@ -61,7 +61,7 @@ module MouseState : sig
   }
 end
 
-(** {2 Enumerations} *)
+(** {2 Enumerations and flags} *)
 
 module Display : sig
   val windowed : int
@@ -341,6 +341,7 @@ module Event : sig
       y : float;
       dx : float;
       dy : float;
+      primary : bool;
     }
   end
 
@@ -371,7 +372,6 @@ module Event : sig
     }
   end
 
-  (** Note: currently, not all events are implemented. *)
   type t =
   | JOYSTICK_AXIS of joystick * int * int * float
   | JOYSTICK_BUTTON_DOWN of joystick * int

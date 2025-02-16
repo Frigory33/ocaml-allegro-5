@@ -61,7 +61,7 @@ module MouseState = struct
   }
 end
 
-(** {2 Enumerations} *)
+(** {2 Enumerations and flags} *)
 
 module Display = struct
   let windowed = 1 lsl 0
