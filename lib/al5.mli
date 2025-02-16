@@ -503,6 +503,13 @@ external destroy_bitmap : bitmap -> unit = "ml_al_destroy_bitmap"
 external get_bitmap_width : bitmap -> int = "ml_al_get_bitmap_width"
 external get_bitmap_height : bitmap -> int = "ml_al_get_bitmap_height"
 external get_pixel : bitmap -> int -> int -> color = "ml_al_get_pixel"
+external is_compatible_bitmap : bitmap -> bool = "ml_al_is_compatible_bitmap"
+external is_sub_bitmap : bitmap -> bool = "ml_al_is_sub_bitmap"
+external get_parent_bitmap : bitmap -> bitmap = "ml_al_get_parent_bitmap"
+external get_bitmap_x : bitmap -> int = "ml_al_get_bitmap_x"
+external get_bitmap_y : bitmap -> int = "ml_al_get_bitmap_y"
+external reparent_bitmap : bitmap -> bitmap -> int -> int -> int -> int =
+  "ml_al_reparent_bitmap_bytecode" "ml_al_reparent_bitmap"
 
 (** {2 Drawing operations} *)
 

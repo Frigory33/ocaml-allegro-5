@@ -153,6 +153,38 @@ CAMLprim value ml_al_get_pixel(value bitmap, value x, value y)
     CAMLreturn(alloc_color(c_color));
 }
 
+ml_function_1arg_ret(al_is_compatible_bitmap, Ptr_val, Val_bool)
+
+ml_function_1arg_ret(al_is_sub_bitmap, Ptr_val, Val_bool)
+
+CAMLprim value ml_al_get_parent_bitmap(value bitmap)
+{
+    CAMLparam1(bitmap);
+    ALLEGRO_BITMAP *c_parent = al_get_parent_bitmap(Ptr_val(bitmap));
+    if (c_parent == NULL) {
+        caml_failwith("al_get_parent_bitmap");
+    }
+    CAMLreturn(Val_ptr(c_parent));
+}
+
+ml_function_1arg_ret(al_get_bitmap_x, Ptr_val, Val_int)
+
+ml_function_1arg_ret(al_get_bitmap_y, Ptr_val, Val_int)
+
+CAMLprim value ml_al_reparent_bitmap(value bitmap, value parent, value x, value y, value w, value h)
+{
+    CAMLparam5(bitmap, parent, x, y, w);
+    CAMLxparam1(h);
+    al_reparent_bitmap(
+        Ptr_val(bitmap), Ptr_val(parent), Int_val(x), Int_val(y), Int_val(w), Int_val(h));
+    CAMLreturn(Val_unit);
+}
+
+CAMLprim value ml_al_reparent_bitmap_bytecode(value *argv, int argc)
+{
+    return ml_al_reparent_bitmap(argv[0], argv[1], argv[2], argv[3], argv[4], argv[5]);
+}
+
 
 enum {
     ML_ALLEGRO_FLIP_HORIZONTAL = 1 << 0,
