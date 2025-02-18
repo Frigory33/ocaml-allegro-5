@@ -1,4 +1,4 @@
-(lang dune 3.11)
+(lang dune 2.9)
 (using dune_site 0.1)
 
 (name ocaml_allegro5_test)
@@ -14,5 +14,5 @@
  (name ocaml_allegro5_test)
  (synopsis "OCaml Allegro 5 Test")
  (description "OCaml Allegro 5 Test")
- (depends (ocaml (>= 4.12)) dune allegro5 dune-site)
+ (depends (ocaml (>= 4.08)) dune allegro5 dune-site)
  (sites (share files)))
