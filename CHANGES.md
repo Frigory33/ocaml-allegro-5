@@ -1,4 +1,4 @@
-# 0.2
+# 0.2 (2025-03)
 
 - Audio: support for a basic API.
 - Displays: support for size and position.
