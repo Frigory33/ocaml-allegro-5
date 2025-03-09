@@ -113,6 +113,11 @@ CAMLprim value ml_al_use_shader(value shader)
     CAMLreturn(Val_unit);
 }
 
+#if ALLEGRO_VERSION_INT < 0x05020900
+ALLEGRO_SHADER *al_get_current_shader()
+{ return NULL; }
+#endif
+
 ml_function_noarg_ret(al_get_current_shader, Val_ptr)
 
 ml_function_1arg(al_destroy_shader, Ptr_val)
