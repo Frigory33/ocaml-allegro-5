@@ -50,13 +50,19 @@ enum {
     ML_PLAYMODE_BIDIR,
 };
 
+#if ALLEGRO_VERSION_INT < 0x05020800
+    #define ALLEGRO_PLAYMODE_LOOP_ONCE ALLEGRO_PLAYMODE_ONCE
+#endif
+
 value convert_playmode_from_c(int c_playmode)
 {
     int playmode;
     switch (c_playmode) {
         case ALLEGRO_PLAYMODE_ONCE: playmode = ML_PLAYMODE_ONCE; break;
         case ALLEGRO_PLAYMODE_LOOP: playmode = ML_PLAYMODE_LOOP; break;
+#if ALLEGRO_VERSION_INT >= 0x05020800
         case ALLEGRO_PLAYMODE_LOOP_ONCE: playmode = ML_PLAYMODE_LOOP_ONCE; break;
+#endif
         case ALLEGRO_PLAYMODE_BIDIR: playmode = ML_PLAYMODE_BIDIR; break;
         default: playmode = -1;
     }

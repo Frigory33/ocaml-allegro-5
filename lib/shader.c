@@ -16,6 +16,13 @@ enum {
     ML_SHADER_HLSL_SM_3_0,
 };
 
+#if ALLEGRO_VERSION_INT < 0x05020800
+    #define ALLEGRO_SHADER_AUTO_MINIMAL ALLEGRO_SHADER_AUTO
+    #define ALLEGRO_SHADER_GLSL_MINIMAL ALLEGRO_SHADER_GLSL
+    #define ALLEGRO_SHADER_HLSL_MINIMAL ALLEGRO_SHADER_HLSL
+    #define ALLEGRO_SHADER_HLSL_SM_3_0 ALLEGRO_SHADER_HLSL
+#endif
+
 static int convert_shader_type_from_ml(value type)
 {
     CAMLparam1(type);
@@ -33,10 +40,12 @@ static value convert_shader_platform_from_c(int c_platform)
         case ALLEGRO_SHADER_AUTO: platform = ML_SHADER_AUTO; break;
         case ALLEGRO_SHADER_GLSL: platform = ML_SHADER_GLSL; break;
         case ALLEGRO_SHADER_HLSL: platform = ML_SHADER_HLSL; break;
+#if ALLEGRO_VERSION_INT >= 0x05020800
         case ALLEGRO_SHADER_AUTO_MINIMAL: platform = ML_SHADER_AUTO_MINIMAL; break;
         case ALLEGRO_SHADER_GLSL_MINIMAL: platform = ML_SHADER_GLSL_MINIMAL; break;
         case ALLEGRO_SHADER_HLSL_MINIMAL: platform = ML_SHADER_HLSL_MINIMAL; break;
         case ALLEGRO_SHADER_HLSL_SM_3_0: platform = ML_SHADER_HLSL_SM_3_0; break;
+#endif
         default: platform = -1;
     }
     return Val_int(platform);
