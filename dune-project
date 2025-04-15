@@ -14,5 +14,5 @@
  (name ocaml_allegro5_test)
  (synopsis "OCaml Allegro 5 Test")
  (description "OCaml Allegro 5 Test")
- (depends (ocaml (>= 4.08)) dune allegro5 dune-site)
+ (depends (ocaml (>= 4.08)) dune allegro5_main dune-site)
  (sites (share files)))

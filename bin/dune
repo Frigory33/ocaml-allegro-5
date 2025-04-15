@@ -6,4 +6,4 @@
  (public_name ocaml_allegro5_test)
  (name main)
  (modules main data)
- (libraries dune-site allegro5))
+ (libraries dune-site allegro5 allegro5_main))
