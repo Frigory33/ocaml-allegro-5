@@ -23,6 +23,5 @@
 (package
  (name allegro5_main)
  (synopsis "OCaml Allegro 5 Main")
- (description "An OCaml binding of the Allegro 5 game & multimedia C library")
- (depends (ocaml (>= 4.08)) dune conf-allegro5 allegro5)
-)
+ (description "Main function starting an OCaml Allegro 5 program, required on some systems")
+ (depends (ocaml (>= 4.08)) dune conf-allegro5 allegro5))

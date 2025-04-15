@@ -27,9 +27,9 @@
  (c_library_flags :standard (:include lib_flags.sexp)))
 
 (library
-  (name al5_main)
-  (public_name allegro5_main)
-  (modules al5_main)
+ (name al5_main)
+ (public_name allegro5_main)
+ (modules al5_main)
  (foreign_stubs
   (language c)
   (names main)
