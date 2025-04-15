@@ -1,3 +1,8 @@
+# 0.3
+
+- Creation of the OCaml Allegro 5 Main package.
+
+
 # 0.2 (2025-03)
 
 - Audio: support for a basic API.
