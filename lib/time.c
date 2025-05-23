@@ -25,4 +25,14 @@ CAMLprim value ml_al_init_timeout(value seconds)
 }
 
 
-ml_function_1arg(al_rest, Double_val)
+CAMLprim value ml_al_rest(value seconds)
+{
+    CAMLparam1(seconds);
+    double c_secs = Double_val(seconds);
+
+    caml_enter_blocking_section();
+    al_rest(c_secs);
+    caml_leave_blocking_section();
+
+    CAMLreturn(Val_unit);
+}
