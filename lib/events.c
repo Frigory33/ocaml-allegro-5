@@ -265,34 +265,49 @@ CAMLprim value ml_al_wait_for_event(value queue)
 {
     CAMLparam1(queue);
     ALLEGRO_EVENT c_evt;
-    al_wait_for_event(Ptr_val(queue), &c_evt);
+    ALLEGRO_EVENT_QUEUE *c_queue = Ptr_val(queue);
+
+    caml_enter_blocking_section();
+    al_wait_for_event(c_queue, &c_evt);
+    caml_leave_blocking_section();
+
     CAMLreturn(convert_event(c_evt));
 }
 
 CAMLprim value ml_al_wait_for_event_timed(value queue, value get, value secs)
 {
     CAMLparam3(queue, get, secs);
-    if (!Bool_val(get)) {
-        al_wait_for_event_timed(Ptr_val(queue), NULL, Double_val(secs));
-        CAMLreturn(Val_none);
-    }
+    bool c_get = Bool_val(get);
+    ALLEGRO_EVENT_QUEUE *c_queue = Ptr_val(queue);
+    float c_secs = Double_val(secs);
     ALLEGRO_EVENT c_evt;
-    if (!al_wait_for_event_timed(Ptr_val(queue), &c_evt, Double_val(secs))) {
+
+    caml_enter_blocking_section();
+    bool got_event = al_wait_for_event_timed(c_queue, c_get ? &c_evt : NULL, c_secs);
+    caml_leave_blocking_section();
+
+    if (c_get && got_event) {
+        CAMLreturn(caml_alloc_some(convert_event(c_evt)));
+    } else {
         CAMLreturn(Val_none);
     }
-    CAMLreturn(caml_alloc_some(convert_event(c_evt)));
 }
 
 CAMLprim value ml_al_wait_for_event_until(value queue, value get, value timeout)
 {
     CAMLparam3(queue, get, timeout);
-    if (!Bool_val(get)) {
-        al_wait_for_event_until(Ptr_val(queue), NULL, Data_custom_val(timeout));
-        CAMLreturn(Val_none);
-    }
+    bool c_get = Bool_val(get);
+    ALLEGRO_EVENT_QUEUE *c_queue = Ptr_val(queue);
+    ALLEGRO_TIMEOUT c_timeout = *(ALLEGRO_TIMEOUT *) Data_custom_val(timeout);
     ALLEGRO_EVENT c_evt;
-    if (!al_wait_for_event_until(Ptr_val(queue), &c_evt, Data_custom_val(timeout))) {
+
+    caml_enter_blocking_section();
+    bool got_event = al_wait_for_event_until(c_queue, c_get ? &c_evt : NULL, &c_timeout);
+    caml_leave_blocking_section();
+
+    if (c_get && got_event) {
+        CAMLreturn(caml_alloc_some(convert_event(c_evt)));
+    } else {
         CAMLreturn(Val_none);
     }
-    CAMLreturn(caml_alloc_some(convert_event(c_evt)));
 }

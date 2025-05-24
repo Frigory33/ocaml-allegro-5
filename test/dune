@@ -1,0 +1,16 @@
+(test
+ (name test_al_rest)
+ (enabled_if %{env:RUN_GUI_TEST=false})
+ (libraries threads allegro5 allegro5_main))
+(test
+ (name test_al_wait_for_event)
+ (enabled_if %{env:RUN_GUI_TEST=false})
+ (libraries threads allegro5 allegro5_main))
+(test
+ (name test_al_wait_for_event_timed)
+ (enabled_if %{env:RUN_GUI_TEST=false})
+ (libraries threads allegro5 allegro5_main))
+(test
+ (name test_al_wait_for_event_until)
+ (enabled_if %{env:RUN_GUI_TEST=false})
+ (libraries threads allegro5 allegro5_main))
