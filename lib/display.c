@@ -2,22 +2,25 @@
 
 
 enum {
-    ML_WINDOWED = 1 << 0,
-    ML_FULLSCREEN_WINDOW = 1 << 1,
-    ML_FULLSCREEN = 1 << 2,
-    ML_RESIZABLE = 1 << 3,
-    ML_MAXIMIZED = 1 << 4,
-    ML_OPENGL = 1 << 5,
-    ML_OPENGL_3_0 = 1 << 6,
-    ML_OPENGL_FORWARD_COMPATIBLE = 1 << 7,
-    ML_OPENGL_ES_PROFILE = 1 << 8,
-    ML_OPENGL_CORE_PROFILE = 1 << 9,
-    ML_DIRECT3D = 1 << 10,
-    ML_PROGRAMMABLE_PIPELINE = 1 << 11,
-    ML_FRAMELESS = 1 << 12,
-    ML_GENERATE_EXPOSE_EVENTS = 1 << 13,
-    ML_GTK_TOPLEVEL = 1 << 14,
-    ML_DRAG_AND_DROP = 1 << 15,
+   ML_WINDOWED                    = 1 << 0,
+   ML_FULLSCREEN                  = 1 << 1,
+   ML_OPENGL                      = 1 << 2,
+   ML_DIRECT3D_INTERNAL           = 1 << 3,
+   ML_RESIZABLE                   = 1 << 4,
+   ML_FRAMELESS                   = 1 << 5,
+   ML_GENERATE_EXPOSE_EVENTS      = 1 << 6,
+   ML_OPENGL_3_0                  = 1 << 7,
+   ML_OPENGL_FORWARD_COMPATIBLE   = 1 << 8,
+   ML_FULLSCREEN_WINDOW           = 1 << 9,
+   ML_MINIMIZED                   = 1 << 10,
+   ML_PROGRAMMABLE_PIPELINE       = 1 << 11,
+   ML_GTK_TOPLEVEL_INTERNAL       = 1 << 12,
+   ML_MAXIMIZED                   = 1 << 13,
+   ML_OPENGL_ES_PROFILE           = 1 << 14,
+#if defined(ML_UNSTABLE)
+   ML_OPENGL_CORE_PROFILE         = 1 << 15,
+   ML_DRAG_AND_DROP               = 1 << 16,
+#endif
 };
 
 static int const display_flags_conv[][2] = {
