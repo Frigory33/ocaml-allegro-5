@@ -31,6 +31,8 @@ module type FLAG = sig
   val lnot : flags -> int
   val ( lor ) : flags -> flags -> flags
   val ( land ) : flags -> int -> flags
+  (** You may use type coercion i.e. [(my_flags :> int)]. *)
+
   val ( lxor ) : flags -> int -> int
 end
 

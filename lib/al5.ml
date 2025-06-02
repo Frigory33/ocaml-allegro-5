@@ -579,7 +579,7 @@ external reparent_bitmap : bitmap -> bitmap -> int -> int -> int -> int =
 
 external clear_to_color : color -> unit = "ml_al_clear_to_color"
 external draw_bitmap : bitmap -> ?tint: color -> ?flags: Draw.flags -> pos -> unit = "ml_al_draw_bitmap"
-external draw_bitmap_region : bitmap -> ?tint: color -> ?flags: Draw.flags ->pos -> pos -> pos -> unit =
+external draw_bitmap_region : bitmap -> ?tint: color -> ?flags: Draw.flags -> pos -> pos -> pos -> unit =
   "ml_al_draw_bitmap_region_bytecode" "ml_al_draw_bitmap_region"
 external draw_rotated_bitmap : bitmap -> ?tint: color -> ?flags: Draw.flags -> pos -> pos -> float -> unit =
   "ml_al_draw_rotated_bitmap_bytecode" "ml_al_draw_rotated_bitmap"
