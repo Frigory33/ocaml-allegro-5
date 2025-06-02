@@ -283,8 +283,6 @@ module Keymod = struct
 end
 
 module MouseButton = struct
-  type t = int
-
   let left = 1
   let right = 2
   let middle = 3
@@ -417,7 +415,7 @@ module Event = struct
       y : int;
       z : int;
       w : int;
-      button : MouseButton.t;
+      button : int;
       pressure : float;
       display : display;
     }
@@ -673,7 +671,7 @@ external get_mouse_num_axis : unit -> int = "ml_al_get_mouse_num_axes"
 external get_mouse_num_buttons : unit -> int = "ml_al_get_mouse_num_buttons"
 external get_mouse_state : unit -> MouseState.t = "ml_al_get_mouse_state"
 external get_mouse_state_axis : MouseState.t -> int -> int = "ml_al_get_mouse_state_axis"
-external mouse_button_down : MouseState.t -> MouseButton.t -> bool = "ml_al_mouse_button_down"
+external mouse_button_down : MouseState.t -> int -> bool = "ml_al_mouse_button_down"
 external set_mouse_xy : display -> int -> int -> bool = "ml_al_set_mouse_xy"
 external set_mouse_z : int -> bool = "ml_al_set_mouse_z"
 external set_mouse_w : int -> bool = "ml_al_set_mouse_w"
