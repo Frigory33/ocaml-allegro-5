@@ -49,20 +49,20 @@ CAMLprim value ml_al_get_text_width(value font, value str)
     CAMLreturn(Val_int(width));
 }
 
-CAMLprim value ml_al_draw_text(value font, value flags, value color, value pos, value text)
+CAMLprim value ml_al_draw_text(value font, value color, value pos, value flags, value text)
 {
-    CAMLparam5(font, flags, color, pos, text);
-    int c_flags = Is_some(flags) ? convert_flags(Int_val(Some_val(flags)), text_flags_conv, 0) : 0;
+    CAMLparam5(font, color, pos, flags, text);
+    int c_flags = convert_flags(Int_val(flags), text_flags_conv, 0);
     al_draw_text(Ptr_val(font), AlColor_val(color),
         PosX_val(pos), PosY_val(pos), c_flags, String_val(text));
     CAMLreturn(Val_unit);
 }
 
-CAMLprim value ml_al_draw_justified_text(value font, value flags, value color, value pos, value x2, value diff, value text)
+CAMLprim value ml_al_draw_justified_text(value font, value color, value pos, value x2, value diff, value flags, value text)
 {
-    CAMLparam5(font, flags, color, pos, x2);
-    CAMLxparam2(diff, text);
-    int c_flags = Is_some(flags) ? convert_flags(Int_val(Some_val(flags)), text_flags_conv, 0) : 0;
+    CAMLparam5(font, color, pos, x2, diff);
+    CAMLxparam2(flags, text);
+    int c_flags = convert_flags(Int_val(flags), text_flags_conv, 0);
     al_draw_justified_text(Ptr_val(font), AlColor_val(color),
         PosX_val(pos), Double_val(x2), PosY_val(pos), Double_val(diff),
         c_flags, String_val(text));
@@ -173,18 +173,18 @@ ml_function_noarg(al_shutdown_ttf_addon)
 
 ml_function_noarg_ret(al_get_allegro_ttf_version, Val_int)
 
-CAMLprim value ml_al_load_ttf_font(value filename, value flags, value size)
+CAMLprim value ml_al_load_ttf_font(value filename, value size, value flags)
 {
-    CAMLparam3(filename, flags, size);
-    int c_flags = Is_some(flags) ? convert_flags(Int_val(Some_val(flags)), ttf_flags_conv, 0) : 0;
+    CAMLparam3(filename, size, flags);
+    int c_flags = convert_flags(Int_val(flags), ttf_flags_conv, 0);
     ALLEGRO_FONT *font = al_load_ttf_font(String_val(filename), Int_val(size), c_flags);
     CAMLreturn(Val_ptr(font));
 }
 
-CAMLprim value ml_al_load_ttf_font_stretch(value filename, value flags, value w, value h)
+CAMLprim value ml_al_load_ttf_font_stretch(value filename, value w, value h, value flags)
 {
-    CAMLparam4(filename, flags, w, h);
-    int c_flags = Is_some(flags) ? convert_flags(Int_val(Some_val(flags)), ttf_flags_conv, 0) : 0;
+    CAMLparam4(filename, w, h, flags);
+    int c_flags = convert_flags(Int_val(flags), ttf_flags_conv, 0);
     ALLEGRO_FONT *font = al_load_ttf_font_stretch(
         String_val(filename), Int_val(w), Int_val(h), c_flags);
     CAMLreturn(Val_ptr(font));
