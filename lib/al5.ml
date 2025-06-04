@@ -21,27 +21,6 @@ type mixer
 type sample
 type sample_id
 
-module type FLAG = sig
-  type flags = private int
-
-  val none : flags
-  val lnot : flags -> int
-  val ( lor ) : flags -> flags -> flags
-  val ( land ) : flags -> int -> flags
-  val ( lxor ) : flags -> flags -> flags
-end
-
-(**/**)
-module Flag = struct
-  type flags = int
-
-  let none  = 0
-  let lnot = lnot
-  let ( lor ) = ( lor )
-  let ( land ) = ( land )
-  let ( lxor ) = ( lxor )
-end
-
 (** {2 Aggregation types} *)
 
 type pos = float * float
@@ -95,6 +74,27 @@ module TouchState = struct
 end
 
 (** {2 Enumerations and flags} *)
+
+module type FLAG = sig
+  type flags = private int
+
+  val none : flags
+  val lnot : flags -> int
+  val ( lor ) : flags -> flags -> flags
+  val ( land ) : flags -> int -> flags
+  val ( lxor ) : flags -> flags -> flags
+end
+
+module Flag = struct
+  type flags = int
+
+  let none = 0
+
+  let lnot = lnot
+  let ( lor ) = ( lor )
+  let ( land ) = ( land )
+  let ( lxor ) = ( lxor )
+end
 
 module Display = struct
   include Flag
@@ -585,7 +585,7 @@ external draw_rotated_bitmap : bitmap -> ?tint: color -> pos -> pos -> float -> 
   "ml_al_draw_rotated_bitmap_bytecode" "ml_al_draw_rotated_bitmap"
 external draw_scaled_bitmap : bitmap -> ?tint: color -> pos -> pos -> pos -> pos -> Flip.flags -> unit =
   "ml_al_draw_scaled_bitmap_bytecode" "ml_al_draw_scaled_bitmap"
-external draw_scaled_rotated_bitmap : bitmap -> ?tint: color -> pos -> pos -> pos -> pos -> float -> Flip.flags -> unit =
+external draw_scaled_rotated_bitmap : bitmap -> ?tint: color -> pos -> pos -> pos -> float -> Flip.flags -> unit =
   "ml_al_draw_scaled_rotated_bitmap_bytecode" "ml_al_draw_scaled_rotated_bitmap"
 external draw_scaled_rotated_bitmap_region : bitmap -> pos -> pos -> ?tint: color -> pos -> pos -> pos -> float -> Flip.flags -> unit =
   "ml_al_draw_scaled_rotated_bitmap_region_bytecode" "ml_al_draw_scaled_rotated_bitmap_region"

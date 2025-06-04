@@ -25,18 +25,6 @@ type sample_id
 
 type pos = float * float
 
-module type FLAG = sig
-  type flags = private int
-
-  val none : flags
-  val lnot : flags -> int
-  val ( lor ) : flags -> flags -> flags
-  val ( land ) : flags -> int -> flags
-  (** You may use type coercion i.e. [(my_flags :> int)]. *)
-
-  val ( lxor ) : flags -> flags -> flags
-end
-
 module DisplayMode : sig
   type t = {
     width : int;
@@ -86,6 +74,19 @@ module TouchState : sig
 end
 
 (** {2 Enumerations and flags} *)
+
+module type FLAG = sig
+  type flags = private int
+
+  val none : flags
+
+  val lnot : flags -> int
+  val ( lor ) : flags -> flags -> flags
+  val ( land ) : flags -> int -> flags
+  (** You may use type coercion i.e. [(my_flags :> int)]. *)
+
+  val ( lxor ) : flags -> flags -> flags
+end
 
 module Display : sig
   include FLAG
@@ -576,7 +577,7 @@ external draw_rotated_bitmap : bitmap -> ?tint: color -> pos -> pos -> float -> 
   "ml_al_draw_rotated_bitmap_bytecode" "ml_al_draw_rotated_bitmap"
 external draw_scaled_bitmap : bitmap -> ?tint: color -> pos -> pos -> pos -> pos -> Flip.flags -> unit =
   "ml_al_draw_scaled_bitmap_bytecode" "ml_al_draw_scaled_bitmap"
-external draw_scaled_rotated_bitmap : bitmap -> ?tint: color -> pos ->pos -> pos -> pos -> float -> Flip.flags -> unit =
+external draw_scaled_rotated_bitmap : bitmap -> ?tint: color -> pos -> pos -> pos -> float -> Flip.flags -> unit =
   "ml_al_draw_scaled_rotated_bitmap_bytecode" "ml_al_draw_scaled_rotated_bitmap"
 external draw_scaled_rotated_bitmap_region : bitmap -> pos -> pos -> ?tint: color -> pos -> pos -> pos -> float -> Flip.flags -> unit =
   "ml_al_draw_scaled_rotated_bitmap_region_bytecode" "ml_al_draw_scaled_rotated_bitmap_region"
