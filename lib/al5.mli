@@ -75,29 +75,47 @@ end
 
 (** {2 Enumerations and flags} *)
 
+module type FLAG = sig
+  type flags = private int
+
+  val none : flags
+
+  val lnot : flags -> int
+  val ( lor ) : flags -> flags -> flags
+  val ( land ) : flags -> int -> flags
+  (** You may use type coercion i.e. [(my_flags :> int)]. *)
+
+  val ( lxor ) : flags -> flags -> flags
+end
+
 module Display : sig
-  val windowed : int
-  val fullscreen_window : int
-  val fullscreen : int
-  val resizable : int
-  val maximized : int
-  val opengl : int
-  val opengl_3_0 : int
-  val opengl_forward_compatible : int
-  val opengl_es_profile : int
-  val opengl_core_profile : int
-  val direct3d : int
-  val programmable_pipeline : int
-  val frameless : int
-  val generate_expose_events : int
-  val gtk_toplevel : int
-  val drag_and_drop : int
+  include FLAG
+
+  val windowed : flags
+  val fullscreen : flags
+  val opengl : flags
+  val direct3d_internal : flags
+  val resizable : flags
+  val frameless : flags
+  val generate_expose_events : flags
+  val opengl_3_0 : flags
+  val opengl_forward_compatible : flags
+  val fullscreen_window : flags
+  val minimized : flags
+  val programmable_pipeline : flags
+  val gtk_toplevel : flags
+  val maximized : flags
+  val opengl_es_profile : flags
+  val opengl_core_profile : flags
+  val drag_and_drop : flags
 end
 
 module Bitmap : sig
-  val no_premultiplied_alpha : int
-  val keep_index : int
-  val keep_bitmap_format : int
+  include FLAG
+
+  val keep_bitmap_format : flags
+  val no_premultiplied_alpha : flags
+  val keep_index : flags
 end
 
 module Key : sig
@@ -236,22 +254,24 @@ module Key : sig
 end
 
 module Keymod : sig
-  val shift : int
-  val ctrl : int
-  val alt : int
-  val lwin : int
-  val rwin : int
-  val menu : int
-  val altgr : int
-  val command : int
-  val scrolllock : int
-  val numlock : int
-  val capslock : int
-  val inaltseq : int
-  val accent1 : int
-  val accent2 : int
-  val accent3 : int
-  val accent4 : int
+  include FLAG
+
+  val shift : flags
+  val ctrl : flags
+  val alt : flags
+  val lwin : flags
+  val rwin : flags
+  val menu : flags
+  val altgr : flags
+  val command : flags
+  val scrolllock : flags
+  val numlock : flags
+  val capslock : flags
+  val inaltseq : flags
+  val accent1 : flags
+  val accent2 : flags
+  val accent3 : flags
+  val accent4 : flags
 end
 
 module MouseButton : sig
@@ -272,8 +292,10 @@ module DisplayOrientation : sig
 end
 
 module Flip : sig
-  val horizontal : int
-  val vertical : int
+  include FLAG
+
+  val horizontal : flags
+  val vertical : flags
 end
 
 module ShaderType : sig
@@ -322,16 +344,29 @@ module LineCap : sig
 end
 
 module Text : sig
-  val align_left : int
-  val align_centre : int
-  val align_right : int
-  val align_integer : int
+  type flags = private int
+  type align_integer_flag = private int
+
+  val ( lor ) : flags -> align_integer_flag -> flags
+
+  val align_left : flags
+  val align_centre : flags
+  val align_right : flags
+  val align_integer : align_integer_flag
 end
 
 module Ttf : sig
-  val no_kerning : int
-  val monochrome : int
-  val no_autohint : int
+  include FLAG
+
+  val no_kerning : flags
+  val monochrome : flags
+  val no_autohint : flags
+end
+
+module BitmapFont : sig
+  include FLAG
+
+  val no_premultiplied_alpha : flags
 end
 
 module Playmode : sig
@@ -340,6 +375,15 @@ module Playmode : sig
   | LOOP
   | LOOP_ONCE
   | BIDIR
+end
+
+module KeyboardLeds : sig
+  include FLAG
+
+  val numlock : flags
+  val capslock : flags
+  val scrolllock : flags
+  val default : flags
 end
 
 (** {2 Events} *)
@@ -391,7 +435,7 @@ module Event : sig
   | JOYSTICK_CONFIGURATION
   | KEY_DOWN of Key.t * display
   | KEY_UP of Key.t * display
-  | KEY_CHAR of Key.t * int * int * bool * display
+  | KEY_CHAR of Key.t * int * Keymod.flags * bool * display
   | MOUSE_AXES of MouseMove.t
   | MOUSE_BUTTON_DOWN of MouseButton.t
   | MOUSE_BUTTON_UP of MouseButton.t
@@ -428,8 +472,8 @@ end
 
 external create_display : int -> int -> display = "ml_al_create_display"
 external destroy_display : display -> unit = "ml_al_destroy_display"
-external get_new_display_flags : unit -> int = "ml_al_get_new_display_flags"
-external set_new_display_flags : int -> unit = "ml_al_set_new_display_flags"
+external get_new_display_flags : unit -> Display.flags = "ml_al_get_new_display_flags"
+external set_new_display_flags : Display.flags -> unit = "ml_al_set_new_display_flags"
 
 (** {2 Display operations} *)
 
@@ -526,16 +570,16 @@ external reparent_bitmap : bitmap -> bitmap -> int -> int -> int -> int =
 (** {2 Drawing operations} *)
 
 external clear_to_color : color -> unit = "ml_al_clear_to_color"
-external draw_bitmap : bitmap -> ?tint: color -> pos -> int -> unit = "ml_al_draw_bitmap"
-external draw_bitmap_region : bitmap -> ?tint: color -> pos -> pos -> pos -> int -> unit =
+external draw_bitmap : bitmap -> ?tint: color -> pos -> Flip.flags -> unit = "ml_al_draw_bitmap"
+external draw_bitmap_region : bitmap -> ?tint: color -> pos -> pos -> pos -> Flip.flags -> unit =
   "ml_al_draw_bitmap_region_bytecode" "ml_al_draw_bitmap_region"
-external draw_rotated_bitmap : bitmap -> ?tint: color -> pos -> pos -> float -> int -> unit =
+external draw_rotated_bitmap : bitmap -> ?tint: color -> pos -> pos -> float -> Flip.flags -> unit =
   "ml_al_draw_rotated_bitmap_bytecode" "ml_al_draw_rotated_bitmap"
-external draw_scaled_bitmap : bitmap -> ?tint: color -> pos -> pos -> pos -> pos -> int -> unit =
+external draw_scaled_bitmap : bitmap -> ?tint: color -> pos -> pos -> pos -> pos -> Flip.flags -> unit =
   "ml_al_draw_scaled_bitmap_bytecode" "ml_al_draw_scaled_bitmap"
-external draw_scaled_rotated_bitmap : bitmap -> ?tint: color -> pos -> pos -> pos -> float -> int -> unit =
+external draw_scaled_rotated_bitmap : bitmap -> ?tint: color -> pos -> pos -> pos -> float -> Flip.flags -> unit =
   "ml_al_draw_scaled_rotated_bitmap_bytecode" "ml_al_draw_scaled_rotated_bitmap"
-external draw_scaled_rotated_bitmap_region : bitmap -> pos -> pos -> ?tint: color -> pos -> pos -> pos -> float -> int -> unit =
+external draw_scaled_rotated_bitmap_region : bitmap -> pos -> pos -> ?tint: color -> pos -> pos -> pos -> float -> Flip.flags -> unit =
   "ml_al_draw_scaled_rotated_bitmap_region_bytecode" "ml_al_draw_scaled_rotated_bitmap_region"
 external put_pixel : int -> int -> color -> unit = "ml_al_put_pixel"
 external put_blended_pixel : int -> int -> color -> unit = "ml_al_put_blended_pixel"
@@ -555,10 +599,10 @@ external is_bitmap_drawing_held : unit -> bool = "ml_al_is_bitmap_drawing_held"
 
 (** {2 Image I/O} *)
 
-external register_bitmap_loader : string -> (string -> int -> bitmap option) option -> unit = "ml_al_register_bitmap_loader"
+external register_bitmap_loader : string -> (string -> Bitmap.flags -> bitmap option) option -> unit = "ml_al_register_bitmap_loader"
 external register_bitmap_saver : string -> (string -> bitmap -> bool) option -> unit = "ml_al_register_bitmap_saver"
 external load_bitmap : string -> bitmap = "ml_al_load_bitmap"
-external load_bitmap_flags : string -> int -> bitmap = "ml_al_load_bitmap_flags"
+external load_bitmap_flags : string -> Bitmap.flags -> bitmap = "ml_al_load_bitmap_flags"
 external save_bitmap : string -> bitmap -> unit = "ml_al_save_bitmap"
 external identify_bitmap : string -> string = "ml_al_identify_bitmap"
 
@@ -603,8 +647,7 @@ external get_keyboard_state : unit -> KeyboardState.t = "ml_al_get_keyboard_stat
 external key_down : KeyboardState.t -> Key.t -> bool = "ml_al_key_down"
 external keycode_to_name : Key.t -> string = "ml_al_keycode_to_name"
 external can_set_keyboard_leds : unit -> bool = "ml_al_can_set_keyboard_leds"
-external set_keyboard_leds : int -> unit = "ml_al_set_keyboard_leds"
-
+external set_keyboard_leds : KeyboardLeds.flags -> unit = "ml_al_set_keyboard_leds"
 
 (** {1 Mouse routines} *)
 
@@ -765,8 +808,8 @@ external get_font_line_height : font -> int = "ml_al_get_font_line_height"
 external get_font_ascent : font -> int = "ml_al_get_font_ascent"
 external get_font_descent : font -> int = "ml_al_get_font_descent"
 external get_text_width : font -> string -> int = "ml_al_get_text_width"
-external draw_text : font -> color -> pos -> int -> string -> unit = "ml_al_draw_text"
-external draw_justified_text : font -> color -> pos -> float -> float -> int -> string -> unit =
+external draw_text : font -> color -> pos -> Text.flags -> string -> unit = "ml_al_draw_text"
+external draw_justified_text : font -> color -> pos -> float -> float -> Text.align_integer_flag -> string -> unit =
   "ml_al_draw_justified_text_bytecode" "ml_al_draw_justified_text"
 external get_text_dimensions : font -> string -> int * int * int * int = "ml_al_get_text_dimensions"
 external get_font_ranges : font -> (int * int) array = "ml_al_get_font_ranges"
@@ -777,7 +820,7 @@ external get_fallback_font : font -> font = "ml_al_get_fallback_font"
 
 external grab_font_from_bitmap : bitmap -> (int * int) array -> font = "ml_al_grab_font_from_bitmap"
 external load_bitmap_font : string -> font = "ml_al_load_bitmap_font"
-external load_bitmap_font_flags : string -> int -> font = "ml_al_load_bitmap_font_flags"
+external load_bitmap_font_flags : string -> BitmapFont.flags -> font = "ml_al_load_bitmap_font_flags"
 external create_builtin_font : unit -> font = "ml_al_create_builtin_font"
 
 (** {2 TTF fonts} *)
@@ -786,8 +829,8 @@ external init_ttf_addon : unit -> unit = "ml_al_init_ttf_addon"
 external is_ttf_addon_initialized : unit -> bool = "ml_al_is_ttf_addon_initialized"
 external shutdown_ttf_addon : unit -> unit = "ml_al_shutdown_ttf_addon"
 external get_allegro_ttf_version : unit -> int = "ml_al_get_allegro_ttf_version"
-external load_ttf_font : string -> int -> int -> font = "ml_al_load_ttf_font"
-external load_ttf_font_stretch : string -> int -> int -> int -> font = "ml_al_load_ttf_font_stretch"
+external load_ttf_font : string -> int -> Ttf.flags -> font = "ml_al_load_ttf_font"
+external load_ttf_font_stretch : string -> int -> int -> Ttf.flags -> font = "ml_al_load_ttf_font_stretch"
 
 
 (** {1 Primitives addon} *)

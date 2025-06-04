@@ -208,8 +208,8 @@ CAMLprim value ml_al_draw_bitmap(value bmp, value tint, value dpos, value flags)
         al_draw_bitmap(Ptr_val(bmp), PosX_val(dpos), PosY_val(dpos),
             convert_draw_bitmap_flags_from_ml(flags));
     } else {
-        al_draw_tinted_bitmap(Ptr_val(bmp), AlColor_val(Some_val(tint)),
-            PosX_val(dpos), PosY_val(dpos), convert_draw_bitmap_flags_from_ml(flags));
+        al_draw_tinted_bitmap(Ptr_val(bmp), AlColor_val(Some_val(tint)), PosX_val(dpos), PosY_val(dpos),
+            convert_draw_bitmap_flags_from_ml(flags));
     }
     CAMLreturn(Val_unit);
 }
@@ -367,9 +367,9 @@ ml_function_noarg_ret(al_is_bitmap_drawing_held, Val_bool)
 
 
 enum {
-    ML_NO_PREMULTIPLIED_ALPHA = 1 << 0,
-    ML_KEEP_INDEX = 1 << 1,
-    ML_KEEP_BITMAP_FORMAT = 1 << 2,
+    ML_KEEP_BITMAP_FORMAT = 1 << 1,
+    ML_NO_PREMULTIPLIED_ALPHA = 1 << 9,
+    ML_KEEP_INDEX = 1 << 11,
 };
 
 static int const load_flags_conv[][2] = {

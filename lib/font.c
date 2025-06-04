@@ -21,10 +21,10 @@ ml_function_noarg_ret(al_get_allegro_font_version, Val_int)
 
 
 enum {
-    ML_ALIGN_LEFT = 1 << 0,
-    ML_ALIGN_CENTRE = 1 << 1,
-    ML_ALIGN_RIGHT = 1 << 2,
-    ML_ALIGN_INTEGER = 1 << 3,
+    ML_ALIGN_LEFT = 0,
+    ML_ALIGN_CENTRE = 1 << 0,
+    ML_ALIGN_RIGHT = 1 << 1,
+    ML_ALIGN_INTEGER = 1 << 2,
 };
 
 static int const text_flags_conv[][2] = {

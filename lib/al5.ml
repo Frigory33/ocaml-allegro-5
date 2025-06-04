@@ -75,29 +75,55 @@ end
 
 (** {2 Enumerations and flags} *)
 
+module type FLAG = sig
+  type flags = private int
+
+  val none : flags
+  val lnot : flags -> int
+  val ( lor ) : flags -> flags -> flags
+  val ( land ) : flags -> int -> flags
+  val ( lxor ) : flags -> flags -> flags
+end
+
+module Flag = struct
+  type flags = int
+
+  let none = 0
+
+  let lnot = lnot
+  let ( lor ) = ( lor )
+  let ( land ) = ( land )
+  let ( lxor ) = ( lxor )
+end
+
 module Display = struct
-  let windowed = 1 lsl 0
-  let fullscreen_window = 1 lsl 1
-  let fullscreen = 1 lsl 2
-  let resizable = 1 lsl 3
-  let maximized = 1 lsl 4
-  let opengl = 1 lsl 5
-  let opengl_3_0 = 1 lsl 6
-  let opengl_forward_compatible = 1 lsl 7
-  let opengl_es_profile = 1 lsl 8
-  let opengl_core_profile = 1 lsl 9
-  let direct3d = 1 lsl 10
-  let programmable_pipeline = 1 lsl 11
-  let frameless = 1 lsl 12
-  let generate_expose_events = 1 lsl 13
-  let gtk_toplevel = 1 lsl 14
-  let drag_and_drop = 1 lsl 15
+  include Flag
+
+  let windowed                    = 1 lsl 0
+  let fullscreen                  = 1 lsl 1
+  let opengl                      = 1 lsl 2
+  let direct3d_internal           = 1 lsl 3
+  let resizable                   = 1 lsl 4
+  let frameless                   = 1 lsl 5
+  let generate_expose_events      = 1 lsl 6
+  let opengl_3_0                  = 1 lsl 7
+  let opengl_forward_compatible   = 1 lsl 8
+  let fullscreen_window           = 1 lsl 9
+  let minimized                   = 1 lsl 10
+  let programmable_pipeline       = 1 lsl 11
+  let gtk_toplevel                = 1 lsl 12
+  let maximized                   = 1 lsl 13
+  let opengl_es_profile           = 1 lsl 14
+  let opengl_core_profile         = 1 lsl 15
+  let drag_and_drop               = 1 lsl 16
 end
 
 module Bitmap = struct
-  let no_premultiplied_alpha = 1 lsl 0
-  let keep_index = 1 lsl 1
-  let keep_bitmap_format = 1 lsl 2
+  include Flag
+
+  let keep_bitmap_format = 1 lsl 1
+  let no_premultiplied_alpha = 1 lsl 9
+  let keep_index = 1 lsl 11
 end
 
 module Key = struct
@@ -236,6 +262,8 @@ module Key = struct
 end
 
 module Keymod = struct
+  include Flag
+
   let shift = 1 lsl 0
   let ctrl = 1 lsl 1
   let alt = 1 lsl 2
@@ -272,6 +300,8 @@ module DisplayOrientation = struct
 end
 
 module Flip = struct
+  include Flag
+
   let horizontal = 1 lsl 0
   let vertical = 1 lsl 1
 end
@@ -322,16 +352,29 @@ module LineCap = struct
 end
 
 module Text = struct
-  let align_left = 1 lsl 0
-  let align_centre = 1 lsl 1
-  let align_right = 1 lsl 2
-  let align_integer = 1 lsl 3
+  type flags = int
+  type align_integer_flag = int
+
+  let ( lor ) = (lor)
+
+  let align_left = 0
+  let align_centre = 1 lsl 0
+  let align_right = 1 lsl 1
+  let align_integer = 1 lsl 2
 end
 
 module Ttf = struct
+  include Flag
+
   let no_kerning = 1 lsl 0
   let monochrome = 1 lsl 1
   let no_autohint = 1 lsl 2
+end
+
+module BitmapFont = struct
+  include Flag
+
+  let no_premultiplied_alpha = Bitmap.no_premultiplied_alpha
 end
 
 module Playmode = struct
@@ -340,6 +383,15 @@ module Playmode = struct
   | LOOP
   | LOOP_ONCE
   | BIDIR
+end
+
+module KeyboardLeds = struct
+  include Flag
+
+  let numlock = Keymod.numlock
+  let capslock = Keymod.capslock
+  let scrolllock = Keymod.scrolllock
+  let default = -1
 end
 
 (** {2 Events} *)
@@ -526,16 +578,16 @@ external reparent_bitmap : bitmap -> bitmap -> int -> int -> int -> int =
 (** {2 Drawing operations} *)
 
 external clear_to_color : color -> unit = "ml_al_clear_to_color"
-external draw_bitmap : bitmap -> ?tint: color -> pos -> int -> unit = "ml_al_draw_bitmap"
-external draw_bitmap_region : bitmap -> ?tint: color -> pos -> pos -> pos -> int -> unit =
+external draw_bitmap : bitmap -> ?tint: color -> pos -> Flip.flags -> unit = "ml_al_draw_bitmap"
+external draw_bitmap_region : bitmap -> ?tint: color -> pos -> pos -> pos -> Flip.flags -> unit =
   "ml_al_draw_bitmap_region_bytecode" "ml_al_draw_bitmap_region"
-external draw_rotated_bitmap : bitmap -> ?tint: color -> pos -> pos -> float -> int -> unit =
+external draw_rotated_bitmap : bitmap -> ?tint: color -> pos -> pos -> float -> Flip.flags -> unit =
   "ml_al_draw_rotated_bitmap_bytecode" "ml_al_draw_rotated_bitmap"
-external draw_scaled_bitmap : bitmap -> ?tint: color -> pos -> pos -> pos -> pos -> int -> unit =
+external draw_scaled_bitmap : bitmap -> ?tint: color -> pos -> pos -> pos -> pos -> Flip.flags -> unit =
   "ml_al_draw_scaled_bitmap_bytecode" "ml_al_draw_scaled_bitmap"
-external draw_scaled_rotated_bitmap : bitmap -> ?tint: color -> pos -> pos -> pos -> float -> int -> unit =
+external draw_scaled_rotated_bitmap : bitmap -> ?tint: color -> pos -> pos -> pos -> float -> Flip.flags -> unit =
   "ml_al_draw_scaled_rotated_bitmap_bytecode" "ml_al_draw_scaled_rotated_bitmap"
-external draw_scaled_rotated_bitmap_region : bitmap -> pos -> pos -> ?tint: color -> pos -> pos -> pos -> float -> int -> unit =
+external draw_scaled_rotated_bitmap_region : bitmap -> pos -> pos -> ?tint: color -> pos -> pos -> pos -> float -> Flip.flags -> unit =
   "ml_al_draw_scaled_rotated_bitmap_region_bytecode" "ml_al_draw_scaled_rotated_bitmap_region"
 external put_pixel : int -> int -> color -> unit = "ml_al_put_pixel"
 external put_blended_pixel : int -> int -> color -> unit = "ml_al_put_blended_pixel"
@@ -555,10 +607,10 @@ external is_bitmap_drawing_held : unit -> bool = "ml_al_is_bitmap_drawing_held"
 
 (** {2 Image I/O} *)
 
-external register_bitmap_loader : string -> (string -> int -> bitmap option) option -> unit = "ml_al_register_bitmap_loader"
+external register_bitmap_loader : string -> (string -> Bitmap.flags -> bitmap option) option -> unit = "ml_al_register_bitmap_loader"
 external register_bitmap_saver : string -> (string -> bitmap -> bool) option -> unit = "ml_al_register_bitmap_saver"
 external load_bitmap : string -> bitmap = "ml_al_load_bitmap"
-external load_bitmap_flags : string -> int -> bitmap = "ml_al_load_bitmap_flags"
+external load_bitmap_flags : string -> Bitmap.flags -> bitmap = "ml_al_load_bitmap_flags"
 external save_bitmap : string -> bitmap -> unit = "ml_al_save_bitmap"
 external identify_bitmap : string -> string = "ml_al_identify_bitmap"
 
@@ -603,7 +655,7 @@ external get_keyboard_state : unit -> KeyboardState.t = "ml_al_get_keyboard_stat
 external key_down : KeyboardState.t -> Key.t -> bool = "ml_al_key_down"
 external keycode_to_name : Key.t -> string = "ml_al_keycode_to_name"
 external can_set_keyboard_leds : unit -> bool = "ml_al_can_set_keyboard_leds"
-external set_keyboard_leds : int -> unit = "ml_al_set_keyboard_leds"
+external set_keyboard_leds : KeyboardLeds.flags -> unit = "ml_al_set_keyboard_leds"
 
 
 (** {1 Mouse routines} *)
@@ -765,8 +817,8 @@ external get_font_line_height : font -> int = "ml_al_get_font_line_height"
 external get_font_ascent : font -> int = "ml_al_get_font_ascent"
 external get_font_descent : font -> int = "ml_al_get_font_descent"
 external get_text_width : font -> string -> int = "ml_al_get_text_width"
-external draw_text : font -> color -> pos -> int -> string -> unit = "ml_al_draw_text"
-external draw_justified_text : font -> color -> pos -> float -> float -> int -> string -> unit =
+external draw_text : font -> color -> pos -> Text.flags -> string -> unit = "ml_al_draw_text"
+external draw_justified_text : font -> color -> pos -> float -> float -> Text.flags -> string -> unit =
   "ml_al_draw_justified_text_bytecode" "ml_al_draw_justified_text"
 external get_text_dimensions : font -> string -> int * int * int * int = "ml_al_get_text_dimensions"
 external get_font_ranges : font -> (int * int) array = "ml_al_get_font_ranges"
@@ -777,7 +829,7 @@ external get_fallback_font : font -> font = "ml_al_get_fallback_font"
 
 external grab_font_from_bitmap : bitmap -> (int * int) array -> font = "ml_al_grab_font_from_bitmap"
 external load_bitmap_font : string -> font = "ml_al_load_bitmap_font"
-external load_bitmap_font_flags : string -> int -> font = "ml_al_load_bitmap_font_flags"
+external load_bitmap_font_flags : string -> BitmapFont.flags -> font = "ml_al_load_bitmap_font_flags"
 external create_builtin_font : unit -> font = "ml_al_create_builtin_font"
 
 (** {2 TTF fonts} *)
@@ -786,8 +838,8 @@ external init_ttf_addon : unit -> unit = "ml_al_init_ttf_addon"
 external is_ttf_addon_initialized : unit -> bool = "ml_al_is_ttf_addon_initialized"
 external shutdown_ttf_addon : unit -> unit = "ml_al_shutdown_ttf_addon"
 external get_allegro_ttf_version : unit -> int = "ml_al_get_allegro_ttf_version"
-external load_ttf_font : string -> int -> int -> font = "ml_al_load_ttf_font"
-external load_ttf_font_stretch : string -> int -> int -> int -> font = "ml_al_load_ttf_font_stretch"
+external load_ttf_font : string -> int -> Ttf.flags -> font = "ml_al_load_ttf_font"
+external load_ttf_font_stretch : string -> int -> int -> Ttf.flags -> font = "ml_al_load_ttf_font_stretch"
 
 
 (** {1 Primitives addon} *)
