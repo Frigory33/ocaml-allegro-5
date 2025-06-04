@@ -60,7 +60,7 @@ module MouseLine = struct
         let cx = float_of_int (Al5.get_bitmap_width alleg_img) /. 2.
         and cy = float_of_int (Al5.get_bitmap_height alleg_img) /. 2. in
         let angle = atan2 (y2 -. y1) (x2 -. x1) in
-        Al5.draw_rotated_bitmap alleg_img ~tint:(Al5.premul_rgba_f 1. 1. 1. alpha) (cx, cy) line.pos2 angle 0;
+        Al5.draw_rotated_bitmap alleg_img ~tint:(Al5.premul_rgba_f 1. 1. 1. alpha) (cx, cy) line.pos2 angle Al5.Flip.none;
         ()
 end
 
@@ -122,11 +122,11 @@ let events data =
       match evt with
 
       | Al5.Event.KEY_CHAR (keycode, _, modifiers, _, _) ->
-          let modifiers = modifiers land (Al5.Keymod.ctrl lor Al5.Keymod.shift lor Al5.Keymod.alt) in
+          let modifiers = Al5.Keymod.(modifiers land (ctrl lor shift lor alt :> int)) in
           let data =
             match keycode with
             | Al5.Key.ESCAPE ->
-                if modifiers = 0 then { data with quit = true } else data
+                if modifiers = Al5.Keymod.none then { data with quit = true } else data
             | Al5.Key.F3 ->
                 if data.disp <> None then (
                   let filename =
@@ -293,7 +293,7 @@ let () =
 
   let disp =
     try
-      Al5.set_new_display_flags (Al5.Display.windowed lor Al5.Display.resizable);
+      Al5.set_new_display_flags Al5.Display.(windowed lor resizable);
       Al5.set_new_window_title "OCaml Allegro 5 test";
       let disp = Al5.create_display 640 480 in
       Al5.set_display_icon disp img;
