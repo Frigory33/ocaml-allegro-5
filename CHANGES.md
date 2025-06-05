@@ -1,6 +1,9 @@
-# 0.3
+# 0.3 (2025-06)
 
-- Creation of the OCaml Allegro 5 Main package.
+- Creation of the OCaml Allegro 5 Main package to make the library work on OS X.
+- Fix blocking functions (`Al5.wait_for_event`…) not working in threaded programs.
+- Improve soundness of flags by using `flags` types.
+- Fix `Al5.key_down`.
 
 
 # 0.2 (2025-03)
