@@ -30,8 +30,9 @@
  (name al5_main)
  (public_name allegro5_main)
  (modules al5_main)
+ (libraries allegro5)
  (foreign_stubs
   (language c)
   (names main)
   (flags :standard -std=c11 -Wall -O2 (:include c_flags.sexp)))
- (c_library_flags :standard (:include lib_flags.sexp)))
+ )
