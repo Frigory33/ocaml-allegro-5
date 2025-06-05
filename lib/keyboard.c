@@ -518,15 +518,11 @@ CAMLprim value ml_al_get_keyboard_state(value unit)
 CAMLprim value ml_al_key_down(value state, value keycode)
 {
     CAMLparam2(state, keycode);
+    CAMLlocal1(state_priv);
+    state_priv = Field(state, KB_STATE_INDEX);
     int c_keycode = convert_keycode_from_ml(keycode);
-    bool pressed = al_key_down(&KbState_val(state), c_keycode);
+    bool pressed = al_key_down(&KbState_val(state_priv), c_keycode);
     CAMLreturn(Val_bool(pressed));
-}
-
-CAMLprim value ml_al_get_keyboard_state_display(value state)
-{
-    CAMLparam1(state);
-    CAMLreturn(Val_ptr(KbState_val(state).display));
 }
 
 ml_function_1arg_ret(al_keycode_to_name, convert_keycode_from_ml, caml_copy_string)
