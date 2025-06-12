@@ -15,13 +15,12 @@ Available at https://frigory33.github.io/ocaml-allegro-5/.
 
 It follows a structure close to the structure of the original C library’s documentation.
 
-## Dune commands
+## Build & install the repo
 
 ```sh
 dune build
 dune build @doc
-dune install
-dune uninstall
+opam install .
 ```
 
 ## Contribute
@@ -30,4 +29,4 @@ Merge requests and bug reports are very welcome! Please join the project!
 
 You can also create a bug report for a feature request.
 
-A small repository for testing the binding is available at [ocaml-allegro-5-test](https://github.com/Frigory33/ocaml-allegro-5-test).
+The [test](https://github.com/Frigory33/ocaml-allegro-5/tree/test) branch contains a small project to test the binding.
