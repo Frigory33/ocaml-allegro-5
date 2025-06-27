@@ -12,6 +12,24 @@ value caml_alloc_some(value v)
 }
 #endif
 
+value alloc_nonnull_ptr(void *ptr, const char *fn)
+{
+    CAMLparam0();
+    if (ptr == NULL) {
+        caml_failwith(fn);
+    } else {
+        CAMLreturn(Val_ptr(ptr));
+    }
+}
+value alloc_option_ptr(void *ptr, const char *fn)
+{
+    CAMLparam0();
+    if (ptr == NULL) {
+        CAMLreturn(Val_none);
+    } else {
+        CAMLreturn(caml_alloc_some(Val_ptr(ptr)));
+    }
+}
 
 int convert_flags_(int flags_from, int flags_num, int const flags_conv[][2], int from_index)
 {
