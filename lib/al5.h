@@ -21,8 +21,8 @@
 value caml_alloc_some(value v);
 #endif
 
-value alloc_option_ptr(void *ptr, const char *func);
-value alloc_nonnull_ptr(void *ptr, const char *func);
+value alloc_option_ptr(void *ptr, char const *func);
+value alloc_nonnull_ptr(void *ptr, char const *func);
 
 #define Ptr_val(v) ((void *)Nativeint_val(v))
 #define Val_ptr(p) (caml_copy_nativeint((intnat)p))

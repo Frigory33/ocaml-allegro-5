@@ -12,22 +12,20 @@ value caml_alloc_some(value v)
 }
 #endif
 
-value alloc_nonnull_ptr(void *ptr, const char *fn)
+value alloc_nonnull_ptr(void *ptr, char const *fn)
 {
-    CAMLparam0();
     if (ptr == NULL) {
         caml_failwith(fn);
     } else {
-        CAMLreturn(Val_ptr(ptr));
+        return Val_ptr(ptr);
     }
 }
-value alloc_option_ptr(void *ptr, const char *fn)
+value alloc_option_ptr(void *ptr, char const *fn)
 {
-    CAMLparam0();
     if (ptr == NULL) {
-        CAMLreturn(Val_none);
+        return Val_none;
     } else {
-        CAMLreturn(caml_alloc_some(Val_ptr(ptr)));
+        return caml_alloc_some(Val_ptr(ptr));
     }
 }
 
